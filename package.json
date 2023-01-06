@@ -1,0 +1,27 @@
+{
+  "name": "01_videos_api",
+  "version": "1.0.0",
+  "main": "app.js",
+  "author": "justSeme",
+  "license": "MIT",
+  "scripts": {
+    "watch": "tsc -w",
+    "dev": "nodemon --inspect ./dist/src/app.js",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@types/jest": "^29.2.5",
+    "@types/supertest": "^2.0.12",
+    "express": "^4.18.2",
+    "jest": "^29.3.1",
+    "supertest": "^6.3.3",
+    "ts-jest": "^29.0.3"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.15",
+    "@types/node": "^18.11.18",
+    "nodemon": "^2.0.20",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.4"
+  }
+}
