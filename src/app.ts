@@ -59,7 +59,7 @@ const errorMessageGenerator = (message: string, field: string) => ({
 })
 
 app.get('/homework01/videos', (req: Request, res: Response<VideoViewModel[]>) => {
-    res.status(200).json(videos)
+    res.json(videos)
 })
 
 app.get('/homework01/videos/:id', (req: RequestWithParams<{ id: number }>,
@@ -69,12 +69,18 @@ app.get('/homework01/videos/:id', (req: RequestWithParams<{ id: number }>,
     if(!findedVideo) {
         res.sendStatus(404)
     }
-    res.status(200).json(findedVideo)
+    res.json(findedVideo)
 })
 
 app.delete('/homework01/videos/:id', (req: RequestWithParams<{ id: number }>,
     res: Response) => {
-    const findedVideo = videos.find
+    const findedVideo = videos.filter(v => v.id === +req.params.id)[0]
+    if(!findedVideo) {
+        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+    }
+    videos = videos.filter(v => v.id !== +req.params.id)
+
+    res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
 })
 
 app.post('/homework01/videos', (req: RequestWithBody<CreateVideoInputModel>,

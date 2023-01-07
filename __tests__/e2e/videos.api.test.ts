@@ -152,15 +152,40 @@ describe('/videos', () => {
         expect(responsedResolutions.length > 0).toBe(true)
     })
 
-    it('should be return the video you are looking for by id', async () => {
+    it('should return the video you are looking for by id', async () => {
         await request(app)
             .get(`${baseURL}videos/${createdVideo.id}`)
             .expect(HTTP_STATUSES.OK_200, createdVideo)
-    } )
+    })
 
-    it('shold be return all videos', async () => {
+    it('should\'nt return the video with incorrect id', async () => {
+        await request(app)
+            .get(`${baseURL}videos/-1000`)
+            .expect(HTTP_STATUSES.NOT_FOUND_404)
+    })
+
+    it('should delete video with correct id', async () => {
+        await request(app)
+            .delete(`${baseURL}videos/${createdVideo.id}`)
+            .expect(HTTP_STATUSES.NO_CONTENT_204)
+
+        await request(app)
+            .get(`${baseURL}videos/${createdVideo.id}`)
+            .expect(HTTP_STATUSES.NOT_FOUND_404)
+    })
+
+    it('should\'nt delete video with incorrect id', async () => {
+        await request(app)
+            .delete(`${baseURL}videos/-1000`)
+            .expect(HTTP_STATUSES.NOT_FOUND_404)
+
+        await request(app)
+            .get(`${baseURL}videos/-1000}`)
+            .expect(HTTP_STATUSES.NOT_FOUND_404)
+    })
+
+    it('should return all videos', async () => {
         await request(app)
             .get(`${baseURL}videos`)
-            
     })
 })

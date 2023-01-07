@@ -56,17 +56,22 @@ const errorMessageGenerator = (message, field) => ({
         }]
 });
 exports.app.get('/homework01/videos', (req, res) => {
-    res.status(200).json(videos);
+    res.json(videos);
 });
 exports.app.get('/homework01/videos/:id', (req, res) => {
     const findedVideo = videos.filter(v => v.id === +req.params.id)[0];
     if (!findedVideo) {
         res.sendStatus(404);
     }
-    res.status(200).json(findedVideo);
+    res.json(findedVideo);
 });
 exports.app.delete('/homework01/videos/:id', (req, res) => {
-    const findedVideo = videos.find;
+    const findedVideo = videos.filter(v => v.id === +req.params.id)[0];
+    if (!findedVideo) {
+        res.sendStatus(exports.HTTP_STATUSES.NOT_FOUND_404);
+    }
+    videos = videos.filter(v => v.id !== +req.params.id);
+    res.sendStatus(exports.HTTP_STATUSES.NO_CONTENT_204);
 });
 exports.app.post('/homework01/videos', (req, res) => {
     if (req.body.title.length < 1) {
