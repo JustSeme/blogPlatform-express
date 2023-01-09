@@ -34,7 +34,7 @@ let videos = [
         title: 'IT=Camasutra practice',
         author: 'Dimych',
         canBeDownloaded: true,
-        minAgeRestriction: false,
+        minAgeRestriction: null,
         createdAt: new Date().toISOString(),
         publicationDate: new Date().toISOString(),
         availableResolutions: ['P480', 'P144', 'P720']
@@ -74,112 +74,63 @@ exports.app.put('/homework01/videos/:id', (req, res) => {
         res.sendStatus(exports.HTTP_STATUSES.NOT_FOUND_404);
         return;
     }
+    const errorMessagesList = [];
     if (!(0, helpers_1.isIsoDate)(req.body.publicationDate)) {
-        res
-            .status(exports.HTTP_STATUSES.BAD_REQUEST_400)
-            .json((0, helpers_1.errorMessageGenerator)('Field is incorrect', 'PublicationDate'));
-        return;
+        errorMessagesList.push('publicationDate');
     }
     if (typeof req.body.canBeDownloaded !== 'boolean') {
-        res
-            .status(exports.HTTP_STATUSES.BAD_REQUEST_400)
-            .json((0, helpers_1.errorMessageGenerator)('Field is incorrect', 'CanBeDownloaded'));
-        return;
+        errorMessagesList.push('canBeDownloaded');
     }
     if (typeof req.body.minAgeRestriction !== 'boolean' && typeof req.body.minAgeRestriction !== 'number') {
-        res
-            .status(exports.HTTP_STATUSES.BAD_REQUEST_400)
-            .json((0, helpers_1.errorMessageGenerator)('Field is incorrect', 'MinAgeRestriction'));
-        return;
+        errorMessagesList.push('minAgeRestriction');
     }
-    if (req.body.title.length < 1) {
-        res
-            .status(exports.HTTP_STATUSES.BAD_REQUEST_400)
-            .json((0, helpers_1.errorMessageGenerator)('Field is empty', 'Title'));
-        return;
+    if (!req.body.title.length || req.body.title.length > 40) {
+        errorMessagesList.push('title');
     }
-    if (req.body.title.length > 40) {
-        res
-            .status(exports.HTTP_STATUSES.BAD_REQUEST_400)
-            .json((0, helpers_1.errorMessageGenerator)('Max length of title = 40', 'Title'));
-        return;
-    }
-    if (req.body.author.length < 1) {
-        res
-            .status(exports.HTTP_STATUSES.BAD_REQUEST_400)
-            .json((0, helpers_1.errorMessageGenerator)('Field is empty', 'Author'));
-        return;
-    }
-    if (req.body.author.length > 20) {
-        res
-            .status(exports.HTTP_STATUSES.BAD_REQUEST_400)
-            .json((0, helpers_1.errorMessageGenerator)('Max length of author = 20', 'Author'));
-        return;
-    }
-    if (req.body.availableResolutions.length < 1) {
-        res
-            .status(exports.HTTP_STATUSES.BAD_REQUEST_400)
-            .json((0, helpers_1.errorMessageGenerator)('Field is empty', 'AvailableResolutions'));
-        return;
+    if (!req.body.author.length || req.body.author.length > 20) {
+        errorMessagesList.push('author');
     }
     const resolutionsLength = req.body.availableResolutions.length;
     const filtredResolutionsLength = req.body.availableResolutions.filter(key => VideoViewModel_1.resolutionsList
         .some(val => val === key)).length;
-    if (filtredResolutionsLength !== resolutionsLength) {
+    if (!req.body.availableResolutions || filtredResolutionsLength !== resolutionsLength) {
+        errorMessagesList.push('availableResolutions');
+    }
+    if (errorMessagesList.length) {
         res
             .status(exports.HTTP_STATUSES.BAD_REQUEST_400)
-            .json((0, helpers_1.errorMessageGenerator)('Field is incorrect', 'AvailableResolutions'));
+            .send((0, helpers_1.errorMessageGenerator)('field is incorrect', errorMessagesList));
         return;
     }
     videos[findedVideoIndex] = Object.assign(Object.assign({}, req.body), { id: videos[findedVideoIndex].id, createdAt: videos[findedVideoIndex].createdAt });
     res.sendStatus(exports.HTTP_STATUSES.NO_CONTENT_204);
 });
 exports.app.post('/homework01/videos', (req, res) => {
-    if (req.body.title.length < 1) {
-        res
-            .status(exports.HTTP_STATUSES.BAD_REQUEST_400)
-            .json((0, helpers_1.errorMessageGenerator)('Field is empty', 'Title'));
-        return;
+    const errorMessagesList = [];
+    if (!req.body.title.length || req.body.title.length > 40) {
+        errorMessagesList.push('title');
     }
-    if (req.body.title.length > 40) {
-        res
-            .status(exports.HTTP_STATUSES.BAD_REQUEST_400)
-            .json((0, helpers_1.errorMessageGenerator)('Max length of title = 40', 'Title'));
-        return;
-    }
-    if (req.body.author.length < 1) {
-        res
-            .status(exports.HTTP_STATUSES.BAD_REQUEST_400)
-            .json((0, helpers_1.errorMessageGenerator)('Field is empty', 'Author'));
-        return;
-    }
-    if (req.body.author.length > 20) {
-        res
-            .status(exports.HTTP_STATUSES.BAD_REQUEST_400)
-            .json((0, helpers_1.errorMessageGenerator)('Max length of author = 20', 'Author'));
-        return;
-    }
-    if (req.body.availableResolutions.length < 1) {
-        res
-            .status(exports.HTTP_STATUSES.BAD_REQUEST_400)
-            .json((0, helpers_1.errorMessageGenerator)('Field is empty', 'AvailableResolutions'));
-        return;
+    if (!req.body.author.length || req.body.author.length > 20) {
+        errorMessagesList.push('author');
     }
     const resolutionsLength = req.body.availableResolutions.length;
     const filtredResolutionsLength = req.body.availableResolutions.filter(key => VideoViewModel_1.resolutionsList
         .some(val => val === key)).length;
-    if (filtredResolutionsLength !== resolutionsLength) {
+    if (!req.body.availableResolutions || filtredResolutionsLength !== resolutionsLength) {
+        errorMessagesList.push('availableResolutions');
+    }
+    if (errorMessagesList.length) {
         res
             .status(exports.HTTP_STATUSES.BAD_REQUEST_400)
-            .json((0, helpers_1.errorMessageGenerator)('Field is incorrect', 'AvailableResolutions'));
+            .send((0, helpers_1.errorMessageGenerator)('field is incorrect', errorMessagesList));
         return;
     }
     const createdVideo = {
         id: Date.now(),
         title: req.body.title,
         author: req.body.author,
-        canBeDownloaded: Date.now() % 2 === 0,
-        minAgeRestriction: false,
+        canBeDownloaded: false,
+        minAgeRestriction: null,
         createdAt: new Date().toISOString(),
         publicationDate: new Date().toISOString(),
         availableResolutions: req.body.availableResolutions

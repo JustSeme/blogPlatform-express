@@ -1,5 +1,4 @@
 import express, { Response, Request } from 'express'
-import moment from 'moment'
 import { errorMessageGenerator, isIsoDate } from './helpers'
 import { CreateVideoInputModel } from './models/CreateVideoInputModel'
 import { ErrorMessagesOutputModel } from './models/ErrorMessagesOutputModel'
@@ -37,7 +36,7 @@ let videos: VideoViewModel[] = [
         title: 'IT=Camasutra practice',
         author: 'Dimych',
         canBeDownloaded: true,
-        minAgeRestriction: false,
+        minAgeRestriction: null,
         createdAt: new Date().toISOString(),
         publicationDate: new Date().toISOString(),
         availableResolutions: ['P480', 'P144', 'P720']
@@ -86,66 +85,40 @@ app.put('/homework01/videos/:id', (req: RequestWithParamsAndBody<{ id: number },
         return
     }
 
+    const errorMessagesList = []
+
     if(!isIsoDate(req.body.publicationDate)) {
-        res
-            .status(HTTP_STATUSES.BAD_REQUEST_400)
-            .json(errorMessageGenerator('Field is incorrect', 'PublicationDate'))
-        return
+        errorMessagesList.push('publicationDate')
     }
 
     if(typeof req.body.canBeDownloaded !== 'boolean') {
-        res
-            .status(HTTP_STATUSES.BAD_REQUEST_400)
-            .json(errorMessageGenerator('Field is incorrect', 'CanBeDownloaded'))
-        return
+        errorMessagesList.push('canBeDownloaded')
     }
 
     if(typeof req.body.minAgeRestriction !== 'boolean' && typeof req.body.minAgeRestriction !== 'number') {
-        res
-            .status(HTTP_STATUSES.BAD_REQUEST_400)
-            .json(errorMessageGenerator('Field is incorrect', 'MinAgeRestriction'))
-            return
+        errorMessagesList.push('minAgeRestriction')
     }
 
-    if(req.body.title.length < 1) {
-        res
-            .status(HTTP_STATUSES.BAD_REQUEST_400)
-            .json(errorMessageGenerator('Field is empty', 'Title'))
-        return
+    if(!req.body.title.length || req.body.title.length > 40) {
+        errorMessagesList.push('title')
     }
-    if(req.body.title.length > 40) {
-        res
-            .status(HTTP_STATUSES.BAD_REQUEST_400)
-            .json(errorMessageGenerator('Max length of title = 40', 'Title'))
-        return
-    }
-    if(req.body.author.length < 1) {
-        res
-            .status(HTTP_STATUSES.BAD_REQUEST_400)
-            .json(errorMessageGenerator('Field is empty', 'Author'))
-        return
-    }
-    if(req.body.author.length > 20) {
-        res
-            .status(HTTP_STATUSES.BAD_REQUEST_400)
-            .json(errorMessageGenerator('Max length of author = 20', 'Author'))
-        return
-    }
-    if(req.body.availableResolutions.length < 1) {
-        res
-            .status(HTTP_STATUSES.BAD_REQUEST_400)
-            .json(errorMessageGenerator('Field is empty', 'AvailableResolutions'))
-        return
+    if(!req.body.author.length || req.body.author.length > 20) {
+        errorMessagesList.push('author')
     }
 
     const resolutionsLength = req.body.availableResolutions.length
     const filtredResolutionsLength = req.body.availableResolutions.filter(key => resolutionsList
         .some(val => val === key)).length
+        
+    if(!req.body.availableResolutions || filtredResolutionsLength !== resolutionsLength) {
+        errorMessagesList.push('availableResolutions')
+    }
 
-    if(filtredResolutionsLength !== resolutionsLength) {
+
+    if(errorMessagesList.length) {
         res
             .status(HTTP_STATUSES.BAD_REQUEST_400)
-            .json(errorMessageGenerator('Field is incorrect', 'AvailableResolutions'))
+            .send(errorMessageGenerator('field is incorrect', errorMessagesList))
         return
     }
     
@@ -159,45 +132,27 @@ app.put('/homework01/videos/:id', (req: RequestWithParamsAndBody<{ id: number },
 
 app.post('/homework01/videos', (req: RequestWithBody<CreateVideoInputModel>,
     res: Response<VideoViewModel | ErrorMessagesOutputModel>) => {
-        if(req.body.title.length < 1) {
-            res
-                .status(HTTP_STATUSES.BAD_REQUEST_400)
-                .json(errorMessageGenerator('Field is empty', 'Title'))
-            return
+        const errorMessagesList = []
+        
+        if(!req.body.title.length || req.body.title.length > 40) {
+            errorMessagesList.push('title')
         }
-        if(req.body.title.length > 40) {
-            res
-                .status(HTTP_STATUSES.BAD_REQUEST_400)
-                .json(errorMessageGenerator('Max length of title = 40', 'Title'))
-            return
-        }
-        if(req.body.author.length < 1) {
-            res
-                .status(HTTP_STATUSES.BAD_REQUEST_400)
-                .json(errorMessageGenerator('Field is empty', 'Author'))
-            return
-        }
-        if(req.body.author.length > 20) {
-            res
-                .status(HTTP_STATUSES.BAD_REQUEST_400)
-                .json(errorMessageGenerator('Max length of author = 20', 'Author'))
-            return
-        }
-        if(req.body.availableResolutions.length < 1) {
-            res
-                .status(HTTP_STATUSES.BAD_REQUEST_400)
-                .json(errorMessageGenerator('Field is empty', 'AvailableResolutions'))
-            return
+        if(!req.body.author.length || req.body.author.length > 20) {
+            errorMessagesList.push('author')
         }
 
         const resolutionsLength = req.body.availableResolutions.length
         const filtredResolutionsLength = req.body.availableResolutions.filter(key => resolutionsList
             .some(val => val === key)).length
 
-        if(filtredResolutionsLength !== resolutionsLength) {
+        if(!req.body.availableResolutions || filtredResolutionsLength !== resolutionsLength) {
+            errorMessagesList.push('availableResolutions')
+        }
+
+        if(errorMessagesList.length) {
             res
                 .status(HTTP_STATUSES.BAD_REQUEST_400)
-                .json(errorMessageGenerator('Field is incorrect', 'AvailableResolutions'))
+                .send(errorMessageGenerator('field is incorrect', errorMessagesList))
             return
         }
 
@@ -205,8 +160,8 @@ app.post('/homework01/videos', (req: RequestWithBody<CreateVideoInputModel>,
             id: Date.now(),
             title: req.body.title,
             author: req.body.author,
-            canBeDownloaded: Date.now() % 2 === 0,
-            minAgeRestriction: false,
+            canBeDownloaded: false,
+            minAgeRestriction: null,
             createdAt: new Date().toISOString(),
             publicationDate: new Date().toISOString(),
             availableResolutions: req.body.availableResolutions

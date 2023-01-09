@@ -3,7 +3,7 @@ export type VideoViewModel = {
     title: string
     author: string
     canBeDownloaded: boolean
-    minAgeRestriction: boolean | number
+    minAgeRestriction: null | number
     createdAt: string
     publicationDate: string
     availableResolutions: resolutions[]
