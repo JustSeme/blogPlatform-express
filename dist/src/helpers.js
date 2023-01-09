@@ -3,10 +3,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getPublicationDate = exports.isIsoDate = exports.errorMessageGenerator = void 0;
 const errorMessageGenerator = (message, fields) => {
     let errorsObj = {
-        errorMessages: []
+        errorsMessages: []
     };
     for (let i = 0; i < fields.length; i++) {
-        errorsObj.errorMessages.push({
+        errorsObj.errorsMessages.push({
             message: message,
             field: fields[i]
         });

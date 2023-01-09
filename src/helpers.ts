@@ -2,10 +2,10 @@ import { ErrorMessagesOutputModel } from './models/ErrorMessagesOutputModel'
 
 export const errorMessageGenerator = (message: string, fields: string[]) => {
     let errorsObj: ErrorMessagesOutputModel = {
-        errorMessages: []
+        errorsMessages: []
     }
     for(let i = 0; i < fields.length; i++) {
-        errorsObj.errorMessages.push({
+        errorsObj.errorsMessages.push({
             message: message,
             field: fields[i]
         })

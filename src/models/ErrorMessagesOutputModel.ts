@@ -1,6 +1,6 @@
 
 export type ErrorMessagesOutputModel = {
-    errorMessages: FieldError[]
+    errorsMessages: FieldError[]
 }
 
 type FieldError = {
