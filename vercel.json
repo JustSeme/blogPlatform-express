@@ -1,0 +1,10 @@
+{
+    "version": 1,
+    "name": "homeworks",
+    "builds": [
+        { "src": "dist/app.js", "use": "@vercel/node" }
+    ],
+    "routes": [
+        { "src": "/(.*)", "dest": "dist/app.js" }
+    ]
+}

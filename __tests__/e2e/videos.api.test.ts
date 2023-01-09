@@ -1,6 +1,7 @@
 import request from 'supertest'
 import { app, HTTP_STATUSES } from '../../src/app'
 import { CreateVideoInputModel } from '../../src/models/CreateVideoInputModel'
+import { PutVideoInputModel } from '../../src/models/PutVideoInputModel'
 import { resolutions, resolutionsList, VideoViewModel } from '../../src/models/VideoViewModel'
 
 const baseURL = '/homework01/'
@@ -162,6 +163,94 @@ describe('/videos', () => {
         await request(app)
             .get(`${baseURL}videos/-1000`)
             .expect(HTTP_STATUSES.NOT_FOUND_404)
+    })
+
+    it('sholud\'nt update video with incorrect input availableResolutions', async () => {
+        const data = {
+            title: 'Hello Samurais!',
+            author: 'IT-KAMASUTRA',
+            availableResolutions: ['123', 'P240', 'P360'],
+            canBeDownloaded: false,
+            minAgeRestriction: 16,
+            publicationDate: new Date().toISOString()
+        }
+        await request(app)
+            .put(`${baseURL}videos/${createdVideo.id}`)
+            .send(data)
+            .expect(HTTP_STATUSES.BAD_REQUEST_400)
+
+        const recievedResponse = await request(app)
+            .get(`${baseURL}videos/${createdVideo.id}`)
+            .expect(HTTP_STATUSES.OK_200)
+
+        expect(recievedResponse.body).toEqual(createdVideo)
+    })
+
+    it('sholud\'nt update video with incorrect input publicationDate', async () => {
+        const data = {
+            title: 'Hello Samurais!',
+            author: 'IT-KAMASUTRA',
+            availableResolutions: ['P144', 'P240', 'P360'],
+            canBeDownloaded: false,
+            minAgeRestriction: 16,
+            publicationDate: 123
+        }
+        await request(app)
+            .put(`${baseURL}videos/${createdVideo.id}`)
+            .send(data)
+            .expect(HTTP_STATUSES.BAD_REQUEST_400)
+
+        const recievedResponse = await request(app)
+            .get(`${baseURL}videos/${createdVideo.id}`)
+            .expect(HTTP_STATUSES.OK_200)
+
+        expect(recievedResponse.body).toEqual(createdVideo)
+    })
+
+    it('sholud\'nt update video with incorrect param id', async () => {
+        const data = {
+            title: 'Hello Samurais!',
+            author: 'IT-KAMASUTRA',
+            availableResolutions: ['P144', 'P240', 'P360'],
+            canBeDownloaded: false,
+            minAgeRestriction: 16,
+            publicationDate: new Date().toISOString()
+        }
+        await request(app)
+            .put(`${baseURL}videos/-1000`)
+            .send(data)
+            .expect(HTTP_STATUSES.NOT_FOUND_404)
+
+        const recievedResponse = await request(app)
+            .get(`${baseURL}videos/${createdVideo.id}`)
+            .expect(HTTP_STATUSES.OK_200)
+
+        expect(recievedResponse.body).toEqual(createdVideo)
+    })
+
+    it('sholud update video with correct input data', async () => {
+        const data: PutVideoInputModel = {
+            title: 'Hello Samurais!',
+            author: 'IT-KAMASUTRA',
+            availableResolutions: ['P144', 'P240', 'P360'],
+            canBeDownloaded: false,
+            minAgeRestriction: 16,
+            publicationDate: new Date().toISOString()
+        }
+        await request(app)
+            .put(`${baseURL}videos/${createdVideo.id}`)
+            .send(data)
+            .expect(HTTP_STATUSES.NO_CONTENT_204)
+
+        const recievedResponse = await request(app)
+            .get(`${baseURL}videos/${createdVideo.id}`)
+            .expect(HTTP_STATUSES.OK_200)
+
+        expect(recievedResponse.body).toEqual({
+            ...data,
+            id: createdVideo.id,
+            createdAt: createdVideo.createdAt
+        })
     })
 
     it('should delete video with correct id', async () => {
