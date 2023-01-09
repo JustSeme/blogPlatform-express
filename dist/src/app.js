@@ -82,7 +82,7 @@ exports.app.put('/homework01/videos/:id', (req, res) => {
     if (typeof req.body.canBeDownloaded !== 'boolean') {
         errorMessagesList.push('canBeDownloaded');
     }
-    if (typeof req.body.minAgeRestriction !== 'boolean' && typeof req.body.minAgeRestriction !== 'number') {
+    if (typeof req.body.minAgeRestriction !== null && typeof req.body.minAgeRestriction !== 'number' || !req.body.minAgeRestriction || req.body.minAgeRestriction > 18) {
         errorMessagesList.push('minAgeRestriction');
     }
     if (!req.body.title || req.body.title.length > 40) {

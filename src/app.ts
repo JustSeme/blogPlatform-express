@@ -95,7 +95,7 @@ app.put('/homework01/videos/:id', (req: RequestWithParamsAndBody<{ id: number },
         errorMessagesList.push('canBeDownloaded')
     }
 
-    if(typeof req.body.minAgeRestriction !== 'boolean' && typeof req.body.minAgeRestriction !== 'number') {
+    if(typeof req.body.minAgeRestriction !== null && typeof req.body.minAgeRestriction !== 'number' || !req.body.minAgeRestriction || req.body.minAgeRestriction > 18) {
         errorMessagesList.push('minAgeRestriction')
     }
 
