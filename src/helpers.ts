@@ -20,3 +20,9 @@ export const isIsoDate = (str: string) => {
     //@ts-ignore
     return d instanceof Date && !isNaN(d) && d.toISOString() === str
 }
+
+export const getPublicationDate = () => {
+    const today = new Date().getDate()
+    const todayIncrement = new Date().setDate(today + 1)
+    return new Date(todayIncrement).toISOString()
+}

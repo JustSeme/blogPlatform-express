@@ -1,5 +1,5 @@
 import express, { Response, Request } from 'express'
-import { errorMessageGenerator, isIsoDate } from './helpers'
+import { errorMessageGenerator, getPublicationDate, isIsoDate } from './helpers'
 import { CreateVideoInputModel } from './models/CreateVideoInputModel'
 import { ErrorMessagesOutputModel } from './models/ErrorMessagesOutputModel'
 import { PutVideoInputModel } from './models/PutVideoInputModel'
@@ -28,7 +28,7 @@ let videos: VideoViewModel[] = [
         canBeDownloaded: true,
         minAgeRestriction: 16,
         createdAt: new Date().toISOString(),
-        publicationDate: new Date().toISOString(),
+        publicationDate: getPublicationDate(),
         availableResolutions: ['P1080', 'P240']
     },
     {
@@ -38,7 +38,7 @@ let videos: VideoViewModel[] = [
         canBeDownloaded: true,
         minAgeRestriction: null,
         createdAt: new Date().toISOString(),
-        publicationDate: new Date().toISOString(),
+        publicationDate: getPublicationDate(),
         availableResolutions: ['P480', 'P144', 'P720']
     },
     {
@@ -48,7 +48,7 @@ let videos: VideoViewModel[] = [
         canBeDownloaded: true,
         minAgeRestriction: 18,
         createdAt: new Date().toISOString(),
-        publicationDate: new Date().toISOString(),
+        publicationDate: getPublicationDate(),
         availableResolutions: ['P720', 'P2160']
     }
 ]
@@ -99,17 +99,17 @@ app.put('/homework01/videos/:id', (req: RequestWithParamsAndBody<{ id: number },
         errorMessagesList.push('minAgeRestriction')
     }
 
-    if(!req.body.title.length || req.body.title.length > 40) {
+    if(!req.body.title || req.body.title.length > 40) {
         errorMessagesList.push('title')
     }
-    if(!req.body.author.length || req.body.author.length > 20) {
+    if(!req.body.author || req.body.author.length > 20) {
         errorMessagesList.push('author')
     }
 
-    const resolutionsLength = req.body.availableResolutions.length
+    const resolutionsLength = req.body.availableResolutions?.length
     const filtredResolutionsLength = req.body.availableResolutions.filter(key => resolutionsList
-        .some(val => val === key)).length
-        
+        .some(val => val === key))?.length
+
     if(!req.body.availableResolutions || filtredResolutionsLength !== resolutionsLength) {
         errorMessagesList.push('availableResolutions')
     }
@@ -134,16 +134,16 @@ app.post('/homework01/videos', (req: RequestWithBody<CreateVideoInputModel>,
     res: Response<VideoViewModel | ErrorMessagesOutputModel>) => {
         const errorMessagesList = []
         
-        if(!req.body.title.length || req.body.title.length > 40) {
+        if(!req.body.title || req.body.title.length > 40) {
             errorMessagesList.push('title')
         }
-        if(!req.body.author.length || req.body.author.length > 20) {
+        if(!req.body.author || req.body.author.length > 20) {
             errorMessagesList.push('author')
         }
 
-        const resolutionsLength = req.body.availableResolutions.length
+        const resolutionsLength = req.body.availableResolutions?.length
         const filtredResolutionsLength = req.body.availableResolutions.filter(key => resolutionsList
-            .some(val => val === key)).length
+            .some(val => val === key))?.length
 
         if(!req.body.availableResolutions || filtredResolutionsLength !== resolutionsLength) {
             errorMessagesList.push('availableResolutions')
@@ -163,7 +163,7 @@ app.post('/homework01/videos', (req: RequestWithBody<CreateVideoInputModel>,
             canBeDownloaded: false,
             minAgeRestriction: null,
             createdAt: new Date().toISOString(),
-            publicationDate: new Date().toISOString(),
+            publicationDate: getPublicationDate(),
             availableResolutions: req.body.availableResolutions
         }
 

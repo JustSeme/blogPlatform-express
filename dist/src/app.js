@@ -26,7 +26,7 @@ let videos = [
         canBeDownloaded: true,
         minAgeRestriction: 16,
         createdAt: new Date().toISOString(),
-        publicationDate: new Date().toISOString(),
+        publicationDate: (0, helpers_1.getPublicationDate)(),
         availableResolutions: ['P1080', 'P240']
     },
     {
@@ -36,7 +36,7 @@ let videos = [
         canBeDownloaded: true,
         minAgeRestriction: null,
         createdAt: new Date().toISOString(),
-        publicationDate: new Date().toISOString(),
+        publicationDate: (0, helpers_1.getPublicationDate)(),
         availableResolutions: ['P480', 'P144', 'P720']
     },
     {
@@ -46,7 +46,7 @@ let videos = [
         canBeDownloaded: true,
         minAgeRestriction: 18,
         createdAt: new Date().toISOString(),
-        publicationDate: new Date().toISOString(),
+        publicationDate: (0, helpers_1.getPublicationDate)(),
         availableResolutions: ['P720', 'P2160']
     }
 ];
@@ -69,6 +69,7 @@ exports.app.delete('/homework01/videos/:id', (req, res) => {
     res.sendStatus(exports.HTTP_STATUSES.NO_CONTENT_204);
 });
 exports.app.put('/homework01/videos/:id', (req, res) => {
+    var _a, _b;
     const findedVideoIndex = videos.findIndex(v => v.id === +req.params.id);
     if (findedVideoIndex === -1) {
         res.sendStatus(exports.HTTP_STATUSES.NOT_FOUND_404);
@@ -84,15 +85,15 @@ exports.app.put('/homework01/videos/:id', (req, res) => {
     if (typeof req.body.minAgeRestriction !== 'boolean' && typeof req.body.minAgeRestriction !== 'number') {
         errorMessagesList.push('minAgeRestriction');
     }
-    if (!req.body.title.length || req.body.title.length > 40) {
+    if (!req.body.title || req.body.title.length > 40) {
         errorMessagesList.push('title');
     }
-    if (!req.body.author.length || req.body.author.length > 20) {
+    if (!req.body.author || req.body.author.length > 20) {
         errorMessagesList.push('author');
     }
-    const resolutionsLength = req.body.availableResolutions.length;
-    const filtredResolutionsLength = req.body.availableResolutions.filter(key => VideoViewModel_1.resolutionsList
-        .some(val => val === key)).length;
+    const resolutionsLength = (_a = req.body.availableResolutions) === null || _a === void 0 ? void 0 : _a.length;
+    const filtredResolutionsLength = (_b = req.body.availableResolutions.filter(key => VideoViewModel_1.resolutionsList
+        .some(val => val === key))) === null || _b === void 0 ? void 0 : _b.length;
     if (!req.body.availableResolutions || filtredResolutionsLength !== resolutionsLength) {
         errorMessagesList.push('availableResolutions');
     }
@@ -106,16 +107,17 @@ exports.app.put('/homework01/videos/:id', (req, res) => {
     res.sendStatus(exports.HTTP_STATUSES.NO_CONTENT_204);
 });
 exports.app.post('/homework01/videos', (req, res) => {
+    var _a, _b;
     const errorMessagesList = [];
-    if (!req.body.title.length || req.body.title.length > 40) {
+    if (!req.body.title || req.body.title.length > 40) {
         errorMessagesList.push('title');
     }
-    if (!req.body.author.length || req.body.author.length > 20) {
+    if (!req.body.author || req.body.author.length > 20) {
         errorMessagesList.push('author');
     }
-    const resolutionsLength = req.body.availableResolutions.length;
-    const filtredResolutionsLength = req.body.availableResolutions.filter(key => VideoViewModel_1.resolutionsList
-        .some(val => val === key)).length;
+    const resolutionsLength = (_a = req.body.availableResolutions) === null || _a === void 0 ? void 0 : _a.length;
+    const filtredResolutionsLength = (_b = req.body.availableResolutions.filter(key => VideoViewModel_1.resolutionsList
+        .some(val => val === key))) === null || _b === void 0 ? void 0 : _b.length;
     if (!req.body.availableResolutions || filtredResolutionsLength !== resolutionsLength) {
         errorMessagesList.push('availableResolutions');
     }
@@ -132,7 +134,7 @@ exports.app.post('/homework01/videos', (req, res) => {
         canBeDownloaded: false,
         minAgeRestriction: null,
         createdAt: new Date().toISOString(),
-        publicationDate: new Date().toISOString(),
+        publicationDate: (0, helpers_1.getPublicationDate)(),
         availableResolutions: req.body.availableResolutions
     };
     videos.push(createdVideo);
