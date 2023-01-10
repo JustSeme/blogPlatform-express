@@ -1,6 +1,6 @@
 import { resolutions } from "./VideoViewModel"
 
-export type PutVideoInputModel = {
+export type UpdateVideoInputModel = {
     title: string
     author: string
     availableResolutions: resolutions[]

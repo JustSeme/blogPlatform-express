@@ -1,5 +1,5 @@
 import express, { Response, Request } from 'express'
-import { videos } from './repositories/videos'
+import { videosRepository } from './repositories/videos-repository'
 import { videosRouter } from './routes/homework01/videos-router'
 
 export const app = express()
@@ -19,7 +19,7 @@ export const HTTP_STATUSES = {
 app.use('/homework01/videos', videosRouter)
 
 app.delete('/homework01/testing/all-data', (req: Request, res: Response) => {
-    videos.splice(0, videos.length)
+    videosRepository.deleteVideo(null)
     res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
 })
 

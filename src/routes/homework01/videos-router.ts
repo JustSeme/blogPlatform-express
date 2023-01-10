@@ -3,45 +3,41 @@ import { HTTP_STATUSES } from "../../app";
 import { generateErrorMessage, getPublicationDate, isIsoDate } from "../../helpers";
 import { CreateVideoInputModel } from "../../models/CreateVideoInputModel";
 import { ErrorMessagesOutputModel } from "../../models/ErrorMessagesOutputModel";
-import { PutVideoInputModel } from "../../models/PutVideoInputModel";
+import { UpdateVideoInputModel } from "../../models/UpdateVideoInputModel";
 import { resolutionsList, VideoViewModel } from "../../models/VideoViewModel";
-import { videos } from "../../repositories/videos";
+import { videosRepository } from "../../repositories/videos-repository";
 import { RequestWithBody, RequestWithParams, RequestWithParamsAndBody } from "../../types";
 
 export const videosRouter = Router({})
 
 videosRouter.get('/', (req: Request, res: Response<VideoViewModel[]>) => {
-    res.json(videos)
+    res.json(videosRepository.findVideos(null) as VideoViewModel[])
 })
 
 videosRouter.get('/:id', (req: RequestWithParams<{ id: number }>,
     res: Response<VideoViewModel>) => {
-    const findedVideo = videos.filter(v => v.id === +req.params.id)[0]
+    const findedVideo = videosRepository.findVideos(+req.params.id)
 
     if(!findedVideo) {
         res.sendStatus(404)
     }
-    res.json(findedVideo)
+    res.json(findedVideo as VideoViewModel)
 })
 
 videosRouter.delete('/:id', (req: RequestWithParams<{ id: number }>,
     res: Response) => {
-    const findedVideo = videos.filter(v => v.id === +req.params.id)[0]
+    const findedVideo = videosRepository.findVideos(+req.params.id)
     if(!findedVideo) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
     }
-    for(let i = 0; i < videos.length; i++) {
-        if(videos[i].id === +req.params.id) {
-            videos.splice(i, 1)
-        }
-    }
+    videosRepository.deleteVideo(+req.params.id)
 
     res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
 })
 
-videosRouter.put('/:id', (req: RequestWithParamsAndBody<{ id: number }, PutVideoInputModel>, res: Response<ErrorMessagesOutputModel>) => {
-    const findedVideoIndex = videos.findIndex(v => v.id === +req.params.id)
-    if(findedVideoIndex === -1) {
+videosRouter.put('/:id', (req: RequestWithParamsAndBody<{ id: number }, UpdateVideoInputModel>, res: Response<ErrorMessagesOutputModel>) => {
+    const findedVideo = videosRepository.findVideos(+req.params.id)
+    if(!findedVideo) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
         return
     }
@@ -75,19 +71,15 @@ videosRouter.put('/:id', (req: RequestWithParamsAndBody<{ id: number }, PutVideo
         errorMessagesList.push('availableResolutions')
     }
 
-
     if(errorMessagesList.length) {
         res
             .status(HTTP_STATUSES.BAD_REQUEST_400)
             .send(generateErrorMessage('field is incorrect', errorMessagesList))
         return
     }
+
+    videosRepository.updateVideo(+req.params.id, req.body)
     
-    videos[findedVideoIndex] = {
-        ...req.body,
-        id: videos[findedVideoIndex].id,
-        createdAt: videos[findedVideoIndex].createdAt
-    }
     res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
 })
 
@@ -120,18 +112,7 @@ videosRouter.post('/', (req: RequestWithBody<CreateVideoInputModel>,
             return
         }
 
-        const createdVideo: VideoViewModel = {
-            id: Date.now(),
-            title: req.body.title,
-            author: req.body.author,
-            canBeDownloaded: false,
-            minAgeRestriction: null,
-            createdAt: new Date().toISOString(),
-            publicationDate: getPublicationDate(),
-            availableResolutions: req.body.availableResolutions
-        }
-
-        videos.push(createdVideo)
+        const createdVideo = videosRepository.createVideo(req.body)
 
         res
             .status(HTTP_STATUSES.CREATED_201)

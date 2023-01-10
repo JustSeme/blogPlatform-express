@@ -1,7 +1,7 @@
 import request from 'supertest'
 import { app, HTTP_STATUSES } from '../../src/app'
 import { CreateVideoInputModel } from '../../src/models/CreateVideoInputModel'
-import { PutVideoInputModel } from '../../src/models/PutVideoInputModel'
+import { UpdateVideoInputModel } from '../../src/models/UpdateVideoInputModel'
 import { resolutions, resolutionsList, VideoViewModel } from '../../src/models/VideoViewModel'
 
 const baseURL = '/homework01/'
@@ -229,7 +229,7 @@ describe('/videos', () => {
     })
 
     it('sholud update video with correct input data', async () => {
-        const data: PutVideoInputModel = {
+        const data: UpdateVideoInputModel = {
             title: 'Hello Samurais!',
             author: 'IT-KAMASUTRA',
             availableResolutions: ['P144', 'P240', 'P360'],
