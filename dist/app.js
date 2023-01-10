@@ -109,6 +109,9 @@ exports.app.put('/homework01/videos/:id', (req, res) => {
 exports.app.post('/homework01/videos', (req, res) => {
     var _a, _b;
     const errorMessagesList = [];
+    if (!req.body) {
+        errorMessagesList.push('your request have\'nt body');
+    }
     if (!req.body.title || req.body.title.length > 40) {
         errorMessagesList.push('title');
     }

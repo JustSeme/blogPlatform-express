@@ -1,6 +1,6 @@
 import { ErrorMessagesOutputModel } from './models/ErrorMessagesOutputModel'
 
-export const errorMessageGenerator = (message: string, fields: string[]) => {
+export const generateErrorMessage = (message: string, fields: string[]) => {
     let errorsObj: ErrorMessagesOutputModel = {
         errorsMessages: []
     }

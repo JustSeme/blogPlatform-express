@@ -29,9 +29,9 @@ describe('/videos', () => {
             .send(data1)
             .expect(HTTP_STATUSES.BAD_REQUEST_400)
 
-        expect(createResponse1.body.errorMessages).toEqual([{
-            message: 'Max length of title = 40',
-            field: 'Title'
+        expect(createResponse1.body.errorsMessages).toEqual([{
+            message: 'field is incorrect',
+            field: 'title'
         }])
 
         const createResponse2 = await request(app)
@@ -39,9 +39,9 @@ describe('/videos', () => {
             .send(data2)
             .expect(HTTP_STATUSES.BAD_REQUEST_400)
 
-        expect(createResponse2.body.errorMessages).toEqual([{
-            message: 'Field is empty',
-            field: 'Title'
+        expect(createResponse2.body.errorsMessages).toEqual([{
+            message: 'field is incorrect',
+            field: 'title'
         }])
 
         await request(app)
@@ -66,9 +66,9 @@ describe('/videos', () => {
             .send(data1)
             .expect(HTTP_STATUSES.BAD_REQUEST_400)
 
-        expect(createResponse1.body.errorMessages).toEqual([{
-            message: 'Max length of author = 20',
-            field: 'Author'
+        expect(createResponse1.body.errorsMessages).toEqual([{
+            message: 'field is incorrect',
+            field: 'author'
         }])
 
         const createResponse2 = await request(app)
@@ -76,9 +76,9 @@ describe('/videos', () => {
             .send(data2)
             .expect(HTTP_STATUSES.BAD_REQUEST_400)
 
-        expect(createResponse2.body.errorMessages).toEqual([{
-            message: 'Field is empty',
-            field: 'Author'
+        expect(createResponse2.body.errorsMessages).toEqual([{
+            message: 'field is incorrect',
+            field: 'author'
         }])
 
         await request(app)
@@ -103,9 +103,9 @@ describe('/videos', () => {
             .send(data1)
             .expect(HTTP_STATUSES.BAD_REQUEST_400)
 
-        expect(createResponse1.body.errorMessages).toEqual([{
-            message: 'Field is incorrect',
-            field: 'AvailableResolutions'
+        expect(createResponse1.body.errorsMessages).toEqual([{
+            message: 'field is incorrect',
+            field: 'availableResolutions'
         }])
 
         const createResponse2 = await request(app)
@@ -113,9 +113,9 @@ describe('/videos', () => {
             .send(data2)
             .expect(HTTP_STATUSES.BAD_REQUEST_400)
 
-        expect(createResponse2.body.errorMessages).toEqual([{
-            message: 'Field is empty',
-            field: 'AvailableResolutions'
+        expect(createResponse2.body.errorsMessages).toEqual([{
+            message: 'field is incorrect',
+            field: 'availableResolutions'
         }])
 
         await request(app)
@@ -145,7 +145,7 @@ describe('/videos', () => {
             title: 'Hello world',
             author: 'justSeme',
             canBeDownloaded: expect.any(Boolean),
-            minAgeRestriction: expect.any(Boolean),
+            minAgeRestriction: null,
             createdAt: expect.any(String),
             publicationDate: expect.any(String),
             availableResolutions: expect.any(Array)
