@@ -77,7 +77,7 @@ export const videosRepository = {
     updateVideo(id: number, body: UpdateVideoInputModel) {
         const findedVideoIndex = videos.findIndex(v => v.id === id)
         if(findedVideoIndex < 0) {
-            return findedVideoIndex
+            return
         }
 
         videos[findedVideoIndex] = {
@@ -90,7 +90,5 @@ export const videosRepository = {
             minAgeRestriction: body.minAgeRestriction,
             publicationDate: body.publicationDate
         }
-
-        return findedVideoIndex
     }
 }
