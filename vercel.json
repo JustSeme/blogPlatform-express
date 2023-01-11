@@ -2,9 +2,9 @@
     "version": 2,
     "name": "homeworks",
     "builds": [
-        { "src": "dist/src/app.js", "use": "@vercel/node" }
+        { "src": "dist/app.js", "use": "@vercel/node" }
     ],
     "routes": [
-        { "src": "/(.*)", "dest": "dist/src/app.js" }
+        { "src": "/(.*)", "dest": "dist/app.js" }
     ]
 }
