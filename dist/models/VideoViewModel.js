@@ -11,3 +11,4 @@ exports.resolutionsList = [
     'P1440',
     'P2160'
 ];
+//# sourceMappingURL=VideoViewModel.js.map

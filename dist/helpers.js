@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getPublicationDate = exports.isIsoDate = exports.errorMessageGenerator = void 0;
-const errorMessageGenerator = (message, fields) => {
+exports.getPublicationDate = exports.isIsoDate = exports.generateErrorMessage = void 0;
+const generateErrorMessage = (message, fields) => {
     let errorsObj = {
         errorsMessages: []
     };
@@ -13,7 +13,7 @@ const errorMessageGenerator = (message, fields) => {
     }
     return errorsObj;
 };
-exports.errorMessageGenerator = errorMessageGenerator;
+exports.generateErrorMessage = generateErrorMessage;
 const isIsoDate = (str) => {
     const dateExp = new RegExp(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/);
     if (!dateExp.test(str))
@@ -29,3 +29,4 @@ const getPublicationDate = () => {
     return new Date(todayIncrement).toISOString();
 };
 exports.getPublicationDate = getPublicationDate;
+//# sourceMappingURL=helpers.js.map
