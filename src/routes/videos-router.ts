@@ -1,12 +1,12 @@
 import { Router, Request, Response } from "express";
-import { HTTP_STATUSES } from "../../app";
-import { generateErrorMessage, getPublicationDate, isIsoDate } from "../../helpers";
-import { CreateVideoInputModel } from "../../models/CreateVideoInputModel";
-import { ErrorMessagesOutputModel } from "../../models/ErrorMessagesOutputModel";
-import { UpdateVideoInputModel } from "../../models/UpdateVideoInputModel";
-import { resolutionsList, VideoViewModel } from "../../models/VideoViewModel";
-import { videosRepository } from "../../repositories/videos-repository";
-import { RequestWithBody, RequestWithParams, RequestWithParamsAndBody } from "../../types";
+import { HTTP_STATUSES } from "../app";
+import { generateErrorMessage, isIsoDate } from "../helpers";
+import { CreateVideoInputModel } from "../models/videos/CreateVideoInputModel";
+import { ErrorMessagesOutputModel } from "../models/ErrorMessagesOutputModel";
+import { UpdateVideoInputModel } from "../models/videos/UpdateVideoInputModel";
+import { resolutionsList, VideoViewModel } from "../models/videos/VideoViewModel";
+import { videosRepository } from "../repositories/videos-repository";
+import { RequestWithBody, RequestWithParams, RequestWithParamsAndBody } from "../types";
 
 export const videosRouter = Router({})
 
@@ -19,7 +19,7 @@ videosRouter.get('/:id', (req: RequestWithParams<{ id: number }>,
     const findedVideo = videosRepository.findVideos(+req.params.id)
 
     if(!findedVideo) {
-        res.sendStatus(404)
+        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
     }
     res.json(findedVideo as VideoViewModel)
 })

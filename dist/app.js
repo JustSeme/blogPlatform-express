@@ -6,7 +6,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.HTTP_STATUSES = exports.app = void 0;
 const express_1 = __importDefault(require("express"));
 const videos_repository_1 = require("./repositories/videos-repository");
-const videos_router_1 = require("./routes/homework01/videos-router");
+const videos_router_1 = require("./routes/videos-router");
+const blogs_router_1 = require("./routes/blogs-router");
+const blogs_repository_1 = require("./repositories/blogs-repository");
 exports.app = (0, express_1.default)();
 const port = 3000;
 const jsonBodyMiddleware = express_1.default.json();
@@ -17,10 +19,26 @@ exports.HTTP_STATUSES = {
     NO_CONTENT_204: 204,
     NOT_FOUND_404: 404,
     BAD_REQUEST_400: 400,
+    UNAUTHORIZED_401: 401
 };
+const authGuardMiddleware = (req, res, next) => {
+    if (req.query.token !== '123') {
+        res.sendStatus(exports.HTTP_STATUSES.UNAUTHORIZED_401);
+    }
+    next();
+};
+let requestsCounter = 0;
+const requestCounterMiddleware = (req, res, next) => {
+    requestsCounter++;
+    next();
+};
+exports.app.use(requestCounterMiddleware);
+//app.use(authGuardMiddleware)
 exports.app.use('/homework01/videos', videos_router_1.videosRouter);
+exports.app.use('/homework02/blogs', blogs_router_1.blogsRouter);
 exports.app.delete('/homework01/testing/all-data', (req, res) => {
     videos_repository_1.videosRepository.deleteVideo(null);
+    blogs_repository_1.blogsRepository;
     res.sendStatus(exports.HTTP_STATUSES.NO_CONTENT_204);
 });
 exports.app.listen(port, () => {

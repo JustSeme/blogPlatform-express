@@ -2,10 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.videosRouter = void 0;
 const express_1 = require("express");
-const app_1 = require("../../app");
-const helpers_1 = require("../../helpers");
-const VideoViewModel_1 = require("../../models/videos/VideoViewModel");
-const videos_repository_1 = require("../../repositories/videos-repository");
+const app_1 = require("../app");
+const helpers_1 = require("../helpers");
+const VideoViewModel_1 = require("../models/videos/VideoViewModel");
+const videos_repository_1 = require("../repositories/videos-repository");
 exports.videosRouter = (0, express_1.Router)({});
 exports.videosRouter.get('/', (req, res) => {
     res.json(videos_repository_1.videosRepository.findVideos(null));
@@ -13,7 +13,7 @@ exports.videosRouter.get('/', (req, res) => {
 exports.videosRouter.get('/:id', (req, res) => {
     const findedVideo = videos_repository_1.videosRepository.findVideos(+req.params.id);
     if (!findedVideo) {
-        res.sendStatus(404);
+        res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
     }
     res.json(findedVideo);
 });

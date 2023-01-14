@@ -1,7 +1,7 @@
 import { getPublicationDate } from "../helpers";
-import { CreateVideoInputModel } from "../models/CreateVideoInputModel";
-import { UpdateVideoInputModel } from "../models/UpdateVideoInputModel";
-import { VideoViewModel } from "../models/VideoViewModel";
+import { CreateVideoInputModel } from "../models/videos/CreateVideoInputModel";
+import { UpdateVideoInputModel } from "../models/videos/UpdateVideoInputModel";
+import { VideoViewModel } from "../models/videos/VideoViewModel";
 
 const videos: VideoViewModel[] = [
     {

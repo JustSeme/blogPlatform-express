@@ -1,8 +1,8 @@
 import request from 'supertest'
 import { app, HTTP_STATUSES } from '../../src/app'
-import { CreateVideoInputModel } from '../../src/models/CreateVideoInputModel'
-import { UpdateVideoInputModel } from '../../src/models/UpdateVideoInputModel'
-import { resolutions, resolutionsList, VideoViewModel } from '../../src/models/VideoViewModel'
+import { CreateVideoInputModel } from '../../src/models/videos/CreateVideoInputModel'
+import { UpdateVideoInputModel } from '../../src/models/videos/UpdateVideoInputModel'
+import { resolutions, resolutionsList, VideoViewModel } from '../../src/models/videos/VideoViewModel'
 
 const baseURL = '/homework01/'
 
