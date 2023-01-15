@@ -49,6 +49,28 @@ exports.blogsRepository = {
             if (blogs[i].id === id)
                 blogs.splice(i, 1);
         }
+    },
+    createBlog(body) {
+        const createdBlog = {
+            id: Date.now().toString(),
+            name: body.name,
+            description: body.description,
+            websiteUrl: body.websiteUrl
+        };
+        blogs.push(createdBlog);
+        return createdBlog;
+    },
+    updateBlog(id, body) {
+        const findedBlogIndex = blogs.findIndex(v => v.id === id);
+        if (findedBlogIndex < 0) {
+            return;
+        }
+        blogs[findedBlogIndex] = {
+            id: blogs[findedBlogIndex].id,
+            name: body.name,
+            description: body.description,
+            websiteUrl: body.websiteUrl
+        };
     }
 };
 //# sourceMappingURL=blogs-repository.js.map

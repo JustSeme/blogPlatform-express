@@ -1,3 +1,4 @@
+import { BlogInputModel } from "../models/blogs/BlogInputModel";
 import { BlogViewModel } from "../models/blogs/BlogViewModel";
 
 const blogs: BlogViewModel[] = [
@@ -50,6 +51,33 @@ export const blogsRepository = {
         for(let i = 0; i < blogs.length; i++) {
             if(blogs[i].id === id)
             blogs.splice(i, 1)
+        }
+    },
+
+    createBlog(body: BlogInputModel) {
+        const createdBlog: BlogViewModel = {
+            id: Date.now().toString(),
+            name: body.name,
+            description: body.description,
+            websiteUrl: body.websiteUrl
+        }
+
+        blogs.push(createdBlog)
+
+        return createdBlog
+    },
+
+    updateBlog(id: string, body: BlogInputModel) {
+        const findedBlogIndex = blogs.findIndex(v => v.id === id)
+        if(findedBlogIndex < 0) {
+            return
+        }
+
+        blogs[findedBlogIndex] = {
+            id: blogs[findedBlogIndex].id,
+            name: body.name,
+            description: body.description,
+            websiteUrl: body.websiteUrl
         }
     }
 }

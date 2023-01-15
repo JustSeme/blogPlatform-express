@@ -1,8 +1,9 @@
-import express, { Response, Request, NextFunction } from 'express'
+import express, { Response, Request } from 'express'
 import { videosRepository } from './repositories/videos-repository'
 import { videosRouter } from './routes/videos-router'
 import { blogsRouter } from './routes/blogs-router'
 import { blogsRepository } from './repositories/blogs-repository'
+import { postsRouter } from './routes/posts-router'
 
 export const app = express()
 const port = 3000
@@ -19,25 +20,10 @@ export const HTTP_STATUSES = {
     UNAUTHORIZED_401: 401
 }
 
-const authGuardMiddleware = (req: Request, res: Response, next: NextFunction) => {
-    if(req.query.token !== '123') {
-        res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
-    }
-    next()
-}
-
-let requestsCounter = 0
-
-const requestCounterMiddleware = (req: Request, res: Response, next: NextFunction) => {
-    requestsCounter++
-    next()
-}
-
-app.use(requestCounterMiddleware)
-//app.use(authGuardMiddleware)
-
 app.use('/homework01/videos', videosRouter)
+
 app.use('/homework02/blogs', blogsRouter)
+app.use('/homework02/posts', postsRouter)
 
 app.delete('/homework01/testing/all-data', (req: Request, res: Response) => {
     videosRepository.deleteVideo(null)
