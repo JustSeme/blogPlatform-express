@@ -28,8 +28,12 @@ app.use('/homework02/posts', postsRouter)
 
 app.delete('/homework01/testing/all-data', (req: Request, res: Response) => {
     videosRepository.deleteVideo(null)
-    blogsRepository.deleteBlog(null)
+    res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
+})
+
+app.delete('/homework02/testing/all-data', (req: Request, res: Response) => {
     postsRepository.deletePosts(null)
+    blogsRepository.deleteBlog(null)
     res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
 })
 

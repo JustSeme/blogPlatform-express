@@ -28,8 +28,11 @@ exports.app.use('/homework02/blogs', blogs_router_1.blogsRouter);
 exports.app.use('/homework02/posts', posts_router_1.postsRouter);
 exports.app.delete('/homework01/testing/all-data', (req, res) => {
     videos_repository_1.videosRepository.deleteVideo(null);
-    blogs_repository_1.blogsRepository.deleteBlog(null);
+    res.sendStatus(exports.HTTP_STATUSES.NO_CONTENT_204);
+});
+exports.app.delete('/homework02/testing/all-data', (req, res) => {
     posts_repository_1.postsRepository.deletePosts(null);
+    blogs_repository_1.blogsRepository.deleteBlog(null);
     res.sendStatus(exports.HTTP_STATUSES.NO_CONTENT_204);
 });
 exports.app.listen(port, () => {
