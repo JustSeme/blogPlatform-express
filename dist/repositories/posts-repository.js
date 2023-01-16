@@ -59,6 +59,32 @@ exports.postsRepository = {
             if (posts[i].id === id)
                 posts.splice(i, 1);
         }
+    },
+    createPost(body) {
+        const createdPost = {
+            id: Date.now().toString(),
+            title: body.title,
+            shortDescription: body.shortDescription,
+            content: body.content,
+            blogId: body.blogId,
+            blogName: 'I do not know how to associate a blogName with real data'
+        };
+        posts.push(createdPost);
+        return createdPost;
+    },
+    updatePost(id, body) {
+        const findedBlogIndex = posts.findIndex(v => v.id === id);
+        if (findedBlogIndex < 0) {
+            return;
+        }
+        posts[findedBlogIndex] = {
+            id: posts[findedBlogIndex].id,
+            title: body.title,
+            shortDescription: body.shortDescription,
+            content: body.content,
+            blogId: body.blogId,
+            blogName: posts[findedBlogIndex].blogName
+        };
     }
 };
 //# sourceMappingURL=posts-repository.js.map

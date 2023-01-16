@@ -4,6 +4,7 @@ import { videosRouter } from './routes/videos-router'
 import { blogsRouter } from './routes/blogs-router'
 import { blogsRepository } from './repositories/blogs-repository'
 import { postsRouter } from './routes/posts-router'
+import { postsRepository } from './repositories/posts-repository'
 
 export const app = express()
 const port = 3000
@@ -27,7 +28,8 @@ app.use('/homework02/posts', postsRouter)
 
 app.delete('/homework01/testing/all-data', (req: Request, res: Response) => {
     videosRepository.deleteVideo(null)
-    blogsRepository
+    blogsRepository.deleteBlog(null)
+    postsRepository.deletePosts(null)
     res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
 })
 

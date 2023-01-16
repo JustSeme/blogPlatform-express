@@ -1,3 +1,4 @@
+import { PostInputModel } from '../models/posts/PostInputModel'
 import { PostViewModel } from '../models/posts/PostViewModel'
 
 const posts: PostViewModel[] = [
@@ -60,6 +61,37 @@ export const postsRepository = {
         for(let i = 0; i < posts.length; i++) {
             if(posts[i].id === id)
             posts.splice(i, 1)
+        }
+    },
+
+    createPost(body: PostInputModel) {
+        const createdPost: PostViewModel = {
+            id: Date.now().toString(),
+            title: body.title,
+            shortDescription: body.shortDescription,
+            content: body.content,
+            blogId: body.blogId,
+            blogName: 'I do not know how to associate a blogName with real data'
+        }
+
+        posts.push(createdPost)
+
+        return createdPost
+    },
+
+    updatePost(id: string, body: PostInputModel) {
+        const findedBlogIndex = posts.findIndex(v => v.id === id)
+        if(findedBlogIndex < 0) {
+            return
+        }
+
+        posts[findedBlogIndex] = {
+            id: posts[findedBlogIndex].id,
+            title: body.title,
+            shortDescription: body.shortDescription,
+            content: body.content,
+            blogId: body.blogId,
+            blogName: posts[findedBlogIndex].blogName
         }
     }
 }

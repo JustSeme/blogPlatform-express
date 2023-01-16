@@ -1,6 +1,7 @@
-import { Router, Request, Response, NextFunction } from "express";
+import { Router, Request, Response } from "express";
 import { body } from "express-validator";
 import { HTTP_STATUSES } from "../app";
+import { basicAuthorizationMiddleware } from "../middlewares/basic-authorizatoin-middleware";
 import { inputValidationMiddleware } from "../middlewares/input-validation-middleware";
 import { BlogInputModel } from "../models/blogs/BlogInputModel";
 import { BlogViewModel } from "../models/blogs/BlogViewModel";
@@ -34,6 +35,7 @@ blogsRouter.get('/:id', (req: RequestWithParams<{ id: string }>, res: Response<B
 })
 
 blogsRouter.post('/',
+    basicAuthorizationMiddleware,
     nameValidation,
     descriptionValidation,
     websiteUrlValidation,
@@ -48,6 +50,7 @@ blogsRouter.post('/',
 })
 
 blogsRouter.put('/:id',
+    basicAuthorizationMiddleware,
     nameValidation,
     descriptionValidation,
     websiteUrlValidation,
@@ -64,7 +67,9 @@ blogsRouter.put('/:id',
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
 })
 
-blogsRouter.delete('/:id', (req: RequestWithParams<{ id: string }>, res: Response<ErrorMessagesOutputModel>) => {
+blogsRouter.delete('/:id', 
+    basicAuthorizationMiddleware,
+    (req: RequestWithParams<{ id: string }>, res: Response<ErrorMessagesOutputModel>) => {
     const findedBlog = blogsRepository.findBlogs(req.params.id)
     if(!findedBlog) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
@@ -72,4 +77,6 @@ blogsRouter.delete('/:id', (req: RequestWithParams<{ id: string }>, res: Respons
     }
 
     blogsRepository.deleteBlog(req.params.id)
+
+    res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
 })
