@@ -9,7 +9,7 @@ const input_validation_middleware_1 = require("../middlewares/input-validation-m
 const basic_authorizatoin_middleware_1 = require("../middlewares/basic-authorizatoin-middleware");
 exports.postsRouter = (0, express_1.Router)({});
 const titleValidation = (0, express_validator_1.body)('title').isString().isLength({ min: 1, max: 30 });
-const shortDescriptionValidation = (0, express_validator_1.body)('shortDescription').isString().isLength({ min: 1, max: 100 });
+const shortDescriptionValidation = (0, express_validator_1.body)('shortDescription').isLength({ min: 1, max: 100 });
 const contentValidation = (0, express_validator_1.body)('content').isString().isLength({ min: 1, max: 1000 });
 const blogIdValidation = (0, express_validator_1.body)('blogId').isString().isLength({ min: 1, max: 100 });
 exports.postsRouter.get('/', (req, res) => {
@@ -28,7 +28,9 @@ exports.postsRouter.get('/:id', (req, res) => {
 });
 exports.postsRouter.post('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, titleValidation, shortDescriptionValidation, contentValidation, blogIdValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => {
     const createdPost = posts_repository_1.postsRepository.createPost(req.body);
-    res.send(createdPost);
+    res
+        .status(app_1.HTTP_STATUSES.CREATED_201)
+        .send(createdPost);
 });
 exports.postsRouter.put('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, titleValidation, shortDescriptionValidation, contentValidation, blogIdValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => {
     const findedPost = posts_repository_1.postsRepository.findPosts(req.params.id);

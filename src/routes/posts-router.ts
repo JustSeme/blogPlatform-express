@@ -12,7 +12,7 @@ import { basicAuthorizationMiddleware } from "../middlewares/basic-authorizatoin
 export const postsRouter = Router({})
 
 const titleValidation = body('title').isString().isLength({ min: 1, max: 30})
-const shortDescriptionValidation = body('shortDescription').isString().isLength({ min: 1, max: 100 })
+const shortDescriptionValidation = body('shortDescription').isLength({ min: 1, max: 100 })
 const contentValidation = body('content').isString().isLength({ min: 1, max: 1000 })
 const blogIdValidation = body('blogId').isString().isLength({ min: 1, max: 100 })
 
@@ -44,7 +44,9 @@ postsRouter.post('/',
     (req: RequestWithBody<PostInputModel>, res: Response<PostViewModel | ErrorMessagesOutputModel>) => {
         const createdPost = postsRepository.createPost(req.body)
 
-        res.send(createdPost)
+        res
+            .status(HTTP_STATUSES.CREATED_201)
+            .send(createdPost)
 })
 
 postsRouter.put('/',

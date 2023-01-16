@@ -12,7 +12,7 @@ import { RequestWithBody, RequestWithParams, RequestWithParamsAndBody } from "..
 
 export const blogsRouter = Router({})
 
-const nameValidation = body('name').isString().isLength({ min: 1, max: 15 })
+const nameValidation = body('name').isLength({ min: 1, max: 15 })
 const descriptionValidation = body('description').isString().isLength({ min: 1, max: 500 })
 const websiteUrlValidation = body('websiteUrl').isString().isURL().isLength({ min: 1, max: 100 })
 
@@ -45,7 +45,7 @@ blogsRouter.post('/',
         const createdBlog = blogsRepository.createBlog(req.body)
 
         res
-            .status(HTTP_STATUSES.OK_200)
+            .status(HTTP_STATUSES.CREATED_201)
             .send(createdBlog)
 })
 

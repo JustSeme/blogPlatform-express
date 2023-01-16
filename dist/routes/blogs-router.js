@@ -8,7 +8,7 @@ const basic_authorizatoin_middleware_1 = require("../middlewares/basic-authoriza
 const input_validation_middleware_1 = require("../middlewares/input-validation-middleware");
 const blogs_repository_1 = require("../repositories/blogs-repository");
 exports.blogsRouter = (0, express_1.Router)({});
-const nameValidation = (0, express_validator_1.body)('name').isString().isLength({ min: 1, max: 15 });
+const nameValidation = (0, express_validator_1.body)('name').isLength({ min: 1, max: 15 });
 const descriptionValidation = (0, express_validator_1.body)('description').isString().isLength({ min: 1, max: 500 });
 const websiteUrlValidation = (0, express_validator_1.body)('websiteUrl').isString().isURL().isLength({ min: 1, max: 100 });
 exports.blogsRouter.get('/', (req, res) => {
@@ -28,7 +28,7 @@ exports.blogsRouter.get('/:id', (req, res) => {
 exports.blogsRouter.post('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, nameValidation, descriptionValidation, websiteUrlValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => {
     const createdBlog = blogs_repository_1.blogsRepository.createBlog(req.body);
     res
-        .status(app_1.HTTP_STATUSES.OK_200)
+        .status(app_1.HTTP_STATUSES.CREATED_201)
         .send(createdBlog);
 });
 exports.blogsRouter.put('/:id', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, nameValidation, descriptionValidation, websiteUrlValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => {
