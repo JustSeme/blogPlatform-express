@@ -7,6 +7,7 @@ const app_1 = require("../app");
 const posts_repository_1 = require("../repositories/posts-repository");
 const input_validation_middleware_1 = require("../middlewares/input-validation-middleware");
 const basic_authorizatoin_middleware_1 = require("../middlewares/basic-authorizatoin-middleware");
+const blogs_repository_1 = require("../repositories/blogs-repository");
 exports.postsRouter = (0, express_1.Router)({});
 const titleValidation = (0, express_validator_1.body)('title')
     .exists()
@@ -30,6 +31,12 @@ const blogIdValidation = (0, express_validator_1.body)('blogId')
     .trim()
     .notEmpty()
     .isString()
+    .custom((value) => {
+    if (!blogs_repository_1.blogsRepository.findBlogs(value)) {
+        return Promise.reject('blog by blogId not found');
+    }
+    return true;
+})
     .isLength({ min: 1, max: 100 });
 exports.postsRouter.get('/', (req, res) => {
     const findedBlog = posts_repository_1.postsRepository.findPosts(null);

@@ -8,6 +8,7 @@ import { postsRepository } from "../repositories/posts-repository";
 import { RequestWithBody, RequestWithParams, RequestWithParamsAndBody } from "../types";
 import { inputValidationMiddleware } from "../middlewares/input-validation-middleware";
 import { basicAuthorizationMiddleware } from "../middlewares/basic-authorizatoin-middleware";
+import { blogsRepository } from "../repositories/blogs-repository";
 
 export const postsRouter = Router({})
 
@@ -36,6 +37,12 @@ const blogIdValidation = body('blogId')
 .trim()
 .notEmpty()
 .isString()
+.custom((value) => {
+    if(!blogsRepository.findBlogs(value)) {
+        return Promise.reject('blog by blogId not found')
+    }
+    return true
+})
 .isLength({ min: 1, max: 100 })
 
 postsRouter.get('/',  (req: Request, res: Response<PostViewModel[]>) => {

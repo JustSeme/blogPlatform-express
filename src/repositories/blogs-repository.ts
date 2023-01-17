@@ -27,7 +27,7 @@ const blogs: BlogViewModel[] = [
         websiteUrl: 'https://anyurl.com'
     },
     {
-        id: '5',
+        id: '10',
         name: 'Ржака!!! Смотреть всем!!!!!!!',
         description: 'kek lol',
         websiteUrl: 'https://anyurl.com'
