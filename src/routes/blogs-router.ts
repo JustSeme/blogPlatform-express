@@ -13,21 +13,19 @@ import { RequestWithBody, RequestWithParams, RequestWithParamsAndBody } from "..
 export const blogsRouter = Router({})
 
 const nameValidation = body('name')
+.notEmpty()
 .isString()
-.withMessage('namme should be a string')
 .isLength({ min: 1, max: 15 })
-.withMessage('name length range: 1-15')
 
 const descriptionValidation = body('description')
+.notEmpty()
 .isString()
-.withMessage('description should be a string')
 .isLength({ min: 1, max: 500 })
 
 const websiteUrlValidation = body('websiteUrl')
+.notEmpty()
 .isURL()
-.withMessage('should be a url')
 .isLength({ min: 1, max: 100 })
-.withMessage('websiteUrl length range 1-100')
 
 blogsRouter.get('/',  (req: Request, res: Response<BlogViewModel[]>) => {
     const findedBlog = blogsRepository.findBlogs(null)

@@ -8,10 +8,21 @@ const posts_repository_1 = require("../repositories/posts-repository");
 const input_validation_middleware_1 = require("../middlewares/input-validation-middleware");
 const basic_authorizatoin_middleware_1 = require("../middlewares/basic-authorizatoin-middleware");
 exports.postsRouter = (0, express_1.Router)({});
-const titleValidation = (0, express_validator_1.body)('title').isString().isLength({ min: 1, max: 30 });
-const shortDescriptionValidation = (0, express_validator_1.body)('shortDescription').isLength({ min: 1, max: 100 });
-const contentValidation = (0, express_validator_1.body)('content').isString().isLength({ min: 1, max: 1000 });
-const blogIdValidation = (0, express_validator_1.body)('blogId').isString().isLength({ min: 1, max: 100 });
+const titleValidation = (0, express_validator_1.body)('title')
+    .notEmpty()
+    .isString()
+    .isLength({ min: 1, max: 30 });
+const shortDescriptionValidation = (0, express_validator_1.body)('shortDescription')
+    .notEmpty()
+    .isLength({ min: 1, max: 100 });
+const contentValidation = (0, express_validator_1.body)('content')
+    .notEmpty()
+    .isString()
+    .isLength({ min: 1, max: 1000 });
+const blogIdValidation = (0, express_validator_1.body)('blogId')
+    .notEmpty()
+    .isString()
+    .isLength({ min: 1, max: 100 });
 exports.postsRouter.get('/', (req, res) => {
     const findedBlog = posts_repository_1.postsRepository.findPosts(null);
     if (!findedBlog) {

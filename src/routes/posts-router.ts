@@ -11,10 +11,24 @@ import { basicAuthorizationMiddleware } from "../middlewares/basic-authorizatoin
 
 export const postsRouter = Router({})
 
-const titleValidation = body('title').isString().isLength({ min: 1, max: 30})
-const shortDescriptionValidation = body('shortDescription').isLength({ min: 1, max: 100 })
-const contentValidation = body('content').isString().isLength({ min: 1, max: 1000 })
-const blogIdValidation = body('blogId').isString().isLength({ min: 1, max: 100 })
+const titleValidation = body('title')
+.notEmpty()
+.isString()
+.isLength({ min: 1, max: 30})
+
+const shortDescriptionValidation = body('shortDescription')
+.notEmpty()
+.isLength({ min: 1, max: 100 })
+
+const contentValidation = body('content')
+.notEmpty()
+.isString()
+.isLength({ min: 1, max: 1000 })
+
+const blogIdValidation = body('blogId')
+.notEmpty()
+.isString()
+.isLength({ min: 1, max: 100 })
 
 postsRouter.get('/',  (req: Request, res: Response<PostViewModel[]>) => {
     const findedBlog = postsRepository.findPosts(null)
