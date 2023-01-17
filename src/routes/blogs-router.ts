@@ -12,9 +12,22 @@ import { RequestWithBody, RequestWithParams, RequestWithParamsAndBody } from "..
 
 export const blogsRouter = Router({})
 
-const nameValidation = body('name').isLength({ min: 1, max: 15 })
-const descriptionValidation = body('description').isString().isLength({ min: 1, max: 500 })
-const websiteUrlValidation = body('websiteUrl').isString().isURL().isLength({ min: 1, max: 100 })
+const nameValidation = body('name')
+.isString()
+.withMessage('namme should be a string')
+.isLength({ min: 1, max: 15 })
+.withMessage('name length range: 1-15')
+
+const descriptionValidation = body('description')
+.isString()
+.withMessage('description should be a string')
+.isLength({ min: 1, max: 500 })
+
+const websiteUrlValidation = body('websiteUrl')
+.isURL()
+.withMessage('should be a url')
+.isLength({ min: 1, max: 100 })
+.withMessage('websiteUrl length range 1-100')
 
 blogsRouter.get('/',  (req: Request, res: Response<BlogViewModel[]>) => {
     const findedBlog = blogsRepository.findBlogs(null)

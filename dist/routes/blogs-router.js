@@ -8,9 +8,20 @@ const basic_authorizatoin_middleware_1 = require("../middlewares/basic-authoriza
 const input_validation_middleware_1 = require("../middlewares/input-validation-middleware");
 const blogs_repository_1 = require("../repositories/blogs-repository");
 exports.blogsRouter = (0, express_1.Router)({});
-const nameValidation = (0, express_validator_1.body)('name').isLength({ min: 1, max: 15 });
-const descriptionValidation = (0, express_validator_1.body)('description').isString().isLength({ min: 1, max: 500 });
-const websiteUrlValidation = (0, express_validator_1.body)('websiteUrl').isString().isURL().isLength({ min: 1, max: 100 });
+const nameValidation = (0, express_validator_1.body)('name')
+    .isString()
+    .withMessage('namme should be a string')
+    .isLength({ min: 1, max: 15 })
+    .withMessage('name length range: 1-15');
+const descriptionValidation = (0, express_validator_1.body)('description')
+    .isString()
+    .withMessage('description should be a string')
+    .isLength({ min: 1, max: 500 });
+const websiteUrlValidation = (0, express_validator_1.body)('websiteUrl')
+    .isURL()
+    .withMessage('should be a url')
+    .isLength({ min: 1, max: 100 })
+    .withMessage('websiteUrl length range 1-100');
 exports.blogsRouter.get('/', (req, res) => {
     const findedBlog = blogs_repository_1.blogsRepository.findBlogs(null);
     if (!findedBlog) {
