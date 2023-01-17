@@ -10,16 +10,19 @@ const blogs_repository_1 = require("../repositories/blogs-repository");
 exports.blogsRouter = (0, express_1.Router)({});
 const nameValidation = (0, express_validator_1.body)('name')
     .exists()
+    .trim()
     .notEmpty()
     .isString()
     .isLength({ min: 1, max: 15 });
 const descriptionValidation = (0, express_validator_1.body)('description')
     .exists()
+    .trim()
     .notEmpty()
     .isString()
     .isLength({ min: 1, max: 500 });
 const websiteUrlValidation = (0, express_validator_1.body)('websiteUrl')
     .exists()
+    .trim()
     .notEmpty()
     .isURL()
     .isLength({ min: 1, max: 100 });
