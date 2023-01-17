@@ -9,17 +9,21 @@ const input_validation_middleware_1 = require("../middlewares/input-validation-m
 const basic_authorizatoin_middleware_1 = require("../middlewares/basic-authorizatoin-middleware");
 exports.postsRouter = (0, express_1.Router)({});
 const titleValidation = (0, express_validator_1.body)('title')
+    .exists()
     .notEmpty()
     .isString()
     .isLength({ min: 1, max: 30 });
 const shortDescriptionValidation = (0, express_validator_1.body)('shortDescription')
+    .exists()
     .notEmpty()
     .isLength({ min: 1, max: 100 });
 const contentValidation = (0, express_validator_1.body)('content')
+    .exists()
     .notEmpty()
     .isString()
     .isLength({ min: 1, max: 1000 });
 const blogIdValidation = (0, express_validator_1.body)('blogId')
+    .exists()
     .notEmpty()
     .isString()
     .isLength({ min: 1, max: 100 });

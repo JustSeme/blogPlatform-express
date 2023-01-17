@@ -13,16 +13,19 @@ import { RequestWithBody, RequestWithParams, RequestWithParamsAndBody } from "..
 export const blogsRouter = Router({})
 
 const nameValidation = body('name')
+.exists()
 .notEmpty()
 .isString()
 .isLength({ min: 1, max: 15 })
 
 const descriptionValidation = body('description')
+.exists()
 .notEmpty()
 .isString()
 .isLength({ min: 1, max: 500 })
 
 const websiteUrlValidation = body('websiteUrl')
+.exists()
 .notEmpty()
 .isURL()
 .isLength({ min: 1, max: 100 })

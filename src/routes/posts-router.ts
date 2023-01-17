@@ -12,20 +12,24 @@ import { basicAuthorizationMiddleware } from "../middlewares/basic-authorizatoin
 export const postsRouter = Router({})
 
 const titleValidation = body('title')
+.exists()
 .notEmpty()
 .isString()
 .isLength({ min: 1, max: 30})
 
 const shortDescriptionValidation = body('shortDescription')
+.exists()
 .notEmpty()
 .isLength({ min: 1, max: 100 })
 
 const contentValidation = body('content')
+.exists()
 .notEmpty()
 .isString()
 .isLength({ min: 1, max: 1000 })
 
 const blogIdValidation = body('blogId')
+.exists()
 .notEmpty()
 .isString()
 .isLength({ min: 1, max: 100 })
