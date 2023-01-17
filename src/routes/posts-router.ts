@@ -67,7 +67,7 @@ postsRouter.post('/',
             .send(createdPost)
 })
 
-postsRouter.put('/',
+postsRouter.put('/:id',
     basicAuthorizationMiddleware,
     titleValidation,
     shortDescriptionValidation,

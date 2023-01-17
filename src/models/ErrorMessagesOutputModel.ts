@@ -3,7 +3,7 @@ export type ErrorMessagesOutputModel = {
     errorsMessages: FieldError[]
 }
 
-type FieldError = {
+export type FieldError = {
     message: string
     field: string
 }

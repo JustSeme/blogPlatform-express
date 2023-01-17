@@ -47,7 +47,7 @@ exports.postsRouter.post('/', basic_authorizatoin_middleware_1.basicAuthorizatio
         .status(app_1.HTTP_STATUSES.CREATED_201)
         .send(createdPost);
 });
-exports.postsRouter.put('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, titleValidation, shortDescriptionValidation, contentValidation, blogIdValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => {
+exports.postsRouter.put('/:id', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, titleValidation, shortDescriptionValidation, contentValidation, blogIdValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => {
     const findedPost = posts_repository_1.postsRepository.findPosts(req.params.id);
     if (!findedPost) {
         res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);

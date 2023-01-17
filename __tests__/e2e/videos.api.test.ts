@@ -120,7 +120,7 @@ describe('/videos', () => {
 
         await request(app)
             .get(`${baseURL}videos`)
-            .expect(200, [])
+            .expect(HTTP_STATUSES.OK_200, [])
     })
     
     let createdVideo: VideoViewModel
