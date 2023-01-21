@@ -45,8 +45,8 @@ const blogIdValidation = body('blogId')
 })
 .isLength({ min: 1, max: 100 })
 
-postsRouter.get('/',  (req: Request, res: Response<PostViewModel[]>) => {
-    const findedBlog = postsRepository.findPosts(null)
+postsRouter.get('/', async (req: Request, res: Response<PostViewModel[]>) => {
+    const findedBlog = await postsRepository.findPosts(null)
 
     if(!findedBlog) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
@@ -54,8 +54,8 @@ postsRouter.get('/',  (req: Request, res: Response<PostViewModel[]>) => {
     res.json(findedBlog as PostViewModel[])
 })
 
-postsRouter.get('/:id', (req: RequestWithParams<{ id: string }>, res: Response<PostViewModel>) => {
-    const findedBlog = postsRepository.findPosts(req.params.id)
+postsRouter.get('/:id', async (req: RequestWithParams<{ id: string }>, res: Response<PostViewModel>) => {
+    const findedBlog = await postsRepository.findPosts(req.params.id)
 
     if(!findedBlog) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
@@ -70,8 +70,8 @@ postsRouter.post('/',
     contentValidation,
     blogIdValidation,
     inputValidationMiddleware,
-    (req: RequestWithBody<PostInputModel>, res: Response<PostViewModel | ErrorMessagesOutputModel>) => {
-        const createdPost = postsRepository.createPost(req.body)
+    async (req: RequestWithBody<PostInputModel>, res: Response<PostViewModel | ErrorMessagesOutputModel>) => {
+        const createdPost = await postsRepository.createPost(req.body)
 
         res
             .status(HTTP_STATUSES.CREATED_201)

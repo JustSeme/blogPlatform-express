@@ -35,11 +35,11 @@ const blogs: BlogViewModel[] = [
 ]
 
 export const blogsRepository = {
-    findBlogs(id: string | null) {
+    async findBlogs(id: string | null): Promise<BlogViewModel[] | BlogViewModel> {
         if(id === null) {
             return blogs
         }
-        return blogs.find(b => b.id === id)
+        return blogs.find(b => b.id === id) as BlogViewModel
     },
 
     deleteBlog(id: string | null) {
@@ -54,7 +54,7 @@ export const blogsRepository = {
         }
     },
 
-    createBlog(body: BlogInputModel) {
+    async createBlog(body: BlogInputModel): Promise<BlogViewModel> {
         const createdBlog: BlogViewModel = {
             id: Date.now().toString(),
             name: body.name,

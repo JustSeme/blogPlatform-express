@@ -33,8 +33,8 @@ const websiteUrlValidation = body('websiteUrl')
 .isURL()
 .isLength({ min: 1, max: 100 })
 
-blogsRouter.get('/',  (req: Request, res: Response<BlogViewModel[]>) => {
-    const findedBlog = blogsRepository.findBlogs(null)
+blogsRouter.get('/', async (req: Request, res: Response<BlogViewModel[]>) => {
+    const findedBlog = await blogsRepository.findBlogs(null)
 
     if(!findedBlog) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
@@ -42,8 +42,8 @@ blogsRouter.get('/',  (req: Request, res: Response<BlogViewModel[]>) => {
     res.json(findedBlog as BlogViewModel[])
 })
 
-blogsRouter.get('/:id', (req: RequestWithParams<{ id: string }>, res: Response<BlogViewModel>) => {
-    const findedBlog = blogsRepository.findBlogs(req.params.id)
+blogsRouter.get('/:id', async (req: RequestWithParams<{ id: string }>, res: Response<BlogViewModel>) => {
+    const findedBlog = await blogsRepository.findBlogs(req.params.id)
 
     if(!findedBlog) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
@@ -57,9 +57,9 @@ blogsRouter.post('/',
     descriptionValidation,
     websiteUrlValidation,
     inputValidationMiddleware,
-    (req: RequestWithBody<BlogInputModel>, res: Response<BlogViewModel | ErrorMessagesOutputModel>) => {
+    async (req: RequestWithBody<BlogInputModel>, res: Response<BlogViewModel | ErrorMessagesOutputModel>) => {
     
-        const createdBlog = blogsRepository.createBlog(req.body)
+        const createdBlog = await blogsRepository.createBlog(req.body)
 
         res
             .status(HTTP_STATUSES.CREATED_201)

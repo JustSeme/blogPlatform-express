@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.videosRouter = void 0;
 const express_1 = require("express");
@@ -7,16 +16,16 @@ const helpers_1 = require("../helpers");
 const VideoViewModel_1 = require("../models/videos/VideoViewModel");
 const videos_repository_1 = require("../repositories/videos-repository");
 exports.videosRouter = (0, express_1.Router)({});
-exports.videosRouter.get('/', (req, res) => {
-    res.json(videos_repository_1.videosRepository.findVideos(null));
-});
-exports.videosRouter.get('/:id', (req, res) => {
-    const findedVideo = videos_repository_1.videosRepository.findVideos(+req.params.id);
+exports.videosRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.json(yield videos_repository_1.videosRepository.findVideos(null));
+}));
+exports.videosRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const findedVideo = yield videos_repository_1.videosRepository.findVideos(+req.params.id);
     if (!findedVideo) {
         res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
     }
     res.json(findedVideo);
-});
+}));
 exports.videosRouter.delete('/:id', (req, res) => {
     const findedVideo = videos_repository_1.videosRepository.findVideos(+req.params.id);
     if (!findedVideo) {
@@ -63,7 +72,7 @@ exports.videosRouter.put('/:id', (req, res) => {
     videos_repository_1.videosRepository.updateVideo(+req.params.id, req.body);
     res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
 });
-exports.videosRouter.post('/', (req, res) => {
+exports.videosRouter.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
     const errorMessagesList = [];
     if (!req.body) {
@@ -87,9 +96,9 @@ exports.videosRouter.post('/', (req, res) => {
             .send((0, helpers_1.generateErrorMessage)('field is incorrect', errorMessagesList));
         return;
     }
-    const createdVideo = videos_repository_1.videosRepository.createVideo(req.body);
+    const createdVideo = yield videos_repository_1.videosRepository.createVideo(req.body);
     res
         .status(app_1.HTTP_STATUSES.CREATED_201)
         .json(createdVideo);
-});
+}));
 //# sourceMappingURL=videos-router.js.map

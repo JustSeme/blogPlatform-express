@@ -37,11 +37,11 @@ const videos: VideoViewModel[] = [
 ]
 
 export const videosRepository = {
-    findVideos(id: number | null) {
+    async findVideos(id: number | null): Promise<VideoViewModel | VideoViewModel[]> {
         if(id === null) {
             return videos
         }
-        return videos.find(v => v.id === id)
+        return videos.find(v => v.id === id) as VideoViewModel
     },
 
     deleteVideo(id: number | null) {
@@ -57,7 +57,7 @@ export const videosRepository = {
         }
     },
 
-    createVideo(body: CreateVideoInputModel) {
+    async createVideo(body: CreateVideoInputModel): Promise<VideoViewModel> {
         const createdVideo: VideoViewModel = {
             id: Date.now(),
             title: body.title,

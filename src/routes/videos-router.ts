@@ -10,13 +10,13 @@ import { RequestWithBody, RequestWithParams, RequestWithParamsAndBody } from "..
 
 export const videosRouter = Router({})
 
-videosRouter.get('/', (req: Request, res: Response<VideoViewModel[]>) => {
-    res.json(videosRepository.findVideos(null) as VideoViewModel[])
+videosRouter.get('/', async (req: Request, res: Response<VideoViewModel[]>) => {
+    res.json(await videosRepository.findVideos(null) as VideoViewModel[])
 })
 
-videosRouter.get('/:id', (req: RequestWithParams<{ id: number }>,
+videosRouter.get('/:id', async (req: RequestWithParams<{ id: number }>,
     res: Response<VideoViewModel>) => {
-    const findedVideo = videosRepository.findVideos(+req.params.id)
+    const findedVideo = await videosRepository.findVideos(+req.params.id)
 
     if(!findedVideo) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
@@ -83,7 +83,7 @@ videosRouter.put('/:id', (req: RequestWithParamsAndBody<{ id: number }, UpdateVi
     res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
 })
 
-videosRouter.post('/', (req: RequestWithBody<CreateVideoInputModel>,
+videosRouter.post('/', async (req: RequestWithBody<CreateVideoInputModel>,
     res: Response<VideoViewModel | ErrorMessagesOutputModel>) => {
         const errorMessagesList = []
 
@@ -112,7 +112,7 @@ videosRouter.post('/', (req: RequestWithBody<CreateVideoInputModel>,
             return
         }
 
-        const createdVideo = videosRepository.createVideo(req.body)
+        const createdVideo = await videosRepository.createVideo(req.body)
 
         res
             .status(HTTP_STATUSES.CREATED_201)

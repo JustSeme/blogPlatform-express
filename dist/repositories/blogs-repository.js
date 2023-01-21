@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.blogsRepository = void 0;
 const blogs = [
@@ -35,10 +44,12 @@ const blogs = [
 ];
 exports.blogsRepository = {
     findBlogs(id) {
-        if (id === null) {
-            return blogs;
-        }
-        return blogs.find(b => b.id === id);
+        return __awaiter(this, void 0, void 0, function* () {
+            if (id === null) {
+                return blogs;
+            }
+            return blogs.find(b => b.id === id);
+        });
     },
     deleteBlog(id) {
         if (id === null) {
@@ -51,14 +62,16 @@ exports.blogsRepository = {
         }
     },
     createBlog(body) {
-        const createdBlog = {
-            id: Date.now().toString(),
-            name: body.name,
-            description: body.description,
-            websiteUrl: body.websiteUrl
-        };
-        blogs.push(createdBlog);
-        return createdBlog;
+        return __awaiter(this, void 0, void 0, function* () {
+            const createdBlog = {
+                id: Date.now().toString(),
+                name: body.name,
+                description: body.description,
+                websiteUrl: body.websiteUrl
+            };
+            blogs.push(createdBlog);
+            return createdBlog;
+        });
     },
     updateBlog(id, body) {
         const findedBlogIndex = blogs.findIndex(v => v.id === id);

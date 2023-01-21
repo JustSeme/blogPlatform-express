@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.blogsRouter = void 0;
 const express_1 = require("express");
@@ -26,26 +35,26 @@ const websiteUrlValidation = (0, express_validator_1.body)('websiteUrl')
     .notEmpty()
     .isURL()
     .isLength({ min: 1, max: 100 });
-exports.blogsRouter.get('/', (req, res) => {
-    const findedBlog = blogs_repository_1.blogsRepository.findBlogs(null);
+exports.blogsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const findedBlog = yield blogs_repository_1.blogsRepository.findBlogs(null);
     if (!findedBlog) {
         res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
     }
     res.json(findedBlog);
-});
-exports.blogsRouter.get('/:id', (req, res) => {
-    const findedBlog = blogs_repository_1.blogsRepository.findBlogs(req.params.id);
+}));
+exports.blogsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const findedBlog = yield blogs_repository_1.blogsRepository.findBlogs(req.params.id);
     if (!findedBlog) {
         res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
     }
     res.json(findedBlog);
-});
-exports.blogsRouter.post('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, nameValidation, descriptionValidation, websiteUrlValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => {
-    const createdBlog = blogs_repository_1.blogsRepository.createBlog(req.body);
+}));
+exports.blogsRouter.post('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, nameValidation, descriptionValidation, websiteUrlValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const createdBlog = yield blogs_repository_1.blogsRepository.createBlog(req.body);
     res
         .status(app_1.HTTP_STATUSES.CREATED_201)
         .send(createdBlog);
-});
+}));
 exports.blogsRouter.put('/:id', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, nameValidation, descriptionValidation, websiteUrlValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => {
     const findedBlog = blogs_repository_1.blogsRepository.findBlogs(req.params.id);
     if (!findedBlog) {

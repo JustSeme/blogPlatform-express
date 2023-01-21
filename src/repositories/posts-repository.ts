@@ -45,11 +45,11 @@ const posts: PostViewModel[] = [
 ]
 
 export const postsRepository = {
-    findPosts(id: string | null) {
+    async findPosts(id: string | null): Promise<PostViewModel | PostViewModel[]> {
         if(id === null) {
             return posts
         }
-        return posts.find(p => p.id === id)
+        return posts.find(p => p.id === id) as PostViewModel
     },
 
     deletePosts(id: string | null) {
@@ -64,7 +64,7 @@ export const postsRepository = {
         }
     },
 
-    createPost(body: PostInputModel) {
+    async createPost(body: PostInputModel): Promise<PostViewModel> {
         const createdPost: PostViewModel = {
             id: Date.now().toString(),
             title: body.title,
