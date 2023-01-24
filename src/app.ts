@@ -1,13 +1,14 @@
 import express, { Response, Request } from 'express'
-import { videosRepository } from './repositories/videos-repository'
+import { videosRepository } from './repositories/videos-in-memory-repository'
 import { videosRouter } from './routes/videos-router'
 import { blogsRouter } from './routes/blogs-router'
-import { blogsRepository } from './repositories/blogs-repository'
+import { blogsRepository } from './repositories/blogs-db-repository'
 import { postsRouter } from './routes/posts-router'
-import { postsRepository } from './repositories/posts-repository'
+import { postsRepository } from './repositories/posts-in-memory-repository'
+import { runDB } from './repositories/db'
 
 export const app = express()
-const port = 3000
+const port = process.env.PORT || 3000
 const jsonBodyMiddleware = express.json()
 app.use(jsonBodyMiddleware)
 
@@ -21,22 +22,27 @@ export const HTTP_STATUSES = {
     UNAUTHORIZED_401: 401
 }
 
+const startApp = async () => {
+    await runDB()
+    app.listen(port, () => {
+        console.log(`Example app listening on port ${port}`);
+    })
+}
+
 app.use('/homework01/videos', videosRouter)
 
 app.use('/homework02/blogs', blogsRouter)
 app.use('/homework02/posts', postsRouter)
 
-app.delete('/homework01/testing/all-data', (req: Request, res: Response) => {
-    videosRepository.deleteVideo(null)
+app.delete('/homework01/testing/all-data', async (req: Request, res: Response) => {
+    await videosRepository.deleteVideo(null)
     res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
 })
 
-app.delete('/homework02/testing/all-data', (req: Request, res: Response) => {
-    postsRepository.deletePosts(null)
-    blogsRepository.deleteBlog(null)
+app.delete('/homework02/testing/all-data', async (req: Request, res: Response) => {
+    await postsRepository.deletePosts(null)
+    await blogsRepository.deleteBlog(null)
     res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
 })
 
-app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`);
-})
+startApp()

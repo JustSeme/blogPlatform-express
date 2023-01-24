@@ -6,7 +6,7 @@ import { inputValidationMiddleware } from "../middlewares/input-validation-middl
 import { BlogInputModel } from "../models/blogs/BlogInputModel";
 import { BlogViewModel } from "../models/blogs/BlogViewModel";
 import { ErrorMessagesOutputModel } from "../models/ErrorMessagesOutputModel";
-import { blogsRepository } from "../repositories/blogs-repository";
+import { blogsRepository } from "../repositories/blogs-db-repository";
 import { RequestWithBody, RequestWithParams, RequestWithParamsAndBody } from "../types";
 
 
@@ -72,28 +72,21 @@ blogsRouter.put('/:id',
     descriptionValidation,
     websiteUrlValidation,
     inputValidationMiddleware,
-    (req: RequestWithParamsAndBody<{ id: string }, BlogInputModel>, res: Response<ErrorMessagesOutputModel>) => {
-        const findedBlog = blogsRepository.findBlogs(req.params.id)
-        if(!findedBlog) {
-            res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
-            return
+    async (req: RequestWithParamsAndBody<{ id: string }, BlogInputModel>, res: Response<ErrorMessagesOutputModel>) => {
+        const isUpdated = await blogsRepository.updateBlog(req.params.id, req.body)
+        if(isUpdated) {
+            res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
         }
-
-        blogsRepository.updateBlog(req.params.id, req.body)
-    
-        res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
+        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
 })
 
 blogsRouter.delete('/:id', 
     basicAuthorizationMiddleware,
-    (req: RequestWithParams<{ id: string }>, res: Response<ErrorMessagesOutputModel>) => {
-    const findedBlog = blogsRepository.findBlogs(req.params.id)
-    if(!findedBlog) {
-        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
-        return
+    async (req: RequestWithParams<{ id: string }>, res: Response<ErrorMessagesOutputModel>) => {
+
+    const isDeleted = await blogsRepository.deleteBlog(req.params.id)
+    if(isDeleted) {
+        res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
     }
-
-    blogsRepository.deleteBlog(req.params.id)
-
-    res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
+    res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
 })

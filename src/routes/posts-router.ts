@@ -4,11 +4,11 @@ import { HTTP_STATUSES } from "../app";
 import { ErrorMessagesOutputModel } from "../models/ErrorMessagesOutputModel";
 import { PostInputModel } from "../models/posts/PostInputModel";
 import { PostViewModel } from "../models/posts/PostViewModel";
-import { postsRepository } from "../repositories/posts-repository";
+import { postsRepository } from "../repositories/posts-in-memory-repository";
 import { RequestWithBody, RequestWithParams, RequestWithParamsAndBody } from "../types";
 import { inputValidationMiddleware } from "../middlewares/input-validation-middleware";
 import { basicAuthorizationMiddleware } from "../middlewares/basic-authorizatoin-middleware";
-import { blogsRepository } from "../repositories/blogs-repository";
+import { blogsRepository } from "../repositories/blogs-in-memory-repository";
 
 export const postsRouter = Router({})
 
@@ -85,8 +85,8 @@ postsRouter.put('/:id',
     contentValidation,
     blogIdValidation,
     inputValidationMiddleware,
-    (req: RequestWithParamsAndBody<{ id: string }, PostInputModel>, res: Response<PostViewModel | ErrorMessagesOutputModel>) => {
-        const findedPost = postsRepository.findPosts(req.params.id)
+    async (req: RequestWithParamsAndBody<{ id: string }, PostInputModel>, res: Response<PostViewModel | ErrorMessagesOutputModel>) => {
+        const findedPost = await postsRepository.findPosts(req.params.id)
         if(!findedPost) {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
             return
@@ -99,8 +99,8 @@ postsRouter.put('/:id',
 
 postsRouter.delete('/:id', 
     basicAuthorizationMiddleware,
-    (req: RequestWithParams<{ id: string }>, res: Response<ErrorMessagesOutputModel>) => {
-    const findedPost = postsRepository.findPosts(req.params.id)
+    async (req: RequestWithParams<{ id: string }>, res: Response<ErrorMessagesOutputModel>) => {
+    const findedPost = await postsRepository.findPosts(req.params.id)
     if(!findedPost) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
         return

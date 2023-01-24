@@ -13,10 +13,10 @@ exports.postsRouter = void 0;
 const express_1 = require("express");
 const express_validator_1 = require("express-validator");
 const app_1 = require("../app");
-const posts_repository_1 = require("../repositories/posts-repository");
+const posts_in_memory_repository_1 = require("../repositories/posts-in-memory-repository");
 const input_validation_middleware_1 = require("../middlewares/input-validation-middleware");
 const basic_authorizatoin_middleware_1 = require("../middlewares/basic-authorizatoin-middleware");
-const blogs_repository_1 = require("../repositories/blogs-repository");
+const blogs_in_memory_repository_1 = require("../repositories/blogs-in-memory-repository");
 exports.postsRouter = (0, express_1.Router)({});
 const titleValidation = (0, express_validator_1.body)('title')
     .exists()
@@ -41,48 +41,48 @@ const blogIdValidation = (0, express_validator_1.body)('blogId')
     .notEmpty()
     .isString()
     .custom((value) => {
-    if (!blogs_repository_1.blogsRepository.findBlogs(value)) {
+    if (!blogs_in_memory_repository_1.blogsRepository.findBlogs(value)) {
         return Promise.reject('blog by blogId not found');
     }
     return true;
 })
     .isLength({ min: 1, max: 100 });
 exports.postsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const findedBlog = yield posts_repository_1.postsRepository.findPosts(null);
+    const findedBlog = yield posts_in_memory_repository_1.postsRepository.findPosts(null);
     if (!findedBlog) {
         res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
     }
     res.json(findedBlog);
 }));
 exports.postsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const findedBlog = yield posts_repository_1.postsRepository.findPosts(req.params.id);
+    const findedBlog = yield posts_in_memory_repository_1.postsRepository.findPosts(req.params.id);
     if (!findedBlog) {
         res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
     }
     res.json(findedBlog);
 }));
 exports.postsRouter.post('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, titleValidation, shortDescriptionValidation, contentValidation, blogIdValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const createdPost = yield posts_repository_1.postsRepository.createPost(req.body);
+    const createdPost = yield posts_in_memory_repository_1.postsRepository.createPost(req.body);
     res
         .status(app_1.HTTP_STATUSES.CREATED_201)
         .send(createdPost);
 }));
-exports.postsRouter.put('/:id', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, titleValidation, shortDescriptionValidation, contentValidation, blogIdValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => {
-    const findedPost = posts_repository_1.postsRepository.findPosts(req.params.id);
+exports.postsRouter.put('/:id', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, titleValidation, shortDescriptionValidation, contentValidation, blogIdValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const findedPost = yield posts_in_memory_repository_1.postsRepository.findPosts(req.params.id);
     if (!findedPost) {
         res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
         return;
     }
-    posts_repository_1.postsRepository.updatePost(req.params.id, req.body);
+    posts_in_memory_repository_1.postsRepository.updatePost(req.params.id, req.body);
     res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
-});
-exports.postsRouter.delete('/:id', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, (req, res) => {
-    const findedPost = posts_repository_1.postsRepository.findPosts(req.params.id);
+}));
+exports.postsRouter.delete('/:id', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const findedPost = yield posts_in_memory_repository_1.postsRepository.findPosts(req.params.id);
     if (!findedPost) {
         res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
         return;
     }
-    posts_repository_1.postsRepository.deletePosts(req.params.id);
+    posts_in_memory_repository_1.postsRepository.deletePosts(req.params.id);
     res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
-});
+}));
 //# sourceMappingURL=posts-router.js.map

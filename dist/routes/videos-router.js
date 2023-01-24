@@ -14,29 +14,29 @@ const express_1 = require("express");
 const app_1 = require("../app");
 const helpers_1 = require("../helpers");
 const VideoViewModel_1 = require("../models/videos/VideoViewModel");
-const videos_repository_1 = require("../repositories/videos-repository");
+const videos_in_memory_repository_1 = require("../repositories/videos-in-memory-repository");
 exports.videosRouter = (0, express_1.Router)({});
 exports.videosRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.json(yield videos_repository_1.videosRepository.findVideos(null));
+    res.json(yield videos_in_memory_repository_1.videosRepository.findVideos(null));
 }));
 exports.videosRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const findedVideo = yield videos_repository_1.videosRepository.findVideos(+req.params.id);
+    const findedVideo = yield videos_in_memory_repository_1.videosRepository.findVideos(+req.params.id);
     if (!findedVideo) {
         res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
     }
     res.json(findedVideo);
 }));
-exports.videosRouter.delete('/:id', (req, res) => {
-    const findedVideo = videos_repository_1.videosRepository.findVideos(+req.params.id);
+exports.videosRouter.delete('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const findedVideo = yield videos_in_memory_repository_1.videosRepository.findVideos(+req.params.id);
     if (!findedVideo) {
         res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
     }
-    videos_repository_1.videosRepository.deleteVideo(+req.params.id);
+    yield videos_in_memory_repository_1.videosRepository.deleteVideo(+req.params.id);
     res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
-});
-exports.videosRouter.put('/:id', (req, res) => {
+}));
+exports.videosRouter.put('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
-    const findedVideo = videos_repository_1.videosRepository.findVideos(+req.params.id);
+    const findedVideo = yield videos_in_memory_repository_1.videosRepository.findVideos(+req.params.id);
     if (!findedVideo) {
         res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
         return;
@@ -69,11 +69,11 @@ exports.videosRouter.put('/:id', (req, res) => {
             .send((0, helpers_1.generateErrorMessage)('field is incorrect', errorMessagesList));
         return;
     }
-    videos_repository_1.videosRepository.updateVideo(+req.params.id, req.body);
+    yield videos_in_memory_repository_1.videosRepository.updateVideo(+req.params.id, req.body);
     res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
-});
+}));
 exports.videosRouter.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
+    var _c, _d;
     const errorMessagesList = [];
     if (!req.body) {
         errorMessagesList.push('your request have\'nt body');
@@ -84,9 +84,9 @@ exports.videosRouter.post('/', (req, res) => __awaiter(void 0, void 0, void 0, f
     if (!req.body.author || req.body.author.length > 20) {
         errorMessagesList.push('author');
     }
-    const resolutionsLength = (_a = req.body.availableResolutions) === null || _a === void 0 ? void 0 : _a.length;
-    const filtredResolutionsLength = (_b = req.body.availableResolutions.filter(key => VideoViewModel_1.resolutionsList
-        .some(val => val === key))) === null || _b === void 0 ? void 0 : _b.length;
+    const resolutionsLength = (_c = req.body.availableResolutions) === null || _c === void 0 ? void 0 : _c.length;
+    const filtredResolutionsLength = (_d = req.body.availableResolutions.filter(key => VideoViewModel_1.resolutionsList
+        .some(val => val === key))) === null || _d === void 0 ? void 0 : _d.length;
     if (!req.body.availableResolutions || req.body.availableResolutions.length < 1 || filtredResolutionsLength !== resolutionsLength) {
         errorMessagesList.push('availableResolutions');
     }
@@ -96,7 +96,7 @@ exports.videosRouter.post('/', (req, res) => __awaiter(void 0, void 0, void 0, f
             .send((0, helpers_1.generateErrorMessage)('field is incorrect', errorMessagesList));
         return;
     }
-    const createdVideo = yield videos_repository_1.videosRepository.createVideo(req.body);
+    const createdVideo = yield videos_in_memory_repository_1.videosRepository.createVideo(req.body);
     res
         .status(app_1.HTTP_STATUSES.CREATED_201)
         .json(createdVideo);

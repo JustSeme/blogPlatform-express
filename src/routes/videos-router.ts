@@ -5,7 +5,7 @@ import { CreateVideoInputModel } from "../models/videos/CreateVideoInputModel";
 import { ErrorMessagesOutputModel } from "../models/ErrorMessagesOutputModel";
 import { UpdateVideoInputModel } from "../models/videos/UpdateVideoInputModel";
 import { resolutionsList, VideoViewModel } from "../models/videos/VideoViewModel";
-import { videosRepository } from "../repositories/videos-repository";
+import { videosRepository } from "../repositories/videos-in-memory-repository";
 import { RequestWithBody, RequestWithParams, RequestWithParamsAndBody } from "../types";
 
 export const videosRouter = Router({})
@@ -24,19 +24,19 @@ videosRouter.get('/:id', async (req: RequestWithParams<{ id: number }>,
     res.json(findedVideo as VideoViewModel)
 })
 
-videosRouter.delete('/:id', (req: RequestWithParams<{ id: number }>,
+videosRouter.delete('/:id', async (req: RequestWithParams<{ id: number }>,
     res: Response) => {
-    const findedVideo = videosRepository.findVideos(+req.params.id)
+    const findedVideo = await videosRepository.findVideos(+req.params.id)
     if(!findedVideo) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
     }
-    videosRepository.deleteVideo(+req.params.id)
+    await videosRepository.deleteVideo(+req.params.id)
 
     res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
 })
 
-videosRouter.put('/:id', (req: RequestWithParamsAndBody<{ id: number }, UpdateVideoInputModel>, res: Response<ErrorMessagesOutputModel>) => {
-    const findedVideo = videosRepository.findVideos(+req.params.id)
+videosRouter.put('/:id', async (req: RequestWithParamsAndBody<{ id: number }, UpdateVideoInputModel>, res: Response<ErrorMessagesOutputModel>) => {
+    const findedVideo = await videosRepository.findVideos(+req.params.id)
     if(!findedVideo) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
         return
@@ -78,7 +78,7 @@ videosRouter.put('/:id', (req: RequestWithParamsAndBody<{ id: number }, UpdateVi
         return
     }
 
-    videosRepository.updateVideo(+req.params.id, req.body)
+    await videosRepository.updateVideo(+req.params.id, req.body)
     
     res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
 })
