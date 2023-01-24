@@ -13,7 +13,6 @@ exports.runDB = exports.client = void 0;
 const mongodb_1 = require("mongodb");
 const username = "justSeme";
 const password = "RMMXpX1hUlXqbKED";
-const cluster = "cluster86890";
 let mongoURI = process.env.mongoURI || `mongodb+srv://${username}:${password}@cluster86890.fgczccf.mongodb.net/?retryWrites=true&w=majority`;
 exports.client = new mongodb_1.MongoClient(mongoURI);
 function runDB() {

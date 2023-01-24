@@ -2,43 +2,10 @@ import { BlogInputModel } from "../models/blogs/BlogInputModel";
 import { BlogViewModel } from "../models/blogs/BlogViewModel";
 import { client } from "./db";
 
-const __blogs: BlogViewModel[] = [
-    {
-        id: '1',
-        name: 'Ржака!!! Смотреть всем!!!!!!!',
-        description: 'kek lol',
-        websiteUrl: 'https://anyurl.com'
-    },
-    {
-        id: '2',
-        name: 'Ржака!!! Смотреть всем!!!!!!!',
-        description: 'kek lol',
-        websiteUrl: 'https://anyurl.com'
-    },
-    {
-        id: '3',
-        name: 'Ржака!!! Смотреть всем!!!!!!!',
-        description: 'kek lol',
-        websiteUrl: 'https://anyurl.com'
-    },
-    {
-        id: '4',
-        name: 'Ржака!!! Смотреть всем!!!!!!!',
-        description: 'kek lol',
-        websiteUrl: 'https://anyurl.com'
-    },
-    {
-        id: '10',
-        name: 'Ржака!!! Смотреть всем!!!!!!!',
-        description: 'kek lol',
-        websiteUrl: 'https://anyurl.com'
-    },
-]
-
 export const blogsRepository = {
     async findBlogs(id: string | null): Promise<BlogViewModel[] | BlogViewModel | null> {
         if(id === null) {
-            return await client.db('blog_platform').collection<BlogViewModel>('blogs').find({}).toArray()
+            return await client.db('blog_platform').collection<BlogViewModel>('blogs').find({}, { projection: { _id: 0 } }).toArray()
         }
         return await client.db('blog_platform').collection<BlogViewModel>('blogs').findOne({id: id})
     },
@@ -49,8 +16,8 @@ export const blogsRepository = {
             result = await client.db('blog_platform').collection<BlogViewModel>('blogs').deleteMany({})
             return result.deletedCount > 0
         }
+        
         result = await client.db('blog_platform').collection<BlogViewModel>('blogs').deleteOne({id: id})
-
         return result.deletedCount === 1
     },
 
@@ -59,7 +26,8 @@ export const blogsRepository = {
             id: Date.now().toString(),
             name: body.name,
             description: body.description,
-            websiteUrl: body.websiteUrl
+            websiteUrl: body.websiteUrl,
+            createdAt: new Date().toISOString(),
         }
 
         await client.db('blog_platform').collection<BlogViewModel>('blogs').insertOne(createdBlog)

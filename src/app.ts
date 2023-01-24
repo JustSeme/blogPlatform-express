@@ -4,7 +4,7 @@ import { videosRouter } from './routes/videos-router'
 import { blogsRouter } from './routes/blogs-router'
 import { blogsRepository } from './repositories/blogs-db-repository'
 import { postsRouter } from './routes/posts-router'
-import { postsRepository } from './repositories/posts-in-memory-repository'
+import { postsRepository } from './repositories/posts-db-repository'
 import { runDB } from './repositories/db'
 
 export const app = express()

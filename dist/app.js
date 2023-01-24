@@ -19,7 +19,7 @@ const videos_router_1 = require("./routes/videos-router");
 const blogs_router_1 = require("./routes/blogs-router");
 const blogs_db_repository_1 = require("./repositories/blogs-db-repository");
 const posts_router_1 = require("./routes/posts-router");
-const posts_in_memory_repository_1 = require("./repositories/posts-in-memory-repository");
+const posts_db_repository_1 = require("./repositories/posts-db-repository");
 const db_1 = require("./repositories/db");
 exports.app = (0, express_1.default)();
 const port = process.env.PORT || 3000;
@@ -47,7 +47,7 @@ exports.app.delete('/homework01/testing/all-data', (req, res) => __awaiter(void 
     res.sendStatus(exports.HTTP_STATUSES.NO_CONTENT_204);
 }));
 exports.app.delete('/homework02/testing/all-data', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield posts_in_memory_repository_1.postsRepository.deletePosts(null);
+    yield posts_db_repository_1.postsRepository.deletePosts(null);
     yield blogs_db_repository_1.blogsRepository.deleteBlog(null);
     res.sendStatus(exports.HTTP_STATUSES.NO_CONTENT_204);
 }));

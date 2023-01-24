@@ -9,47 +9,49 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.blogsRepository = void 0;
+exports.postsRepository = void 0;
 const db_1 = require("./db");
-exports.blogsRepository = {
-    findBlogs(id) {
+exports.postsRepository = {
+    findPosts(id) {
         return __awaiter(this, void 0, void 0, function* () {
             if (id === null) {
-                return yield db_1.client.db('blog_platform').collection('blogs').find({}, { projection: { _id: 0 } }).toArray();
+                return yield db_1.client.db('blog_platform').collection('posts').find({}).toArray();
             }
-            return yield db_1.client.db('blog_platform').collection('blogs').findOne({ id: id });
+            return yield db_1.client.db('blog_platform').collection('posts').findOne({ id: id });
         });
     },
-    deleteBlog(id) {
+    deletePosts(id) {
         return __awaiter(this, void 0, void 0, function* () {
             let result;
             if (id === null) {
-                result = yield db_1.client.db('blog_platform').collection('blogs').deleteMany({});
+                result = yield db_1.client.db('blog_platform').collection('posts').deleteMany({});
                 return result.deletedCount > 0;
             }
-            result = yield db_1.client.db('blog_platform').collection('blogs').deleteOne({ id: id });
+            result = yield db_1.client.db('blog_platform').collection('posts').deleteOne({ id: id });
             return result.deletedCount === 1;
         });
     },
-    createBlog(body) {
+    createPost(body) {
         return __awaiter(this, void 0, void 0, function* () {
-            const createdBlog = {
+            const createdPost = {
                 id: Date.now().toString(),
-                name: body.name,
-                description: body.description,
-                websiteUrl: body.websiteUrl,
+                title: body.title,
+                shortDescription: body.shortDescription,
+                content: body.content,
+                blogId: body.blogId,
+                blogName: 'I do not know how to associate a blogName with real data',
                 createdAt: new Date().toISOString(),
             };
-            yield db_1.client.db('blog_platform').collection('blogs').insertOne(createdBlog);
-            return createdBlog;
+            yield db_1.client.db('blog_platform').collection('posts').insertOne(createdPost);
+            return createdPost;
         });
     },
-    updateBlog(id, body) {
+    updatePost(id, body) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.client.db('blog_platform').collection('blogs')
-                .updateOne({ id: id }, { $set: { name: body.name, description: body.description, websiteUrl: body.websiteUrl } });
+            const result = yield db_1.client.db('blog_platform').collection('posts')
+                .updateOne({ id: id }, { $set: { content: body.content, title: body.title, shortDescription: body.shortDescription, blogId: body.blogId } });
             return result.matchedCount === 1;
         });
     }
 };
-//# sourceMappingURL=blogs-db-repository.js.map
+//# sourceMappingURL=posts-db-repository.js.map

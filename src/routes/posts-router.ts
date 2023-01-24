@@ -4,11 +4,11 @@ import { HTTP_STATUSES } from "../app";
 import { ErrorMessagesOutputModel } from "../models/ErrorMessagesOutputModel";
 import { PostInputModel } from "../models/posts/PostInputModel";
 import { PostViewModel } from "../models/posts/PostViewModel";
-import { postsRepository } from "../repositories/posts-in-memory-repository";
+import { postsRepository } from "../repositories/posts-db-repository";
 import { RequestWithBody, RequestWithParams, RequestWithParamsAndBody } from "../types";
 import { inputValidationMiddleware } from "../middlewares/input-validation-middleware";
 import { basicAuthorizationMiddleware } from "../middlewares/basic-authorizatoin-middleware";
-import { blogsRepository } from "../repositories/blogs-in-memory-repository";
+import { blogsRepository } from "../repositories/blogs-db-repository";
 
 export const postsRouter = Router({})
 
@@ -86,13 +86,10 @@ postsRouter.put('/:id',
     blogIdValidation,
     inputValidationMiddleware,
     async (req: RequestWithParamsAndBody<{ id: string }, PostInputModel>, res: Response<PostViewModel | ErrorMessagesOutputModel>) => {
-        const findedPost = await postsRepository.findPosts(req.params.id)
-        if(!findedPost) {
+        const isUpdated = await postsRepository.updatePost(req.params.id, req.body)
+        if(!isUpdated) {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
-            return
         }
-
-        postsRepository.updatePost(req.params.id, req.body)
 
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
 })
@@ -100,12 +97,10 @@ postsRouter.put('/:id',
 postsRouter.delete('/:id', 
     basicAuthorizationMiddleware,
     async (req: RequestWithParams<{ id: string }>, res: Response<ErrorMessagesOutputModel>) => {
-    const findedPost = await postsRepository.findPosts(req.params.id)
-    if(!findedPost) {
+    const isDeleted = postsRepository.deletePosts(req.params.id)
+    if(!isDeleted) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
-        return
     }
 
-    postsRepository.deletePosts(req.params.id)
     res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
 })

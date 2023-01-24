@@ -58,7 +58,6 @@ blogsRouter.post('/',
     websiteUrlValidation,
     inputValidationMiddleware,
     async (req: RequestWithBody<BlogInputModel>, res: Response<BlogViewModel | ErrorMessagesOutputModel>) => {
-    
         const createdBlog = await blogsRepository.createBlog(req.body)
 
         res
@@ -83,7 +82,6 @@ blogsRouter.put('/:id',
 blogsRouter.delete('/:id', 
     basicAuthorizationMiddleware,
     async (req: RequestWithParams<{ id: string }>, res: Response<ErrorMessagesOutputModel>) => {
-
     const isDeleted = await blogsRepository.deleteBlog(req.params.id)
     if(isDeleted) {
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
