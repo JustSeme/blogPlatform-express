@@ -15,19 +15,19 @@ exports.blogsRepository = {
     findBlogs(id) {
         return __awaiter(this, void 0, void 0, function* () {
             if (id === null) {
-                return yield db_1.client.db('blog_platform').collection('blogs').find({}, { projection: { _id: 0 } }).toArray();
+                return yield db_1.blogsCollection.find({}, { projection: { _id: 0 } }).toArray();
             }
-            return yield db_1.client.db('blog_platform').collection('blogs').findOne({ id: id });
+            return yield db_1.blogsCollection.findOne({ id: id }, { projection: { _id: 0 } });
         });
     },
     deleteBlog(id) {
         return __awaiter(this, void 0, void 0, function* () {
             let result;
             if (id === null) {
-                result = yield db_1.client.db('blog_platform').collection('blogs').deleteMany({});
+                result = yield db_1.blogsCollection.deleteMany({});
                 return result.deletedCount > 0;
             }
-            result = yield db_1.client.db('blog_platform').collection('blogs').deleteOne({ id: id });
+            result = yield db_1.blogsCollection.deleteOne({ id: id });
             return result.deletedCount === 1;
         });
     },
@@ -40,14 +40,13 @@ exports.blogsRepository = {
                 websiteUrl: body.websiteUrl,
                 createdAt: new Date().toISOString(),
             };
-            yield db_1.client.db('blog_platform').collection('blogs').insertOne(createdBlog);
+            yield db_1.blogsCollection.insertOne(createdBlog);
             return createdBlog;
         });
     },
     updateBlog(id, body) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.client.db('blog_platform').collection('blogs')
-                .updateOne({ id: id }, { $set: { name: body.name, description: body.description, websiteUrl: body.websiteUrl } });
+            const result = yield db_1.blogsCollection.updateOne({ id: id }, { $set: { name: body.name, description: body.description, websiteUrl: body.websiteUrl } });
             return result.matchedCount === 1;
         });
     }

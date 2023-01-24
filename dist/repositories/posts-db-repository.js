@@ -15,19 +15,19 @@ exports.postsRepository = {
     findPosts(id) {
         return __awaiter(this, void 0, void 0, function* () {
             if (id === null) {
-                return yield db_1.client.db('blog_platform').collection('posts').find({}).toArray();
+                return yield db_1.postsCollection.find({}, { projection: { _id: 0 } }).toArray();
             }
-            return yield db_1.client.db('blog_platform').collection('posts').findOne({ id: id });
+            return yield db_1.postsCollection.findOne({ id: id }, { projection: { _id: 0 } });
         });
     },
     deletePosts(id) {
         return __awaiter(this, void 0, void 0, function* () {
             let result;
             if (id === null) {
-                result = yield db_1.client.db('blog_platform').collection('posts').deleteMany({});
+                result = yield db_1.postsCollection.deleteMany({});
                 return result.deletedCount > 0;
             }
-            result = yield db_1.client.db('blog_platform').collection('posts').deleteOne({ id: id });
+            result = yield db_1.postsCollection.deleteOne({ id: id });
             return result.deletedCount === 1;
         });
     },
@@ -42,14 +42,13 @@ exports.postsRepository = {
                 blogName: 'I do not know how to associate a blogName with real data',
                 createdAt: new Date().toISOString(),
             };
-            yield db_1.client.db('blog_platform').collection('posts').insertOne(createdPost);
+            yield db_1.postsCollection.insertOne(createdPost);
             return createdPost;
         });
     },
     updatePost(id, body) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.client.db('blog_platform').collection('posts')
-                .updateOne({ id: id }, { $set: { content: body.content, title: body.title, shortDescription: body.shortDescription, blogId: body.blogId } });
+            const result = yield db_1.postsCollection.updateOne({ id: id }, { $set: { content: body.content, title: body.title, shortDescription: body.shortDescription, blogId: body.blogId } });
             return result.matchedCount === 1;
         });
     }

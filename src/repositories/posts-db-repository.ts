@@ -1,22 +1,22 @@
 import { PostInputModel } from '../models/posts/PostInputModel'
 import { PostViewModel } from '../models/posts/PostViewModel'
-import { client } from './db'
+import { postsCollection } from './db'
 
 export const postsRepository = {
     async findPosts(id: string | null): Promise<PostViewModel | PostViewModel[] | null> {
         if(id === null) {
-            return await client.db('blog_platform').collection<PostViewModel>('posts').find({}).toArray()
+            return await postsCollection.find({}, { projection: { _id: 0 } }).toArray()
         }
-        return await client.db('blog_platform').collection<PostViewModel>('posts').findOne({id: id})
+        return await postsCollection.findOne({id: id}, { projection: { _id: 0 } })
     },
 
     async deletePosts(id: string | null) {
         let result
         if(id === null) {
-            result = await client.db('blog_platform').collection<PostViewModel>('posts').deleteMany({})
+            result = await postsCollection.deleteMany({})
             return result.deletedCount > 0
         }
-        result = await client.db('blog_platform').collection<PostViewModel>('posts').deleteOne({id: id})
+        result = await postsCollection.deleteOne({id: id})
         return result.deletedCount === 1
     },
 
@@ -31,14 +31,12 @@ export const postsRepository = {
             createdAt: new Date().toISOString(),
         }
 
-        await client.db('blog_platform').collection<PostViewModel>('posts').insertOne(createdPost)
-
+        await postsCollection.insertOne(createdPost)
         return createdPost
     },
 
     async updatePost(id: string, body: PostInputModel) {
-        const result = await client.db('blog_platform').collection<PostViewModel>('posts')
-            .updateOne({id: id}, {$set: {content: body.content, title: body.title, shortDescription: body.shortDescription, blogId: body.blogId}})
+        const result = await postsCollection.updateOne({id: id}, {$set: {content: body.content, title: body.title, shortDescription: body.shortDescription, blogId: body.blogId}})
 
         return result.matchedCount === 1
     }
