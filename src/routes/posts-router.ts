@@ -37,8 +37,9 @@ const blogIdValidation = body('blogId')
 .trim()
 .notEmpty()
 .isString()
-.custom((value) => {
-    if(!blogsRepository.findBlogs(value)) {
+.custom(async (value) => {
+    const findedBlog = await blogsRepository.findBlogs(value)
+    if(!findedBlog) {
         return Promise.reject('blog by blogId not found')
     }
     return true
@@ -100,11 +101,11 @@ postsRouter.put('/:id',
 postsRouter.delete('/:id', 
     basicAuthorizationMiddleware,
     async (req: RequestWithParams<{ id: string }>, res: Response<ErrorMessagesOutputModel>) => {
-    const isDeleted = postsRepository.deletePosts(req.params.id)
-    if(!isDeleted) {
-        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+    const isDeleted = await postsRepository.deletePosts(req.params.id)
+    if(isDeleted) {
+        res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
         return
     }
 
-    res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
+    res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
 })

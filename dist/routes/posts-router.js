@@ -40,12 +40,13 @@ const blogIdValidation = (0, express_validator_1.body)('blogId')
     .trim()
     .notEmpty()
     .isString()
-    .custom((value) => {
-    if (!blogs_db_repository_1.blogsRepository.findBlogs(value)) {
+    .custom((value) => __awaiter(void 0, void 0, void 0, function* () {
+    const findedBlog = yield blogs_db_repository_1.blogsRepository.findBlogs(value);
+    if (!findedBlog) {
         return Promise.reject('blog by blogId not found');
     }
     return true;
-})
+}))
     .isLength({ min: 1, max: 100 });
 exports.postsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const findedBlog = yield posts_db_repository_1.postsRepository.findPosts(null);
@@ -78,11 +79,11 @@ exports.postsRouter.put('/:id', basic_authorizatoin_middleware_1.basicAuthorizat
     res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
 }));
 exports.postsRouter.delete('/:id', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const isDeleted = posts_db_repository_1.postsRepository.deletePosts(req.params.id);
-    if (!isDeleted) {
-        res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
+    const isDeleted = yield posts_db_repository_1.postsRepository.deletePosts(req.params.id);
+    if (isDeleted) {
+        res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
         return;
     }
-    res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
+    res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
 }));
 //# sourceMappingURL=posts-router.js.map
