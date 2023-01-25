@@ -31,7 +31,9 @@ export const blogsRepository = {
         }
 
         await blogsCollection.insertOne(createdBlog)
-
+        
+        //@ts-ignore
+        delete createdBlog._id
         return createdBlog
     },
 

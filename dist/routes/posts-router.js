@@ -51,6 +51,7 @@ exports.postsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, fun
     const findedBlog = yield posts_db_repository_1.postsRepository.findPosts(null);
     if (!findedBlog) {
         res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
+        return;
     }
     res.json(findedBlog);
 }));
@@ -58,6 +59,7 @@ exports.postsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, 
     const findedBlog = yield posts_db_repository_1.postsRepository.findPosts(req.params.id);
     if (!findedBlog) {
         res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
+        return;
     }
     res.json(findedBlog);
 }));
@@ -71,6 +73,7 @@ exports.postsRouter.put('/:id', basic_authorizatoin_middleware_1.basicAuthorizat
     const isUpdated = yield posts_db_repository_1.postsRepository.updatePost(req.params.id, req.body);
     if (!isUpdated) {
         res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
+        return;
     }
     res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
 }));
@@ -78,6 +81,7 @@ exports.postsRouter.delete('/:id', basic_authorizatoin_middleware_1.basicAuthori
     const isDeleted = posts_db_repository_1.postsRepository.deletePosts(req.params.id);
     if (!isDeleted) {
         res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
+        return;
     }
     res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
 }));

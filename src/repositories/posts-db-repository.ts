@@ -32,6 +32,9 @@ export const postsRepository = {
         }
 
         await postsCollection.insertOne(createdPost)
+
+        //@ts-ignore
+        delete createdPost._id
         return createdPost
     },
 

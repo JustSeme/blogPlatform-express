@@ -50,6 +50,7 @@ postsRouter.get('/', async (req: Request, res: Response<PostViewModel[]>) => {
 
     if(!findedBlog) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+        return
     }
     res.json(findedBlog as PostViewModel[])
 })
@@ -59,6 +60,7 @@ postsRouter.get('/:id', async (req: RequestWithParams<{ id: string }>, res: Resp
 
     if(!findedBlog) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+        return
     }
     res.json(findedBlog as PostViewModel)
 })
@@ -89,6 +91,7 @@ postsRouter.put('/:id',
         const isUpdated = await postsRepository.updatePost(req.params.id, req.body)
         if(!isUpdated) {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+            return
         }
 
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
@@ -100,6 +103,7 @@ postsRouter.delete('/:id',
     const isDeleted = postsRepository.deletePosts(req.params.id)
     if(!isDeleted) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+        return
     }
 
     res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)

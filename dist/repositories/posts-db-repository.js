@@ -43,6 +43,8 @@ exports.postsRepository = {
                 createdAt: new Date().toISOString(),
             };
             yield db_1.postsCollection.insertOne(createdPost);
+            //@ts-ignore
+            delete createdPost._id;
             return createdPost;
         });
     },

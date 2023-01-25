@@ -107,7 +107,8 @@ describe('/blogs', () => {
             id: expect.any(String),
             name: data1.name,
             description: data1.description,
-            websiteUrl: data1.websiteUrl
+            websiteUrl: data1.websiteUrl,
+            createdAt: expect.any(String)
         })
     })
 
@@ -219,7 +220,8 @@ describe('/blogs', () => {
             .get(`${baseURL}blogs/${createdBlog.id}`)
             .expect(HTTP_STATUSES.OK_200, {
                 ...data1,
-                id: createdBlog.id
+                id: createdBlog.id,
+                createdAt: createdBlog.createdAt
             })
     })
 

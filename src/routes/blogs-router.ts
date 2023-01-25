@@ -47,6 +47,7 @@ blogsRouter.get('/:id', async (req: RequestWithParams<{ id: string }>, res: Resp
 
     if(!findedBlog) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+        return
     }
     res.json(findedBlog as BlogViewModel)
 })
@@ -73,10 +74,11 @@ blogsRouter.put('/:id',
     inputValidationMiddleware,
     async (req: RequestWithParamsAndBody<{ id: string }, BlogInputModel>, res: Response<ErrorMessagesOutputModel>) => {
         const isUpdated = await blogsRepository.updateBlog(req.params.id, req.body)
-        if(isUpdated) {
-            res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
+        if(!isUpdated) {
+            res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+            return
         }
-        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+        res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
 })
 
 blogsRouter.delete('/:id', 
@@ -85,6 +87,7 @@ blogsRouter.delete('/:id',
     const isDeleted = await blogsRepository.deleteBlog(req.params.id)
     if(isDeleted) {
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
+        return
     }
     res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
 })

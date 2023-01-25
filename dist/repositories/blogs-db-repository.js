@@ -41,6 +41,8 @@ exports.blogsRepository = {
                 createdAt: new Date().toISOString(),
             };
             yield db_1.blogsCollection.insertOne(createdBlog);
+            //@ts-ignore
+            delete createdBlog._id;
             return createdBlog;
         });
     },
