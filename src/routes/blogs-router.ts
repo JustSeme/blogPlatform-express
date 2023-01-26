@@ -10,6 +10,7 @@ import { blogsService } from "../domain/blogs-service";
 import { RequestWithBody, RequestWithParams, RequestWithParamsAndBody } from "../types";
 import { blogsQueryRepository } from "../repositories/blogs-query-repository";
 import { blogsOutputModel } from "../models/blogs/blogsOutputModel";
+import { RequestWithQuery } from '../types'
 
 
 export const blogsRouter = Router({})
@@ -38,13 +39,14 @@ const websiteUrlValidation = body('websiteUrl')
 export type readBlogsQueryParams = {
     searchNameTerm: string
     sortBy: string
-    sortDirection: string
+    sortDirection: 'asc' | 'desc'
     pageNumber: number
     pageSize: number
 }
 
-blogsRouter.get('/', async (req: RequestWithParams<readBlogsQueryParams>, res: Response<blogsOutputModel>) => {
-    const findedBlog = await blogsQueryRepository.findBlogs(req.params)
+blogsRouter.get('/', async (req: RequestWithQuery<readBlogsQueryParams>, res: Response<blogsOutputModel>) => {
+    const findedBlog = await blogsQueryRepository
+    .findBlogs(req.query.searchNameTerm, req.query.sortDirection, req.query.sortBy, req.query.pageNumber, req.query.pageSize)
 
     if(!findedBlog) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
@@ -53,13 +55,13 @@ blogsRouter.get('/', async (req: RequestWithParams<readBlogsQueryParams>, res: R
 })
 
 blogsRouter.get('/:id', async (req: RequestWithParams<{ id: string }>, res: Response<BlogViewModel>) => {
-    const findedBlog = await blogsService.findBlogs(req.params.id)
+    const findedBlog = await blogsQueryRepository.findBlogById(req.params.id)
 
     if(!findedBlog) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
         return
     }
-    res.json(findedBlog as BlogViewModel)
+    res.json(findedBlog)
 })
 
 blogsRouter.post('/',
