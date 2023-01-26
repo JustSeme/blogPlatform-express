@@ -9,38 +9,38 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.blogsRepository = void 0;
-const db_1 = require("./db");
-exports.blogsRepository = {
+exports.blogsService = void 0;
+const blogs_db_repository_1 = require("../repositories/blogs-db-repository");
+exports.blogsService = {
     findBlogs(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (id === null) {
-                return yield db_1.blogsCollection.find({}, { projection: { _id: 0 } }).toArray();
-            }
-            return yield db_1.blogsCollection.findOne({ id: id }, { projection: { _id: 0 } });
+            return blogs_db_repository_1.blogsRepository.findBlogs(id);
         });
     },
     deleteBlog(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            let result;
-            if (id === null) {
-                result = yield db_1.blogsCollection.deleteMany({});
-                return result.deletedCount > 0;
-            }
-            result = yield db_1.blogsCollection.deleteOne({ id: id });
-            return result.deletedCount === 1;
+            return blogs_db_repository_1.blogsRepository.deleteBlog(id);
         });
     },
-    createBlog(createdBlog) {
+    createBlog(body) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield db_1.blogsCollection.insertOne(createdBlog);
+            const createdBlog = {
+                id: Date.now().toString(),
+                name: body.name,
+                description: body.description,
+                websiteUrl: body.websiteUrl,
+                createdAt: new Date().toISOString(),
+            };
+            yield blogs_db_repository_1.blogsRepository.createBlog(createdBlog);
+            //@ts-ignore
+            delete createdBlog._id;
+            return createdBlog;
         });
     },
     updateBlog(id, body) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.blogsCollection.updateOne({ id: id }, { $set: { name: body.name, description: body.description, websiteUrl: body.websiteUrl } });
-            return result.matchedCount === 1;
+            return yield blogs_db_repository_1.blogsRepository.updateBlog(id, body);
         });
     }
 };
-//# sourceMappingURL=blogs-db-repository.js.map
+//# sourceMappingURL=blogs-service.js.map

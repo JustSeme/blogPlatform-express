@@ -4,11 +4,11 @@ import { HTTP_STATUSES } from "../app";
 import { ErrorMessagesOutputModel } from "../models/ErrorMessagesOutputModel";
 import { PostInputModel } from "../models/posts/PostInputModel";
 import { PostViewModel } from "../models/posts/PostViewModel";
-import { postsRepository } from "../repositories/posts-db-repository";
 import { RequestWithBody, RequestWithParams, RequestWithParamsAndBody } from "../types";
 import { inputValidationMiddleware } from "../middlewares/input-validation-middleware";
 import { basicAuthorizationMiddleware } from "../middlewares/basic-authorizatoin-middleware";
-import { blogsRepository } from "../repositories/blogs-db-repository";
+import { blogsService } from "../domain/blogs-service";
+import { postsService } from "../domain/posts-service";
 
 export const postsRouter = Router({})
 
@@ -38,7 +38,7 @@ const blogIdValidation = body('blogId')
 .notEmpty()
 .isString()
 .custom(async (value) => {
-    const findedBlog = await blogsRepository.findBlogs(value)
+    const findedBlog = await blogsService.findBlogs(value)
     if(!findedBlog) {
         return Promise.reject('blog by blogId not found')
     }
@@ -47,7 +47,7 @@ const blogIdValidation = body('blogId')
 .isLength({ min: 1, max: 100 })
 
 postsRouter.get('/', async (req: Request, res: Response<PostViewModel[]>) => {
-    const findedBlog = await postsRepository.findPosts(null)
+    const findedBlog = await postsService.findPosts(null)
 
     if(!findedBlog) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
@@ -57,7 +57,7 @@ postsRouter.get('/', async (req: Request, res: Response<PostViewModel[]>) => {
 })
 
 postsRouter.get('/:id', async (req: RequestWithParams<{ id: string }>, res: Response<PostViewModel>) => {
-    const findedBlog = await postsRepository.findPosts(req.params.id)
+    const findedBlog = await postsService.findPosts(req.params.id)
 
     if(!findedBlog) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
@@ -74,7 +74,7 @@ postsRouter.post('/',
     blogIdValidation,
     inputValidationMiddleware,
     async (req: RequestWithBody<PostInputModel>, res: Response<PostViewModel | ErrorMessagesOutputModel>) => {
-        const createdPost = await postsRepository.createPost(req.body)
+        const createdPost = await postsService.createPost(req.body)
 
         res
             .status(HTTP_STATUSES.CREATED_201)
@@ -89,7 +89,7 @@ postsRouter.put('/:id',
     blogIdValidation,
     inputValidationMiddleware,
     async (req: RequestWithParamsAndBody<{ id: string }, PostInputModel>, res: Response<PostViewModel | ErrorMessagesOutputModel>) => {
-        const isUpdated = await postsRepository.updatePost(req.params.id, req.body)
+        const isUpdated = await postsService.updatePost(req.params.id, req.body)
         if(!isUpdated) {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
             return
@@ -101,7 +101,7 @@ postsRouter.put('/:id',
 postsRouter.delete('/:id', 
     basicAuthorizationMiddleware,
     async (req: RequestWithParams<{ id: string }>, res: Response<ErrorMessagesOutputModel>) => {
-    const isDeleted = await postsRepository.deletePosts(req.params.id)
+    const isDeleted = await postsService.deletePosts(req.params.id)
     if(isDeleted) {
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
         return

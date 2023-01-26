@@ -21,27 +21,12 @@ export const postsRepository = {
         return result.deletedCount === 1
     },
 
-    async createPost(body: PostInputModel): Promise<PostViewModel> {
-        const createdPost: PostViewModel = {
-            id: Date.now().toString(),
-            title: body.title,
-            shortDescription: body.shortDescription,
-            content: body.content,
-            blogId: body.blogId,
-            blogName: 'I do not know how to associate a blogName with real data',
-            createdAt: new Date().toISOString(),
-        }
-
+    async createPost(createdPost: PostViewModel) {
         await postsCollection.insertOne(createdPost)
-
-        //@ts-ignore
-        delete createdPost._id
-        return createdPost
     },
 
     async updatePost(id: string, body: PostInputModel) {
         const result = await postsCollection.updateOne({id: id}, {$set: {content: body.content, title: body.title, shortDescription: body.shortDescription, blogId: body.blogId}})
-
         return result.matchedCount === 1
     }
 }

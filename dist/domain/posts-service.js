@@ -9,38 +9,40 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postsRepository = void 0;
-const db_1 = require("./db");
-exports.postsRepository = {
+exports.postsCollection = void 0;
+const posts_db_repository_1 = require("../repositories/posts-db-repository");
+exports.postsCollection = {
     findPosts(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (id === null) {
-                return yield db_1.postsCollection.find({}, { projection: { _id: 0 } }).toArray();
-            }
-            return yield db_1.postsCollection.findOne({ id: id }, { projection: { _id: 0 } });
+            return yield posts_db_repository_1.postsRepository.findPosts(id);
         });
     },
     deletePosts(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            let result;
-            if (id === null) {
-                result = yield db_1.postsCollection.deleteMany({});
-                return result.deletedCount > 0;
-            }
-            result = yield db_1.postsCollection.deleteOne({ id: id });
-            return result.deletedCount === 1;
+            return yield posts_db_repository_1.postsRepository.deletePosts(id);
         });
     },
-    createPost(createdPost) {
+    createPost(body) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield db_1.postsCollection.insertOne(createdPost);
+            const createdPost = {
+                id: Date.now().toString(),
+                title: body.title,
+                shortDescription: body.shortDescription,
+                content: body.content,
+                blogId: body.blogId,
+                blogName: 'I do not know how to associate a blogName with real data',
+                createdAt: new Date().toISOString(),
+            };
+            yield posts_db_repository_1.postsRepository.createPost(createdPost);
+            //@ts-ignore
+            delete createdPost._id;
+            return createdPost;
         });
     },
     updatePost(id, body) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.postsCollection.updateOne({ id: id }, { $set: { content: body.content, title: body.title, shortDescription: body.shortDescription, blogId: body.blogId } });
-            return result.matchedCount === 1;
+            return yield posts_db_repository_1.postsRepository.updatePost(id, body);
         });
     }
 };
-//# sourceMappingURL=posts-db-repository.js.map
+//# sourceMappingURL=posts-service.js.map

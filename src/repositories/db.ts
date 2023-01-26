@@ -24,4 +24,4 @@ export async function runDB() {
         console.log(err);
     }
 }
-runDB().catch(console.dir) 
+runDB()

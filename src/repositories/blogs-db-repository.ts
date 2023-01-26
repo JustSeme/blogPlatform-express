@@ -21,20 +21,8 @@ export const blogsRepository = {
         return result.deletedCount === 1
     },
 
-    async createBlog(body: BlogInputModel): Promise<BlogViewModel> {
-        const createdBlog: BlogViewModel = {
-            id: Date.now().toString(),
-            name: body.name,
-            description: body.description,
-            websiteUrl: body.websiteUrl,
-            createdAt: new Date().toISOString(),
-        }
-
+    async createBlog(createdBlog: BlogViewModel) {
         await blogsCollection.insertOne(createdBlog)
-        
-        //@ts-ignore
-        delete createdBlog._id
-        return createdBlog
     },
 
     async updateBlog(id: string, body: BlogInputModel) {

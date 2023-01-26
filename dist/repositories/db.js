@@ -32,5 +32,5 @@ function runDB() {
     });
 }
 exports.runDB = runDB;
-runDB().catch(console.dir);
+runDB();
 //# sourceMappingURL=db.js.map
