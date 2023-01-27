@@ -3,12 +3,13 @@ import { body } from "express-validator";
 import { HTTP_STATUSES } from "../app";
 import { ErrorMessagesOutputModel } from "../models/ErrorMessagesOutputModel";
 import { PostInputModel } from "../models/posts/PostInputModel";
-import { PostViewModel } from "../models/posts/PostViewModel";
-import { RequestWithBody, RequestWithParams, RequestWithParamsAndBody } from "../types";
+import { PostsWithQueryOutputModel, PostViewModel } from "../models/posts/PostViewModel";
+import { RequestWithBody, RequestWithParams, RequestWithParamsAndBody, RequestWithQuery } from "../types";
 import { inputValidationMiddleware } from "../middlewares/input-validation-middleware";
 import { basicAuthorizationMiddleware } from "../middlewares/basic-authorizatoin-middleware";
 import { blogsService } from "../domain/blogs-service";
 import { postsService } from "../domain/posts-service";
+import { postsQueryRepository } from "../repositories/posts-query-repository";
 
 export const postsRouter = Router({})
 
@@ -46,18 +47,25 @@ const blogIdValidation = body('blogId')
 })
 .isLength({ min: 1, max: 100 })
 
-postsRouter.get('/', async (req: Request, res: Response<PostViewModel[]>) => {
-    const findedBlog = await postsService.findPosts(null)
+export type ReadPostsQueryParams = {
+    pageNumber: number
+    pageSize: number
+    sortBy: string
+    sortDirection: 'asc' | 'desc'
+}
+
+postsRouter.get('/', async (req: RequestWithQuery<ReadPostsQueryParams>, res: Response<PostsWithQueryOutputModel>) => {
+    const findedBlog = await postsQueryRepository.findPosts(req.query)
 
     if(!findedBlog) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
         return
     }
-    res.json(findedBlog as PostViewModel[])
+    res.json(findedBlog as PostsWithQueryOutputModel)
 })
 
 postsRouter.get('/:id', async (req: RequestWithParams<{ id: string }>, res: Response<PostViewModel>) => {
-    const findedBlog = await postsService.findPosts(req.params.id)
+    const findedBlog = await postsQueryRepository.findPostsById(req.params.id)
 
     if(!findedBlog) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)

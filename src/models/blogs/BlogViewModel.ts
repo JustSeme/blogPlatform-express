@@ -5,3 +5,11 @@ export type BlogViewModel = {
     websiteUrl: string,
     createdAt: string
 }
+
+export type BlogsWithQueryOutputModel = {
+    pagesCount: number
+    page: number
+    pageSize: number
+    totalCount: number
+    items: BlogViewModel[]
+}

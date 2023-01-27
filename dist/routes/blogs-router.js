@@ -38,7 +38,7 @@ const websiteUrlValidation = (0, express_validator_1.body)('websiteUrl')
     .isLength({ min: 1, max: 100 });
 exports.blogsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const findedBlog = yield blogs_query_repository_1.blogsQueryRepository
-        .findBlogs(req.query.searchNameTerm, req.query.sortDirection, req.query.sortBy, req.query.pageNumber, req.query.pageSize);
+        .findBlogs(req.query);
     if (!findedBlog) {
         res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
     }

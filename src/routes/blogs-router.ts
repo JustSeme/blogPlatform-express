@@ -9,7 +9,7 @@ import { ErrorMessagesOutputModel } from "../models/ErrorMessagesOutputModel";
 import { blogsService } from "../domain/blogs-service";
 import { RequestWithBody, RequestWithParams, RequestWithParamsAndBody } from "../types";
 import { blogsQueryRepository } from "../repositories/blogs-query-repository";
-import { blogsOutputModel } from "../models/blogs/blogsOutputModel";
+import { BlogsWithQueryOutputModel } from '../models/blogs/BlogViewModel'
 import { RequestWithQuery } from '../types'
 
 
@@ -36,7 +36,7 @@ const websiteUrlValidation = body('websiteUrl')
 .isURL()
 .isLength({ min: 1, max: 100 })
 
-export type readBlogsQueryParams = {
+export type ReadBlogsQueryParams = {
     searchNameTerm: string
     sortBy: string
     sortDirection: 'asc' | 'desc'
@@ -44,14 +44,14 @@ export type readBlogsQueryParams = {
     pageSize: number
 }
 
-blogsRouter.get('/', async (req: RequestWithQuery<readBlogsQueryParams>, res: Response<blogsOutputModel>) => {
+blogsRouter.get('/', async (req: RequestWithQuery<ReadBlogsQueryParams>, res: Response<BlogsWithQueryOutputModel>) => {
     const findedBlog = await blogsQueryRepository
-    .findBlogs(req.query.searchNameTerm, req.query.sortDirection, req.query.sortBy, req.query.pageNumber, req.query.pageSize)
+    .findBlogs(req.query)
 
     if(!findedBlog) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
     }
-    res.json(findedBlog as blogsOutputModel)
+    res.json(findedBlog as BlogsWithQueryOutputModel)
 })
 
 blogsRouter.get('/:id', async (req: RequestWithParams<{ id: string }>, res: Response<BlogViewModel>) => {

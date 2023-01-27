@@ -1,16 +1,18 @@
-import { blogsOutputModel } from "../models/blogs/blogsOutputModel";
+import { BlogsWithQueryOutputModel } from "../models/blogs/BlogViewModel";
 import { BlogViewModel } from "../models/blogs/BlogViewModel";
 import { blogsCollection } from "./db";
+import { ReadBlogsQueryParams } from "../routes/blogs-router";
 
 export const blogsQueryRepository = {
-    async findBlogs(searchNameTerm: string, sortDirection: 'asc' | 'desc' = 'desc', sortBy: string = 'createdAt', pageNumber: number = 1, pageSize: number = 10): Promise<blogsOutputModel> {
+    async findBlogs(queryParams: ReadBlogsQueryParams): Promise<BlogsWithQueryOutputModel> {
+        const { searchNameTerm, sortDirection, sortBy, pageNumber, pageSize } = queryParams
         let blogsCursor
         if(searchNameTerm) {
             blogsCursor = await blogsCollection.find({name: {$regex: searchNameTerm}}, { projection: { _id: 0 }})
         } else {
             blogsCursor = await blogsCollection.find({}, { projection: { _id: 0 }})
         }
-        const sortDirectionNumber = sortDirection === 'asc' ? -1 : 1
+        const sortDirectionNumber = sortDirection === 'asc' ? 1 : -1
         const resultedBlogs = await blogsCursor.sort({[sortBy]: sortDirectionNumber}).toArray()
         
         return {

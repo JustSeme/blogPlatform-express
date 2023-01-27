@@ -9,34 +9,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.blogsQueryRepository = void 0;
+exports.postsQueryRepository = void 0;
 const db_1 = require("./db");
-exports.blogsQueryRepository = {
-    findBlogs(queryParams) {
+exports.postsQueryRepository = {
+    findPosts(queryParams) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { searchNameTerm, sortDirection, sortBy, pageNumber, pageSize } = queryParams;
-            let blogsCursor;
-            if (searchNameTerm) {
-                blogsCursor = yield db_1.blogsCollection.find({ name: { $regex: searchNameTerm } }, { projection: { _id: 0 } });
-            }
-            else {
-                blogsCursor = yield db_1.blogsCollection.find({}, { projection: { _id: 0 } });
-            }
+            const { sortDirection, sortBy, pageNumber, pageSize } = queryParams;
+            let postsCursor = yield db_1.postsCollection.find({}, { projection: { _id: 0 } });
             const sortDirectionNumber = sortDirection === 'asc' ? 1 : -1;
-            const resultedBlogs = yield blogsCursor.sort({ [sortBy]: sortDirectionNumber }).toArray();
+            const resultedPosts = yield postsCursor.sort({ [sortBy]: sortDirectionNumber }).toArray();
             return {
                 pagesCount: 20,
                 page: pageNumber,
                 pageSize: pageSize,
                 totalCount: 100,
-                items: resultedBlogs
+                items: resultedPosts
             };
         });
     },
-    findBlogById(id) {
+    findPostsById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield db_1.blogsCollection.findOne({ id: id }, { projection: { _id: 0 } });
+            return yield db_1.postsCollection.findOne({ id: id }, { projection: { _id: 0 } });
         });
     }
 };
-//# sourceMappingURL=blogs-query-repository.js.map
+//# sourceMappingURL=posts-query-repository.js.map
