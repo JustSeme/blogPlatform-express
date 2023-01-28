@@ -47,9 +47,9 @@ const blogIdValidation = param('blogId')
 .notEmpty()
 .isString()
 .custom(async (value) => {
-    const findedBlog = await blogsQueryRepository.findBlogs(value)
+    const findedBlog = await blogsQueryRepository.findBlogById(value)
     if(!findedBlog) {
-        return Promise.reject('blog by blogId not found')
+        return Promise.reject('blog is not found')
     }
     return true
 })
@@ -83,15 +83,17 @@ blogsRouter.get('/:id', async (req: RequestWithParams<{ id: string }>, res: Resp
     res.json(findedBlog)
 })
 
-blogsRouter.get('/:blogId/posts', async (req: RequestWithParamsAndQuery<{blogId: string}, ReadPostsQueryParams>, res: Response<PostsWithQueryOutputModel>) => {
-    const findedPostsForBlog = await postsQueryRepository.findPosts(req.query, req.params.blogId)
+blogsRouter.get('/:blogId/posts',
+    blogIdValidation,
+    async (req: RequestWithParamsAndQuery<{blogId: string}, ReadPostsQueryParams>, res: Response<PostsWithQueryOutputModel>) => {
+        const findedPostsForBlog = await postsQueryRepository.findPosts(req.query, req.params.blogId)
 
-    if(!findedPostsForBlog.items.length) {
-        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
-        return
-    }
+        if(!findedPostsForBlog.items.length) {
+            res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+            return
+        }
 
-    res.json(findedPostsForBlog)
+        res.json(findedPostsForBlog)
 })
 
 blogsRouter.post('/',

@@ -17,7 +17,7 @@ export const postsService = {
             shortDescription: body.shortDescription,
             content: body.content,
             blogId: blogId ? blogId : body.blogId,
-            blogName: blogById!.name,
+            blogName: blogById?.name ? blogById?.name : 'not found',
             createdAt: new Date().toISOString(),
         }
 

@@ -27,8 +27,8 @@ exports.blogsQueryRepository = {
             const resultedBlogs = yield blogsCursor.sort({ [sortBy]: sortDirectionNumber }).toArray();
             return {
                 pagesCount: pagesCount,
-                page: pageNumber,
-                pageSize: pageSize,
+                page: +pageNumber,
+                pageSize: +pageSize,
                 totalCount: totalCount,
                 items: resultedBlogs
             };

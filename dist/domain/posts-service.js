@@ -27,7 +27,7 @@ exports.postsService = {
                 shortDescription: body.shortDescription,
                 content: body.content,
                 blogId: blogId ? blogId : body.blogId,
-                blogName: blogById.name,
+                blogName: (blogById === null || blogById === void 0 ? void 0 : blogById.name) ? blogById === null || blogById === void 0 ? void 0 : blogById.name : 'not found',
                 createdAt: new Date().toISOString(),
             };
             yield posts_db_repository_1.postsRepository.createPost(createdPost);

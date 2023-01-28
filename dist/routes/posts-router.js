@@ -42,7 +42,7 @@ const blogIdValidation = (0, express_validator_1.body)('blogId')
     .notEmpty()
     .isString()
     .custom((value) => __awaiter(void 0, void 0, void 0, function* () {
-    const findedBlog = yield blogs_query_repository_1.blogsQueryRepository.findBlogs(value);
+    const findedBlog = yield blogs_query_repository_1.blogsQueryRepository.findBlogById(value);
     if (!findedBlog) {
         return Promise.reject('blog by blogId not found');
     }

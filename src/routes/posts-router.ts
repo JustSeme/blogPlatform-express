@@ -39,7 +39,7 @@ const blogIdValidation = body('blogId')
 .notEmpty()
 .isString()
 .custom(async (value) => {
-    const findedBlog = await blogsQueryRepository.findBlogs(value)
+    const findedBlog = await blogsQueryRepository.findBlogById(value)
     if(!findedBlog) {
         return Promise.reject('blog by blogId not found')
     }

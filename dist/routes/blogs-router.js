@@ -45,9 +45,9 @@ const blogIdValidation = (0, express_validator_1.param)('blogId')
     .notEmpty()
     .isString()
     .custom((value) => __awaiter(void 0, void 0, void 0, function* () {
-    const findedBlog = yield blogs_query_repository_1.blogsQueryRepository.findBlogs(value);
+    const findedBlog = yield blogs_query_repository_1.blogsQueryRepository.findBlogById(value);
     if (!findedBlog) {
-        return Promise.reject('blog by blogId not found');
+        return Promise.reject('blog is not found');
     }
     return true;
 }))
@@ -68,7 +68,7 @@ exports.blogsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, 
     }
     res.json(findedBlog);
 }));
-exports.blogsRouter.get('/:blogId/posts', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.blogsRouter.get('/:blogId/posts', blogIdValidation, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const findedPostsForBlog = yield posts_query_repository_1.postsQueryRepository.findPosts(req.query, req.params.blogId);
     if (!findedPostsForBlog.items.length) {
         res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
