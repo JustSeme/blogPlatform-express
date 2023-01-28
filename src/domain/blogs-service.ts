@@ -3,10 +3,6 @@ import { BlogViewModel } from "../models/blogs/BlogViewModel";
 import { blogsRepository } from "../repositories/blogs-db-repository";
 
 export const blogsService = {
-    async findBlogs(id: string | null): Promise<BlogViewModel[] | BlogViewModel | null> {
-        return blogsRepository.findBlogs(id)
-    },
-
     async deleteBlog(id: string | null) {
         return blogsRepository.deleteBlog(id)
     },

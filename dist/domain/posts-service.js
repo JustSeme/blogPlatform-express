@@ -10,13 +10,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.postsService = void 0;
+const blogs_query_repository_1 = require("../repositories/blogs-query-repository");
 const posts_db_repository_1 = require("../repositories/posts-db-repository");
 exports.postsService = {
-    findPosts(id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield posts_db_repository_1.postsRepository.findPosts(id);
-        });
-    },
     deletePosts(id) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield posts_db_repository_1.postsRepository.deletePosts(id);
@@ -24,13 +20,14 @@ exports.postsService = {
     },
     createPost(body, blogId) {
         return __awaiter(this, void 0, void 0, function* () {
+            const blogById = yield blogs_query_repository_1.blogsQueryRepository.findBlogById(blogId ? blogId : body.blogId);
             const createdPost = {
                 id: Date.now().toString(),
                 title: body.title,
                 shortDescription: body.shortDescription,
                 content: body.content,
                 blogId: blogId ? blogId : body.blogId,
-                blogName: 'I do not know how to associate a blogName with real data',
+                blogName: blogById.name,
                 createdAt: new Date().toISOString(),
             };
             yield posts_db_repository_1.postsRepository.createPost(createdPost);

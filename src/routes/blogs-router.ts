@@ -1,4 +1,4 @@
-import { Router, Request, Response } from "express";
+import { Router, Response } from "express";
 import { body, param } from "express-validator";
 import { HTTP_STATUSES } from "../app";
 import { basicAuthorizationMiddleware } from "../middlewares/basic-authorizatoin-middleware";
@@ -47,7 +47,7 @@ const blogIdValidation = param('blogId')
 .notEmpty()
 .isString()
 .custom(async (value) => {
-    const findedBlog = await blogsService.findBlogs(value)
+    const findedBlog = await blogsQueryRepository.findBlogs(value)
     if(!findedBlog) {
         return Promise.reject('blog by blogId not found')
     }

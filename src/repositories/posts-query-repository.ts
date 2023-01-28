@@ -22,8 +22,8 @@ export const postsQueryRepository = {
         
         return {
             pagesCount: pagesCount,
-            page: pageNumber,
-            pageSize: pageSize,
+            page: pageNumber.toString(),
+            pageSize: pageSize.toString(),
             totalCount: totalCount,
             items: resultedPosts
         }

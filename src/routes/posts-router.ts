@@ -7,9 +7,9 @@ import { PostsWithQueryOutputModel, PostViewModel } from "../models/posts/PostVi
 import { RequestWithBody, RequestWithParams, RequestWithParamsAndBody, RequestWithQuery } from "../types";
 import { inputValidationMiddleware } from "../middlewares/input-validation-middleware";
 import { basicAuthorizationMiddleware } from "../middlewares/basic-authorizatoin-middleware";
-import { blogsService } from "../domain/blogs-service";
 import { postsService } from "../domain/posts-service";
 import { postsQueryRepository } from "../repositories/posts-query-repository";
+import { blogsQueryRepository } from "../repositories/blogs-query-repository";
 
 export const postsRouter = Router({})
 
@@ -39,7 +39,7 @@ const blogIdValidation = body('blogId')
 .notEmpty()
 .isString()
 .custom(async (value) => {
-    const findedBlog = await blogsService.findBlogs(value)
+    const findedBlog = await blogsQueryRepository.findBlogs(value)
     if(!findedBlog) {
         return Promise.reject('blog by blogId not found')
     }

@@ -12,11 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.blogsService = void 0;
 const blogs_db_repository_1 = require("../repositories/blogs-db-repository");
 exports.blogsService = {
-    findBlogs(id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return blogs_db_repository_1.blogsRepository.findBlogs(id);
-        });
-    },
     deleteBlog(id) {
         return __awaiter(this, void 0, void 0, function* () {
             return blogs_db_repository_1.blogsRepository.deleteBlog(id);
