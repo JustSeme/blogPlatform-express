@@ -14,10 +14,10 @@ const db_1 = require("./db");
 exports.blogsQueryRepository = {
     findBlogs(queryParams) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { searchNameTerm = null, sortDirection = 'desc', sortBy = 'createdAt', pageNumber = 1, pageSize = 10 } = queryParams;
+            let { searchNameTerm = null, sortDirection = 'desc', sortBy = 'createdAt', pageNumber = 1, pageSize = 10 } = queryParams;
             const filter = {};
             if (searchNameTerm) {
-                filter.name = { $regex: searchNameTerm };
+                filter.name = { $regex: searchNameTerm.toLowerCase() };
             }
             const totalCount = yield db_1.blogsCollection.count(filter);
             const pagesCount = Math.ceil(totalCount / +pageSize);

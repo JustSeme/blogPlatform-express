@@ -5,10 +5,10 @@ import { ReadBlogsQueryParams } from "../routes/blogs-router";
 
 export const blogsQueryRepository = {
     async findBlogs(queryParams: ReadBlogsQueryParams): Promise<BlogsWithQueryOutputModel> {
-        const { searchNameTerm = null, sortDirection = 'desc', sortBy = 'createdAt', pageNumber = 1, pageSize = 10 } = queryParams
+        let { searchNameTerm = null, sortDirection = 'desc', sortBy = 'createdAt', pageNumber = 1, pageSize = 10 } = queryParams
         const filter: any = {}
         if(searchNameTerm) {
-            filter.name = {$regex: searchNameTerm}
+            filter.name = {$regex: searchNameTerm.toLowerCase()}
         }
 
         const totalCount = await blogsCollection.count(filter)
