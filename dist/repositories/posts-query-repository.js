@@ -27,8 +27,8 @@ exports.postsQueryRepository = {
             const resultedPosts = yield postsCursor.sort({ [sortBy]: sortDirectionNumber }).toArray();
             return {
                 pagesCount: pagesCount,
-                page: pageNumber.toString(),
-                pageSize: pageSize.toString(),
+                page: +pageNumber,
+                pageSize: +pageSize,
                 totalCount: totalCount,
                 items: resultedPosts
             };

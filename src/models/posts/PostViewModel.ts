@@ -10,8 +10,8 @@ export type PostViewModel = {
 
 export type PostsWithQueryOutputModel = {
     pagesCount: number
-    page: string
-    pageSize: string
+    page: number
+    pageSize: number
     totalCount: number
     items: PostViewModel[]
 }
