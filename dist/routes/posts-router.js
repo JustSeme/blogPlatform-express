@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postsRouter = void 0;
+exports.contentValidation = exports.shortDescriptionValidation = exports.titleValidation = exports.postsRouter = void 0;
 const express_1 = require("express");
 const express_validator_1 = require("express-validator");
 const app_1 = require("../app");
@@ -19,18 +19,18 @@ const blogs_service_1 = require("../domain/blogs-service");
 const posts_service_1 = require("../domain/posts-service");
 const posts_query_repository_1 = require("../repositories/posts-query-repository");
 exports.postsRouter = (0, express_1.Router)({});
-const titleValidation = (0, express_validator_1.body)('title')
+exports.titleValidation = (0, express_validator_1.body)('title')
     .exists()
     .trim()
     .notEmpty()
     .isString()
     .isLength({ min: 1, max: 30 });
-const shortDescriptionValidation = (0, express_validator_1.body)('shortDescription')
+exports.shortDescriptionValidation = (0, express_validator_1.body)('shortDescription')
     .exists()
     .trim()
     .notEmpty()
     .isLength({ min: 1, max: 100 });
-const contentValidation = (0, express_validator_1.body)('content')
+exports.contentValidation = (0, express_validator_1.body)('content')
     .exists()
     .trim()
     .notEmpty()
@@ -50,28 +50,28 @@ const blogIdValidation = (0, express_validator_1.body)('blogId')
 }))
     .isLength({ min: 1, max: 100 });
 exports.postsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const findedBlog = yield posts_query_repository_1.postsQueryRepository.findPosts(req.query);
-    if (!findedBlog) {
+    const findedPosts = yield posts_query_repository_1.postsQueryRepository.findPosts(req.query, null);
+    if (!findedPosts.items.length) {
         res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
         return;
     }
-    res.json(findedBlog);
+    res.json(findedPosts);
 }));
 exports.postsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const findedBlog = yield posts_query_repository_1.postsQueryRepository.findPostsById(req.params.id);
-    if (!findedBlog) {
+    const findedPosts = yield posts_query_repository_1.postsQueryRepository.findPostById(req.params.id);
+    if (!findedPosts) {
         res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
         return;
     }
-    res.json(findedBlog);
+    res.json(findedPosts);
 }));
-exports.postsRouter.post('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, titleValidation, shortDescriptionValidation, contentValidation, blogIdValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const createdPost = yield posts_service_1.postsService.createPost(req.body);
+exports.postsRouter.post('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, exports.titleValidation, exports.shortDescriptionValidation, exports.contentValidation, blogIdValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const createdPost = yield posts_service_1.postsService.createPost(req.body, null);
     res
         .status(app_1.HTTP_STATUSES.CREATED_201)
         .send(createdPost);
 }));
-exports.postsRouter.put('/:id', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, titleValidation, shortDescriptionValidation, contentValidation, blogIdValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.postsRouter.put('/:id', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, exports.titleValidation, exports.shortDescriptionValidation, exports.contentValidation, blogIdValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const isUpdated = yield posts_service_1.postsService.updatePost(req.params.id, req.body);
     if (!isUpdated) {
         res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);

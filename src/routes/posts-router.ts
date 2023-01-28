@@ -1,4 +1,4 @@
-import { Router, Request, Response } from "express";
+import { Router, Response } from "express";
 import { body } from "express-validator";
 import { HTTP_STATUSES } from "../app";
 import { ErrorMessagesOutputModel } from "../models/ErrorMessagesOutputModel";
@@ -13,20 +13,20 @@ import { postsQueryRepository } from "../repositories/posts-query-repository";
 
 export const postsRouter = Router({})
 
-const titleValidation = body('title')
+export const titleValidation = body('title')
 .exists()
 .trim()
 .notEmpty()
 .isString()
 .isLength({ min: 1, max: 30})
 
-const shortDescriptionValidation = body('shortDescription')
+export const shortDescriptionValidation = body('shortDescription')
 .exists()
 .trim()
 .notEmpty()
 .isLength({ min: 1, max: 100 })
 
-const contentValidation = body('content')
+export const contentValidation = body('content')
 .exists()
 .trim()
 .notEmpty()
@@ -55,23 +55,23 @@ export type ReadPostsQueryParams = {
 }
 
 postsRouter.get('/', async (req: RequestWithQuery<ReadPostsQueryParams>, res: Response<PostsWithQueryOutputModel>) => {
-    const findedBlog = await postsQueryRepository.findPosts(req.query)
+    const findedPosts = await postsQueryRepository.findPosts(req.query, null)
 
-    if(!findedBlog) {
+    if(!findedPosts.items.length) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
         return
     }
-    res.json(findedBlog as PostsWithQueryOutputModel)
+    res.json(findedPosts as PostsWithQueryOutputModel)
 })
 
 postsRouter.get('/:id', async (req: RequestWithParams<{ id: string }>, res: Response<PostViewModel>) => {
-    const findedBlog = await postsQueryRepository.findPostsById(req.params.id)
+    const findedPosts = await postsQueryRepository.findPostById(req.params.id)
 
-    if(!findedBlog) {
+    if(!findedPosts) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
         return
     }
-    res.json(findedBlog as PostViewModel)
+    res.json(findedPosts as PostViewModel)
 })
 
 postsRouter.post('/',
@@ -82,7 +82,7 @@ postsRouter.post('/',
     blogIdValidation,
     inputValidationMiddleware,
     async (req: RequestWithBody<PostInputModel>, res: Response<PostViewModel | ErrorMessagesOutputModel>) => {
-        const createdPost = await postsService.createPost(req.body)
+        const createdPost = await postsService.createPost(req.body, null)
 
         res
             .status(HTTP_STATUSES.CREATED_201)

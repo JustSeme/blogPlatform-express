@@ -11,13 +11,13 @@ export const postsService = {
         return await postsRepository.deletePosts(id)
     },
 
-    async createPost(body: PostInputModel): Promise<PostViewModel> {
+    async createPost(body: PostInputModel, blogId: string | null): Promise<PostViewModel> {
         const createdPost: PostViewModel = {
             id: Date.now().toString(),
             title: body.title,
             shortDescription: body.shortDescription,
             content: body.content,
-            blogId: body.blogId,
+            blogId: blogId ? blogId : body.blogId,
             blogName: 'I do not know how to associate a blogName with real data',
             createdAt: new Date().toISOString(),
         }

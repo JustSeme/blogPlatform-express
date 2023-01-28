@@ -22,14 +22,14 @@ exports.postsService = {
             return yield posts_db_repository_1.postsRepository.deletePosts(id);
         });
     },
-    createPost(body) {
+    createPost(body, blogId) {
         return __awaiter(this, void 0, void 0, function* () {
             const createdPost = {
                 id: Date.now().toString(),
                 title: body.title,
                 shortDescription: body.shortDescription,
                 content: body.content,
-                blogId: body.blogId,
+                blogId: blogId ? blogId : body.blogId,
                 blogName: 'I do not know how to associate a blogName with real data',
                 createdAt: new Date().toISOString(),
             };

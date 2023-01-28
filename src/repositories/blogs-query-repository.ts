@@ -14,7 +14,7 @@ export const blogsQueryRepository = {
         const totalCount = await blogsCollection.count(filter)
         const pagesCount = Math.ceil(totalCount / +pageSize)
         
-        const skipCount = (+pageNumber - 1) * pageSize
+        const skipCount = (+pageNumber - 1) * +pageSize
         const blogsCursor = await blogsCollection.find(filter, { projection: { _id: 0 }}).skip(skipCount).limit(+pageSize)
 
         const sortDirectionNumber = sortDirection === 'asc' ? 1 : -1

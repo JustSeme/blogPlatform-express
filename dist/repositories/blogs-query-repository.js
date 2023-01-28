@@ -21,7 +21,7 @@ exports.blogsQueryRepository = {
             }
             const totalCount = yield db_1.blogsCollection.count(filter);
             const pagesCount = Math.ceil(totalCount / +pageSize);
-            const skipCount = (+pageNumber - 1) * pageSize;
+            const skipCount = (+pageNumber - 1) * +pageSize;
             const blogsCursor = yield db_1.blogsCollection.find(filter, { projection: { _id: 0 } }).skip(skipCount).limit(+pageSize);
             const sortDirectionNumber = sortDirection === 'asc' ? 1 : -1;
             const resultedBlogs = yield blogsCursor.sort({ [sortBy]: sortDirectionNumber }).toArray();

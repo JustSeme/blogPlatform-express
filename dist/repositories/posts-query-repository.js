@@ -12,13 +12,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.postsQueryRepository = void 0;
 const db_1 = require("./db");
 exports.postsQueryRepository = {
-    findPosts(queryParams) {
+    findPosts(queryParams, blogId) {
         return __awaiter(this, void 0, void 0, function* () {
             const { sortDirection = 'desc', sortBy = 'createdAt', pageNumber = 1, pageSize = 10 } = queryParams;
-            const totalCount = yield db_1.postsCollection.count({});
-            const pagesCount = Math.ceil(totalCount / pageSize);
-            const skipCount = (+pageNumber - 1) * pageSize;
-            let postsCursor = yield db_1.postsCollection.find({}, { projection: { _id: 0 } }).skip(skipCount).limit(pageSize);
+            const filter = {};
+            if (blogId) {
+                filter.blogId = blogId;
+            }
+            const totalCount = yield db_1.postsCollection.count(filter);
+            const pagesCount = Math.ceil(totalCount / +pageSize);
+            const skipCount = (+pageNumber - 1) * +pageSize;
+            let postsCursor = yield db_1.postsCollection.find(filter, { projection: { _id: 0 } }).skip(skipCount).limit(+pageSize);
             const sortDirectionNumber = sortDirection === 'asc' ? 1 : -1;
             const resultedPosts = yield postsCursor.sort({ [sortBy]: sortDirectionNumber }).toArray();
             return {
@@ -30,7 +34,7 @@ exports.postsQueryRepository = {
             };
         });
     },
-    findPostsById(id) {
+    findPostById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield db_1.postsCollection.findOne({ id: id }, { projection: { _id: 0 } });
         });
