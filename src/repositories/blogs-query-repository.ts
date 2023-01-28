@@ -8,7 +8,7 @@ export const blogsQueryRepository = {
         let { searchNameTerm = null, sortDirection = 'desc', sortBy = 'createdAt', pageNumber = 1, pageSize = 10 } = queryParams
         const filter: any = {}
         if(searchNameTerm) {
-            filter.name = {$regex: searchNameTerm.toLowerCase()}
+            filter.name = {$regex: searchNameTerm, $options: 'i'}
         }
 
         const totalCount = await blogsCollection.count(filter)

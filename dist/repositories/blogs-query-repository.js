@@ -17,7 +17,7 @@ exports.blogsQueryRepository = {
             let { searchNameTerm = null, sortDirection = 'desc', sortBy = 'createdAt', pageNumber = 1, pageSize = 10 } = queryParams;
             const filter = {};
             if (searchNameTerm) {
-                filter.name = { $regex: searchNameTerm.toLowerCase() };
+                filter.name = { $regex: searchNameTerm, $options: 'i' };
             }
             const totalCount = yield db_1.blogsCollection.count(filter);
             const pagesCount = Math.ceil(totalCount / +pageSize);
