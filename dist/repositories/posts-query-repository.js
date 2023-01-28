@@ -14,15 +14,18 @@ const db_1 = require("./db");
 exports.postsQueryRepository = {
     findPosts(queryParams) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { sortDirection, sortBy, pageNumber, pageSize } = queryParams;
-            let postsCursor = yield db_1.postsCollection.find({}, { projection: { _id: 0 } });
+            const { sortDirection = 'desc', sortBy = 'createdAt', pageNumber = 1, pageSize = 10 } = queryParams;
+            const totalCount = yield db_1.postsCollection.count({});
+            const pagesCount = Math.ceil(totalCount / pageSize);
+            const skipCount = (+pageNumber - 1) * pageSize;
+            let postsCursor = yield db_1.postsCollection.find({}, { projection: { _id: 0 } }).skip(skipCount).limit(pageSize);
             const sortDirectionNumber = sortDirection === 'asc' ? 1 : -1;
             const resultedPosts = yield postsCursor.sort({ [sortBy]: sortDirectionNumber }).toArray();
             return {
-                pagesCount: 20,
+                pagesCount: pagesCount,
                 page: pageNumber,
                 pageSize: pageSize,
-                totalCount: 100,
+                totalCount: totalCount,
                 items: resultedPosts
             };
         });
