@@ -1,6 +1,7 @@
 import { MongoClient } from 'mongodb'
 import { BlogViewModel } from '../models/blogs/BlogViewModel';
 import { PostViewModel } from '../models/posts/PostViewModel';
+import { UserDBModel } from '../models/users/UserDBModel';
 
 const username = "justSeme"
 const password = "RMMXpX1hUlXqbKED"
@@ -13,6 +14,7 @@ const blogPlatformDB = client.db('blog_platform')
 
 export const postsCollection = blogPlatformDB.collection<PostViewModel>('posts')
 export const blogsCollection = blogPlatformDB.collection<BlogViewModel>('blogs')
+export const usersCollection = blogPlatformDB.collection<UserDBModel>('blogs')
 
 export async function runDB() {
     try {

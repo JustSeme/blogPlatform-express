@@ -16,6 +16,7 @@ import { PostsWithQueryOutputModel, PostViewModel } from "../models/posts/PostVi
 import { postsQueryRepository } from "../repositories/posts-query-repository";
 import { PostInputModel } from "../models/posts/PostInputModel";
 import { postsService } from "../domain/posts-service";
+import { blogIdValidationMiddleware } from "../middlewares/blogId-validation-middleware";
 
 
 export const blogsRouter = Router({})
@@ -46,13 +47,6 @@ const blogIdValidation = param('blogId')
 .trim()
 .notEmpty()
 .isString()
-.custom(async (value) => {
-    const findedBlog = await blogsQueryRepository.findBlogById(value)
-    if(!findedBlog) {
-        return Promise.reject('blog is not found')
-    }
-    return true
-})
 .isLength({ min: 1, max: 100 })
 
 export type ReadBlogsQueryParams = {
@@ -85,6 +79,8 @@ blogsRouter.get('/:id', async (req: RequestWithParams<{ id: string }>, res: Resp
 
 blogsRouter.get('/:blogId/posts',
     blogIdValidation,
+    blogIdValidationMiddleware,
+    //@ts-ignore
     async (req: RequestWithParamsAndQuery<{blogId: string}, ReadPostsQueryParams>, res: Response<PostsWithQueryOutputModel>) => {
         const findedPostsForBlog = await postsQueryRepository.findPosts(req.query, req.params.blogId)
 
@@ -115,6 +111,7 @@ blogsRouter.post('/:blogId/posts',
     titleValidation,
     contentValidation,
     shortDescriptionValidation,
+    blogIdValidationMiddleware,
     blogIdValidation,
     inputValidationMiddleware,
     async (req: RequestWithParamsAndBody<{blogId: string}, PostInputModel>, res: Response<PostViewModel>) => {

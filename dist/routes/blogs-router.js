@@ -20,6 +20,7 @@ const blogs_query_repository_1 = require("../repositories/blogs-query-repository
 const posts_router_1 = require("./posts-router");
 const posts_query_repository_1 = require("../repositories/posts-query-repository");
 const posts_service_1 = require("../domain/posts-service");
+const blogId_validation_middleware_1 = require("../middlewares/blogId-validation-middleware");
 exports.blogsRouter = (0, express_1.Router)({});
 const nameValidation = (0, express_validator_1.body)('name')
     .exists()
@@ -44,13 +45,6 @@ const blogIdValidation = (0, express_validator_1.param)('blogId')
     .trim()
     .notEmpty()
     .isString()
-    .custom((value) => __awaiter(void 0, void 0, void 0, function* () {
-    const findedBlog = yield blogs_query_repository_1.blogsQueryRepository.findBlogById(value);
-    if (!findedBlog) {
-        return Promise.reject('blog is not found');
-    }
-    return true;
-}))
     .isLength({ min: 1, max: 100 });
 exports.blogsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const findedBlogs = yield blogs_query_repository_1.blogsQueryRepository.findBlogs(req.query);
@@ -68,7 +62,9 @@ exports.blogsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, 
     }
     res.json(findedBlog);
 }));
-exports.blogsRouter.get('/:blogId/posts', blogIdValidation, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.blogsRouter.get('/:blogId/posts', blogIdValidation, blogId_validation_middleware_1.blogIdValidationMiddleware, 
+//@ts-ignore
+(req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const findedPostsForBlog = yield posts_query_repository_1.postsQueryRepository.findPosts(req.query, req.params.blogId);
     if (!findedPostsForBlog.items.length) {
         res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
@@ -82,7 +78,7 @@ exports.blogsRouter.post('/', basic_authorizatoin_middleware_1.basicAuthorizatio
         .status(app_1.HTTP_STATUSES.CREATED_201)
         .send(createdBlog);
 }));
-exports.blogsRouter.post('/:blogId/posts', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, posts_router_1.titleValidation, posts_router_1.contentValidation, posts_router_1.shortDescriptionValidation, blogIdValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.blogsRouter.post('/:blogId/posts', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, posts_router_1.titleValidation, posts_router_1.contentValidation, posts_router_1.shortDescriptionValidation, blogId_validation_middleware_1.blogIdValidationMiddleware, blogIdValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const createdPost = yield posts_service_1.postsService.createPost(req.body, req.params.blogId);
     res
         .status(app_1.HTTP_STATUSES.CREATED_201)

@@ -3,13 +3,6 @@ import { BlogViewModel } from "../models/blogs/BlogViewModel";
 import { blogsCollection } from "./db";
 
 export const blogsRepository = {
-    async findBlogs(id: string | null): Promise<BlogViewModel[] | BlogViewModel | null> {
-        if(id === null) {
-            return await blogsCollection.find({}, { projection: { _id: 0 } }).toArray()
-        }
-        return await blogsCollection.findOne({id: id}, { projection: { _id: 0 } })
-    },
-
     async deleteBlog(id: string | null) {
         let result
         if(id === null) {

@@ -12,14 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.postsRepository = void 0;
 const db_1 = require("./db");
 exports.postsRepository = {
-    findPosts(id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (id === null) {
-                return yield db_1.postsCollection.find({}, { projection: { _id: 0 } }).toArray();
-            }
-            return yield db_1.postsCollection.findOne({ id: id }, { projection: { _id: 0 } });
-        });
-    },
     deletePosts(id) {
         return __awaiter(this, void 0, void 0, function* () {
             let result;

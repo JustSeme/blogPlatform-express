@@ -3,13 +3,6 @@ import { PostViewModel } from '../models/posts/PostViewModel'
 import { postsCollection } from './db'
 
 export const postsRepository = {
-    async findPosts(id: string | null): Promise<PostViewModel | PostViewModel[] | null> {
-        if(id === null) {
-            return await postsCollection.find({}, { projection: { _id: 0 } }).toArray()
-        }
-        return await postsCollection.findOne({id: id}, { projection: { _id: 0 } })
-    },
-
     async deletePosts(id: string | null) {
         let result
         if(id === null) {

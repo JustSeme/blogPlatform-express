@@ -21,6 +21,8 @@ const blogs_db_repository_1 = require("./repositories/blogs-db-repository");
 const posts_router_1 = require("./routes/posts-router");
 const posts_db_repository_1 = require("./repositories/posts-db-repository");
 const db_1 = require("./repositories/db");
+const users_router_1 = require("./routes/users-router");
+const auth_router_1 = require("./routes/auth-router");
 exports.app = (0, express_1.default)();
 const port = process.env.PORT || 3000;
 const jsonBodyMiddleware = express_1.default.json();
@@ -39,14 +41,16 @@ const startApp = () => __awaiter(void 0, void 0, void 0, function* () {
         console.log(`Example app listening on port ${port}`);
     });
 });
-exports.app.use('/homework01/videos', videos_router_1.videosRouter);
-exports.app.use('/homework02/blogs', blogs_router_1.blogsRouter);
-exports.app.use('/homework02/posts', posts_router_1.postsRouter);
+exports.app.use('/homeworks/videos', videos_router_1.videosRouter);
+exports.app.use('/homeworks/blogs', blogs_router_1.blogsRouter);
+exports.app.use('/homeworks/posts', posts_router_1.postsRouter);
+exports.app.use('/homeworks/users', users_router_1.usersRouter);
+exports.app.use('/homeworks/auth', auth_router_1.authRouter);
 exports.app.delete('/homework01/testing/all-data', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield videos_in_memory_repository_1.videosRepository.deleteVideo(null);
     res.sendStatus(exports.HTTP_STATUSES.NO_CONTENT_204);
 }));
-exports.app.delete('/homework02/testing/all-data', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.app.delete('/homeworks/testing/all-data', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield posts_db_repository_1.postsRepository.deletePosts(null);
     yield blogs_db_repository_1.blogsRepository.deleteBlog(null);
     res.sendStatus(exports.HTTP_STATUSES.NO_CONTENT_204);
