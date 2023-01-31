@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.blogIdValidationMiddleware = void 0;
 const app_1 = require("../app");
-const blogs_query_repository_1 = require("../repositories/blogs-query-repository");
+const blogs_query_repository_1 = require("../repositories/query/blogs-query-repository");
 const blogIdValidationMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const findedBlog = yield blogs_query_repository_1.blogsQueryRepository.findBlogById(req.params.blogId);
     if (!findedBlog) {

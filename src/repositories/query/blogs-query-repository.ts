@@ -1,7 +1,7 @@
-import { BlogsWithQueryOutputModel } from "../models/blogs/BlogViewModel";
-import { BlogViewModel } from "../models/blogs/BlogViewModel";
-import { blogsCollection } from "./db";
-import { ReadBlogsQueryParams } from "../routes/blogs-router";
+import { BlogsWithQueryOutputModel } from "../../models/blogs/BlogViewModel";
+import { BlogViewModel } from "../../models/blogs/BlogViewModel";
+import { ReadBlogsQueryParams } from "../../models/blogs/ReadBlogsQuery";
+import { blogsCollection } from "../db";
 
 export const blogsQueryRepository = {
     async findBlogs(queryParams: ReadBlogsQueryParams): Promise<BlogsWithQueryOutputModel> {

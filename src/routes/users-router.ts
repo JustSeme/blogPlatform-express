@@ -7,7 +7,7 @@ import { inputValidationMiddleware } from "../middlewares/input-validation-middl
 import { ErrorMessagesOutputModel } from "../models/ErrorMessagesOutputModel";
 import { UserInputModel } from "../models/users/UserInputModel";
 import { UserViewModel } from "../models/users/UsersViewModel";
-import { RequestWithBody } from "../types";
+import { RequestWithBody, RequestWithParams } from "../types";
 
 export const usersRouter = Router({})
 
@@ -43,3 +43,14 @@ usersRouter.post('/',
         const createdUser = await usersService.createUser(req.body.login, req.body.password, req.body.email)
         res.status(HTTP_STATUSES.CREATED_201).json(createdUser)
 })
+
+usersRouter.delete('/:id',
+    basicAuthorizationMiddleware,
+    async (req: RequestWithParams<{id: string}>, res: Response) => {
+        const isDeleted = usersService.deleteUsers(req.params.id)
+        if(!isDeleted) {
+            res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+            return
+        }
+        res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
+    })

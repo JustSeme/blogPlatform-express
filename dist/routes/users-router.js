@@ -40,4 +40,12 @@ exports.usersRouter.post('/', basic_authorizatoin_middleware_1.basicAuthorizatio
     const createdUser = yield users_service_1.usersService.createUser(req.body.login, req.body.password, req.body.email);
     res.status(app_1.HTTP_STATUSES.CREATED_201).json(createdUser);
 }));
+exports.usersRouter.delete('/:id', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const isDeleted = users_service_1.usersService.deleteUsers(req.params.id);
+    if (!isDeleted) {
+        res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
+        return;
+    }
+    res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
+}));
 //# sourceMappingURL=users-router.js.map

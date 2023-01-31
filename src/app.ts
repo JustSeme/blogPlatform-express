@@ -2,12 +2,13 @@ import express, { Response, Request } from 'express'
 import { videosRepository } from './repositories/videos-in-memory-repository'
 import { videosRouter } from './routes/videos-router'
 import { blogsRouter } from './routes/blogs-router'
-import { blogsRepository } from './repositories/blogs-db-repository'
 import { postsRouter } from './routes/posts-router'
-import { postsRepository } from './repositories/posts-db-repository'
 import { runDB } from './repositories/db'
 import { usersRouter } from './routes/users-router'
 import { authRouter } from './routes/auth-router'
+import { postsService } from './domain/posts-service'
+import { blogsService } from './domain/blogs-service'
+import { usersService } from './domain/users-service'
 
 export const app = express()
 const port = process.env.PORT || 3000
@@ -45,8 +46,9 @@ app.delete('/homework01/testing/all-data', async (req: Request, res: Response) =
 })
 
 app.delete('/homeworks/testing/all-data', async (req: Request, res: Response) => {
-    await postsRepository.deletePosts(null)
-    await blogsRepository.deleteBlog(null)
+    await postsService.deletePosts(null)
+    await blogsService.deleteBlog(null)
+    await usersService.deleteUsers(null)
     res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
 })
 

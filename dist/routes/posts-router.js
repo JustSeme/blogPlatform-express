@@ -16,8 +16,8 @@ const app_1 = require("../app");
 const input_validation_middleware_1 = require("../middlewares/input-validation-middleware");
 const basic_authorizatoin_middleware_1 = require("../middlewares/basic-authorizatoin-middleware");
 const posts_service_1 = require("../domain/posts-service");
-const posts_query_repository_1 = require("../repositories/posts-query-repository");
-const blogs_query_repository_1 = require("../repositories/blogs-query-repository");
+const posts_query_repository_1 = require("../repositories/query/posts-query-repository");
+const blogs_query_repository_1 = require("../repositories/query/blogs-query-repository");
 exports.postsRouter = (0, express_1.Router)({});
 exports.titleValidation = (0, express_validator_1.body)('title')
     .exists()

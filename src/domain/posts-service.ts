@@ -1,6 +1,6 @@
 import { PostInputModel } from '../models/posts/PostInputModel'
 import { PostViewModel } from '../models/posts/PostViewModel'
-import { blogsQueryRepository } from '../repositories/blogs-query-repository'
+import { blogsQueryRepository } from '../repositories/query/blogs-query-repository'
 import { postsRepository } from '../repositories/posts-db-repository'
 
 export const postsService = {

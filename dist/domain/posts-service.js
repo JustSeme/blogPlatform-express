@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.postsService = void 0;
-const blogs_query_repository_1 = require("../repositories/blogs-query-repository");
+const blogs_query_repository_1 = require("../repositories/query/blogs-query-repository");
 const posts_db_repository_1 = require("../repositories/posts-db-repository");
 exports.postsService = {
     deletePosts(id) {

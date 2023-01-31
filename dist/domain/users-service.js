@@ -46,6 +46,14 @@ exports.usersService = {
             return true;
         });
     },
+    deleteUsers(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (userId) {
+                return yield users_db_repository_1.usersRepository.deleteUser(userId);
+            }
+            return yield users_db_repository_1.usersRepository.deleteUsers();
+        });
+    },
     _generateHash(password, salt) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield bcrypt_1.default.hash(password, salt);

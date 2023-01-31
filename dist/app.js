@@ -17,12 +17,13 @@ const express_1 = __importDefault(require("express"));
 const videos_in_memory_repository_1 = require("./repositories/videos-in-memory-repository");
 const videos_router_1 = require("./routes/videos-router");
 const blogs_router_1 = require("./routes/blogs-router");
-const blogs_db_repository_1 = require("./repositories/blogs-db-repository");
 const posts_router_1 = require("./routes/posts-router");
-const posts_db_repository_1 = require("./repositories/posts-db-repository");
 const db_1 = require("./repositories/db");
 const users_router_1 = require("./routes/users-router");
 const auth_router_1 = require("./routes/auth-router");
+const posts_service_1 = require("./domain/posts-service");
+const blogs_service_1 = require("./domain/blogs-service");
+const users_service_1 = require("./domain/users-service");
 exports.app = (0, express_1.default)();
 const port = process.env.PORT || 3000;
 const jsonBodyMiddleware = express_1.default.json();
@@ -51,8 +52,9 @@ exports.app.delete('/homework01/testing/all-data', (req, res) => __awaiter(void 
     res.sendStatus(exports.HTTP_STATUSES.NO_CONTENT_204);
 }));
 exports.app.delete('/homeworks/testing/all-data', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield posts_db_repository_1.postsRepository.deletePosts(null);
-    yield blogs_db_repository_1.blogsRepository.deleteBlog(null);
+    yield posts_service_1.postsService.deletePosts(null);
+    yield blogs_service_1.blogsService.deleteBlog(null);
+    yield users_service_1.usersService.deleteUsers(null);
     res.sendStatus(exports.HTTP_STATUSES.NO_CONTENT_204);
 }));
 startApp();

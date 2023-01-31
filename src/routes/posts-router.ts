@@ -8,8 +8,9 @@ import { RequestWithBody, RequestWithParams, RequestWithParamsAndBody, RequestWi
 import { inputValidationMiddleware } from "../middlewares/input-validation-middleware";
 import { basicAuthorizationMiddleware } from "../middlewares/basic-authorizatoin-middleware";
 import { postsService } from "../domain/posts-service";
-import { postsQueryRepository } from "../repositories/posts-query-repository";
-import { blogsQueryRepository } from "../repositories/blogs-query-repository";
+import { postsQueryRepository } from "../repositories/query/posts-query-repository";
+import { blogsQueryRepository } from "../repositories/query/blogs-query-repository";
+import { ReadPostsQueryParams } from "../models/posts/ReadPostsQuery";
 
 export const postsRouter = Router({})
 
@@ -46,13 +47,6 @@ const blogIdValidation = body('blogId')
     return true
 })
 .isLength({ min: 1, max: 100 })
-
-export type ReadPostsQueryParams = {
-    pageNumber: number
-    pageSize: number
-    sortBy: string
-    sortDirection: 'asc' | 'desc'
-}
 
 postsRouter.get('/', async (req: RequestWithQuery<ReadPostsQueryParams>, res: Response<PostsWithQueryOutputModel>) => {
     const findedPosts = await postsQueryRepository.findPosts(req.query, null)

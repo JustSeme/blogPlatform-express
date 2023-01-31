@@ -4,3 +4,11 @@ export type UserViewModel = {
     email: string
     createdAt: string
 }
+
+export type UsersWithQueryOutputModel = {
+    pagesCount: number
+    page: number
+    pageSize: number
+    totalCount: number
+    items: UserViewModel[]
+}

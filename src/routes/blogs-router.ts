@@ -8,15 +8,17 @@ import { BlogViewModel } from "../models/blogs/BlogViewModel";
 import { ErrorMessagesOutputModel } from "../models/ErrorMessagesOutputModel";
 import { blogsService } from "../domain/blogs-service";
 import { RequestWithBody, RequestWithParams, RequestWithParamsAndBody, RequestWithParamsAndQuery } from "../types";
-import { blogsQueryRepository } from "../repositories/blogs-query-repository";
+import { blogsQueryRepository } from "../repositories/query/blogs-query-repository";
 import { BlogsWithQueryOutputModel } from '../models/blogs/BlogViewModel'
 import { RequestWithQuery } from '../types'
-import { contentValidation, ReadPostsQueryParams, shortDescriptionValidation, titleValidation } from "./posts-router";
+import { contentValidation, shortDescriptionValidation, titleValidation } from "./posts-router";
 import { PostsWithQueryOutputModel, PostViewModel } from "../models/posts/PostViewModel";
-import { postsQueryRepository } from "../repositories/posts-query-repository";
+import { postsQueryRepository } from "../repositories/query/posts-query-repository";
 import { PostInputModel } from "../models/posts/PostInputModel";
 import { postsService } from "../domain/posts-service";
 import { blogIdValidationMiddleware } from "../middlewares/blogId-validation-middleware";
+import { ReadBlogsQueryParams } from "../models/blogs/ReadBlogsQuery";
+import { ReadPostsQueryParams } from "../models/posts/ReadPostsQuery";
 
 
 export const blogsRouter = Router({})
@@ -49,14 +51,6 @@ const blogIdValidation = param('blogId')
 .isString()
 .isLength({ min: 1, max: 100 })
 
-export type ReadBlogsQueryParams = {
-    searchNameTerm: string
-    sortBy: string
-    sortDirection: 'asc' | 'desc'
-    pageNumber: number
-    pageSize: number
-}
-
 blogsRouter.get('/', async (req: RequestWithQuery<ReadBlogsQueryParams>, res: Response<BlogsWithQueryOutputModel>) => {
     const findedBlogs = await blogsQueryRepository.findBlogs(req.query)
 
@@ -80,7 +74,6 @@ blogsRouter.get('/:id', async (req: RequestWithParams<{ id: string }>, res: Resp
 blogsRouter.get('/:blogId/posts',
     blogIdValidation,
     blogIdValidationMiddleware,
-    //@ts-ignore
     async (req: RequestWithParamsAndQuery<{blogId: string}, ReadPostsQueryParams>, res: Response<PostsWithQueryOutputModel>) => {
         const findedPostsForBlog = await postsQueryRepository.findPosts(req.query, req.params.blogId)
 

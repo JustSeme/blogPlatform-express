@@ -1,6 +1,6 @@
-import { postsCollection } from "./db";
-import { PostsWithQueryOutputModel, PostViewModel } from "../models/posts/PostViewModel";
-import { ReadPostsQueryParams } from "../routes/posts-router";
+import { postsCollection } from "../db";
+import { PostsWithQueryOutputModel, PostViewModel } from "../../models/posts/PostViewModel";
+import { ReadPostsQueryParams } from "../../models/posts/ReadPostsQuery";
 
 export const postsQueryRepository = {
     async findPosts(queryParams: ReadPostsQueryParams, blogId: string | null): Promise<PostsWithQueryOutputModel> {
