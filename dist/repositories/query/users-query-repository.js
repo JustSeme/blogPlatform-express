@@ -17,10 +17,10 @@ exports.usersQueryRepository = {
             const { sortDirection = 'desc', sortBy = 'createdAt', pageNumber = 1, pageSize = 10, searchLoginTerm = null, searchEmailTerm = null } = queryParams;
             const filter = {};
             if (searchEmailTerm) {
-                filter.email = searchEmailTerm;
+                filter.email = { $regex: searchEmailTerm, $options: 'i' };
             }
             if (searchLoginTerm) {
-                filter.login = searchLoginTerm;
+                filter.login = { $regex: searchLoginTerm, $options: 'i' };
             }
             const totalCount = yield db_1.usersCollection.count(filter);
             const pagesCount = Math.ceil(totalCount / +pageSize);

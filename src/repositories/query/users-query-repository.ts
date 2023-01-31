@@ -8,10 +8,10 @@ export const usersQueryRepository = {
 
         const filter: any = {}
         if(searchEmailTerm) {
-            filter.email = searchEmailTerm
+            filter.email = {$regex: searchEmailTerm, $options: 'i'}
         }
         if(searchLoginTerm) {
-            filter.login = searchLoginTerm
+            filter.login = {$regex: searchLoginTerm, $options: 'i'}
         }
 
         const totalCount = await usersCollection.count(filter)
