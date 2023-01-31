@@ -16,6 +16,7 @@ const app_1 = require("../app");
 const users_service_1 = require("../domain/users-service");
 const basic_authorizatoin_middleware_1 = require("../middlewares/basic-authorizatoin-middleware");
 const input_validation_middleware_1 = require("../middlewares/input-validation-middleware");
+const users_query_repository_1 = require("../repositories/query/users-query-repository");
 exports.usersRouter = (0, express_1.Router)({});
 const loginValidation = (0, express_validator_1.body)('login')
     .exists()
@@ -47,5 +48,13 @@ exports.usersRouter.delete('/:id', basic_authorizatoin_middleware_1.basicAuthori
         return;
     }
     res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
+}));
+exports.usersRouter.get('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const findedUsers = yield users_query_repository_1.usersQueryRepository.findUsers(req.query);
+    if (!findedUsers.items.length) {
+        res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
+        return;
+    }
+    res.json(findedUsers);
 }));
 //# sourceMappingURL=users-router.js.map

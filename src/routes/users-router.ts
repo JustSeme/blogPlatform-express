@@ -5,9 +5,11 @@ import { usersService } from "../domain/users-service";
 import { basicAuthorizationMiddleware } from "../middlewares/basic-authorizatoin-middleware";
 import { inputValidationMiddleware } from "../middlewares/input-validation-middleware";
 import { ErrorMessagesOutputModel } from "../models/ErrorMessagesOutputModel";
+import { ReadUsersQuery } from "../models/users/ReadUsersQuery";
 import { UserInputModel } from "../models/users/UserInputModel";
-import { UserViewModel } from "../models/users/UsersViewModel";
-import { RequestWithBody, RequestWithParams } from "../types";
+import { UsersWithQueryOutputModel, UserViewModel } from "../models/users/UsersViewModel";
+import { usersQueryRepository } from "../repositories/query/users-query-repository";
+import { RequestWithBody, RequestWithParams, RequestWithQuery } from "../types";
 
 export const usersRouter = Router({})
 
@@ -41,6 +43,7 @@ usersRouter.post('/',
     inputValidationMiddleware,
     async (req: RequestWithBody<UserInputModel>, res: Response<UserViewModel | ErrorMessagesOutputModel>) => {
         const createdUser = await usersService.createUser(req.body.login, req.body.password, req.body.email)
+    
         res.status(HTTP_STATUSES.CREATED_201).json(createdUser)
 })
 
@@ -53,4 +56,17 @@ usersRouter.delete('/:id',
             return
         }
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
+    })
+
+usersRouter.get('/',
+    basicAuthorizationMiddleware,
+    async (req: RequestWithQuery<ReadUsersQuery>, res: Response<UsersWithQueryOutputModel>) => {
+        const findedUsers = await usersQueryRepository.findUsers(req.query)
+
+        if(!findedUsers.items.length) {
+            res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+            return
+        }
+
+        res.json(findedUsers)
     })

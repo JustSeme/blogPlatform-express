@@ -28,12 +28,18 @@ exports.usersQueryRepository = {
             let usersCursor = yield db_1.usersCollection.find(filter, { projection: { _id: 0 } }).skip(skipCount).limit(+pageSize);
             const sortDirectionNumber = sortDirection === 'asc' ? 1 : -1;
             const resultedUsers = yield usersCursor.sort({ [sortBy]: sortDirectionNumber }).toArray();
+            const displayedUsers = resultedUsers.map(u => ({
+                id: u.id,
+                login: u.login,
+                email: u.email,
+                createdAt: u.createdAt
+            }));
             return {
                 pagesCount: pagesCount,
                 page: +pageNumber,
                 pageSize: +pageSize,
                 totalCount: totalCount,
-                items: resultedUsers
+                items: displayedUsers
             };
         });
     }

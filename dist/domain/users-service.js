@@ -30,9 +30,13 @@ exports.usersService = {
                 createdAt: new Date().toISOString()
             };
             users_db_repository_1.usersRepository.createUser(newUser);
-            //@ts-ignore
-            delete newUser._id;
-            return newUser;
+            const displayedUser = {
+                id: newUser.id,
+                login: newUser.login,
+                email: newUser.email,
+                createdAt: newUser.createdAt
+            };
+            return displayedUser;
         });
     },
     checkCredentials(loginOrEmail, password) {

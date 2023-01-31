@@ -1,10 +1,11 @@
 import bcrypt from 'bcrypt'
 import { randomUUID } from 'crypto'
 import { UserDBModel } from '../models/users/UserDBModel'
+import { UserViewModel } from '../models/users/UsersViewModel'
 import { usersRepository } from '../repositories/users-db-repository'
 
 export const usersService = {
-    async createUser(login: string, password: string, email: string): Promise<UserDBModel> {
+    async createUser(login: string, password: string, email: string): Promise<UserViewModel> {
         const passwordSalt = await bcrypt.genSalt(10)
         const passwordHash = await this._generateHash(password, passwordSalt)
 
@@ -18,10 +19,14 @@ export const usersService = {
         }
 
         usersRepository.createUser(newUser)
+        const displayedUser: UserViewModel = {
+            id: newUser.id,
+            login: newUser.login,
+            email: newUser.email,
+            createdAt: newUser.createdAt
+        }
 
-        //@ts-ignore
-        delete newUser._id
-        return newUser
+        return displayedUser
     },
 
     async checkCredentials(loginOrEmail: string, password: string) {

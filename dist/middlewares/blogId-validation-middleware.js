@@ -16,6 +16,7 @@ const blogIdValidationMiddleware = (req, res, next) => __awaiter(void 0, void 0,
     const findedBlog = yield blogs_query_repository_1.blogsQueryRepository.findBlogById(req.params.blogId);
     if (!findedBlog) {
         res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
+        return;
     }
     next();
 });

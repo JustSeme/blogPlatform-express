@@ -1,5 +1,5 @@
 import { ReadUsersQuery } from "../../models/users/ReadUsersQuery";
-import { UsersWithQueryOutputModel } from "../../models/users/UsersViewModel";
+import { UsersWithQueryOutputModel, UserViewModel } from "../../models/users/UsersViewModel";
 import { usersCollection } from "../db";
 
 export const usersQueryRepository = {
@@ -22,13 +22,19 @@ export const usersQueryRepository = {
 
         const sortDirectionNumber = sortDirection === 'asc' ? 1 : -1
         const resultedUsers = await usersCursor.sort({[sortBy]: sortDirectionNumber}).toArray()
+        const displayedUsers: UserViewModel[] = resultedUsers.map(u => ({
+            id: u.id,
+            login: u.login,
+            email: u.email,
+            createdAt: u.createdAt
+        }))
         
         return {
             pagesCount: pagesCount,
             page: +pageNumber,
             pageSize: +pageSize,
             totalCount: totalCount,
-            items: resultedUsers
+            items: displayedUsers
         }
     }
 }
