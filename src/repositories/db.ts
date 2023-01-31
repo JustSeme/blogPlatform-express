@@ -14,7 +14,7 @@ const blogPlatformDB = client.db('blog_platform')
 
 export const postsCollection = blogPlatformDB.collection<PostViewModel>('posts')
 export const blogsCollection = blogPlatformDB.collection<BlogViewModel>('blogs')
-export const usersCollection = blogPlatformDB.collection<UserDBModel>('blogs')
+export const usersCollection = blogPlatformDB.collection<UserDBModel>('users')
 
 export async function runDB() {
     try {

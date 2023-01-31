@@ -6,19 +6,20 @@ export const usersQueryRepository = {
     async findUsers(queryParams: ReadUsersQuery): Promise<UsersWithQueryOutputModel> {
         const { sortDirection = 'desc', sortBy = 'createdAt', pageNumber = 1, pageSize = 10, searchLoginTerm = null, searchEmailTerm = null } = queryParams
 
-        const filter: any = {}
+        const filterByEmail: any = {}
+        const filterByLogin: any = {}
         if(searchEmailTerm) {
-            filter.email = {$regex: searchEmailTerm, $options: 'i'}
+            filterByEmail.email = {$regex: searchEmailTerm, $options: 'i'}
         }
         if(searchLoginTerm) {
-            filter.login = {$regex: searchLoginTerm, $options: 'i'}
+            filterByLogin.login = {$regex: searchLoginTerm, $options: 'i'}
         }
 
-        const totalCount = await usersCollection.count(filter)
+        const totalCount = await usersCollection.count({})
         const pagesCount = Math.ceil(totalCount / +pageSize)
-
+        
         const skipCount = (+pageNumber - 1) * +pageSize
-        let usersCursor = await usersCollection.find(filter, { projection: { _id: 0 }}).skip(skipCount).limit(+pageSize)
+        let usersCursor = await usersCollection.find({$or: [filterByEmail, filterByLogin]}, { projection: { _id: 0 }}).skip(skipCount).limit(+pageSize)
 
         const sortDirectionNumber = sortDirection === 'asc' ? 1 : -1
         const resultedUsers = await usersCursor.sort({[sortBy]: sortDirectionNumber}).toArray()

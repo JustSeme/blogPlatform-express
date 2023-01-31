@@ -18,7 +18,7 @@ const client = new mongodb_1.MongoClient(mongoURI);
 const blogPlatformDB = client.db('blog_platform');
 exports.postsCollection = blogPlatformDB.collection('posts');
 exports.blogsCollection = blogPlatformDB.collection('blogs');
-exports.usersCollection = blogPlatformDB.collection('blogs');
+exports.usersCollection = blogPlatformDB.collection('users');
 function runDB() {
     return __awaiter(this, void 0, void 0, function* () {
         try {

@@ -6,6 +6,7 @@ import { blogsCollection } from "../db";
 export const blogsQueryRepository = {
     async findBlogs(queryParams: ReadBlogsQueryParams): Promise<BlogsWithQueryOutputModel> {
         let { searchNameTerm = null, sortDirection = 'desc', sortBy = 'createdAt', pageNumber = 1, pageSize = 10 } = queryParams
+        
         const filter: any = {}
         if(searchNameTerm) {
             filter.name = {$regex: searchNameTerm, $options: 'i'}
