@@ -42,7 +42,7 @@ exports.usersRouter.post('/', basic_authorizatoin_middleware_1.basicAuthorizatio
     res.status(app_1.HTTP_STATUSES.CREATED_201).json(createdUser);
 }));
 exports.usersRouter.delete('/:id', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const isDeleted = users_service_1.usersService.deleteUsers(req.params.id);
+    const isDeleted = yield users_service_1.usersService.deleteUsers(req.params.id);
     if (!isDeleted) {
         res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
         return;
@@ -51,10 +51,6 @@ exports.usersRouter.delete('/:id', basic_authorizatoin_middleware_1.basicAuthori
 }));
 exports.usersRouter.get('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const findedUsers = yield users_query_repository_1.usersQueryRepository.findUsers(req.query);
-    if (!findedUsers.items.length) {
-        res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
-        return;
-    }
     res.json(findedUsers);
 }));
 //# sourceMappingURL=users-router.js.map

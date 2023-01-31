@@ -30,6 +30,7 @@ exports.authRouter.post('/login', loginOrEmailValidation, passwordValidation, in
     const checkResult = yield users_service_1.usersService.checkCredentials(req.body.loginOrEmail, req.body.password);
     if (!checkResult) {
         res.sendStatus(app_1.HTTP_STATUSES.UNAUTHORIZED_401);
+        return;
     }
     res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
 }));

@@ -50,7 +50,7 @@ usersRouter.post('/',
 usersRouter.delete('/:id',
     basicAuthorizationMiddleware,
     async (req: RequestWithParams<{id: string}>, res: Response) => {
-        const isDeleted = usersService.deleteUsers(req.params.id)
+        const isDeleted = await usersService.deleteUsers(req.params.id)
         if(!isDeleted) {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
             return
@@ -62,11 +62,6 @@ usersRouter.get('/',
     basicAuthorizationMiddleware,
     async (req: RequestWithQuery<ReadUsersQuery>, res: Response<UsersWithQueryOutputModel>) => {
         const findedUsers = await usersQueryRepository.findUsers(req.query)
-
-        if(!findedUsers.items.length) {
-            res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
-            return
-        }
 
         res.json(findedUsers)
     })
