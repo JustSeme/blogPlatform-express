@@ -15,7 +15,7 @@ export const usersQueryRepository = {
             filterByLogin.login = {$regex: searchLoginTerm, $options: 'i'}
         }
 
-        const totalCount = await usersCollection.count({})
+        const totalCount = await usersCollection.count({$or: [filterByEmail, filterByLogin]})
         const pagesCount = Math.ceil(totalCount / +pageSize)
         
         const skipCount = (+pageNumber - 1) * +pageSize

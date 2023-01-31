@@ -23,7 +23,7 @@ exports.usersQueryRepository = {
             if (searchLoginTerm) {
                 filterByLogin.login = { $regex: searchLoginTerm, $options: 'i' };
             }
-            const totalCount = yield db_1.usersCollection.count({});
+            const totalCount = yield db_1.usersCollection.count({ $or: [filterByEmail, filterByLogin] });
             const pagesCount = Math.ceil(totalCount / +pageSize);
             const skipCount = (+pageNumber - 1) * +pageSize;
             let usersCursor = yield db_1.usersCollection.find({ $or: [filterByEmail, filterByLogin] }, { projection: { _id: 0 } }).skip(skipCount).limit(+pageSize);
