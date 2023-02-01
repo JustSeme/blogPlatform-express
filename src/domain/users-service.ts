@@ -31,7 +31,10 @@ export const usersService = {
         const user = await usersRepository.findUserByLoginOrEmail(loginOrEmail)
         if(!user) return false
 
-        return bcrypt.compare(password, user.passwordHash)
+        const isConfirmed = await bcrypt.compare(password, user.passwordHash)
+        if(isConfirmed) {
+            return user
+        }
     },
 
     async deleteUsers(userId: string | null) {

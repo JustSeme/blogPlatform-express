@@ -33,6 +33,6 @@ exports.usersRepository = {
             const result = yield db_1.usersCollection.deleteMany({});
             return result.deletedCount > 0;
         });
-    }
+    },
 };
 //# sourceMappingURL=users-db-repository.js.map

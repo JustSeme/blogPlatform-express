@@ -24,8 +24,9 @@ const auth_router_1 = require("./routes/auth-router");
 const posts_service_1 = require("./domain/posts-service");
 const blogs_service_1 = require("./domain/blogs-service");
 const users_service_1 = require("./domain/users-service");
+const settings_1 = require("./settings");
 exports.app = (0, express_1.default)();
-const port = process.env.PORT || 3000;
+const port = settings_1.settings.PORT;
 const jsonBodyMiddleware = express_1.default.json();
 exports.app.use(jsonBodyMiddleware);
 exports.HTTP_STATUSES = {

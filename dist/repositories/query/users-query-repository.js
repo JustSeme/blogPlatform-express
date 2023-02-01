@@ -42,6 +42,11 @@ exports.usersQueryRepository = {
                 items: displayedUsers
             };
         });
+    },
+    findUserById(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield db_1.usersCollection.findOne({ id: userId }, { projection: { _id: 0 } });
+        });
     }
 };
 //# sourceMappingURL=users-query-repository.js.map

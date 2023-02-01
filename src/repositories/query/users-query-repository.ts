@@ -36,5 +36,9 @@ export const usersQueryRepository = {
             totalCount: totalCount,
             items: displayedUsers
         }
+    },
+
+    async findUserById(userId: string) {
+        return await usersCollection.findOne({id: userId}, { projection: { _id: 0 }})
     }
 }

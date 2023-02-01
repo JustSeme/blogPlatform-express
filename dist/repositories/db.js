@@ -11,9 +11,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.runDB = exports.usersCollection = exports.blogsCollection = exports.postsCollection = void 0;
 const mongodb_1 = require("mongodb");
-const username = "justSeme";
-const password = "RMMXpX1hUlXqbKED";
-let mongoURI = process.env.mongoURI || `mongodb+srv://${username}:${password}@cluster86890.fgczccf.mongodb.net/?retryWrites=true&w=majority`;
+const settings_1 = require("../settings");
+let mongoURI = settings_1.settings.mongoURI;
 const client = new mongodb_1.MongoClient(mongoURI);
 const blogPlatformDB = client.db('blog_platform');
 exports.postsCollection = blogPlatformDB.collection('posts');

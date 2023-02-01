@@ -2,11 +2,9 @@ import { MongoClient } from 'mongodb'
 import { BlogViewModel } from '../models/blogs/BlogViewModel';
 import { PostViewModel } from '../models/posts/PostViewModel';
 import { UserDBModel } from '../models/users/UserDBModel';
+import { settings } from '../settings';
 
-const username = "justSeme"
-const password = "RMMXpX1hUlXqbKED"
-
-let mongoURI = process.env.mongoURI || `mongodb+srv://${username}:${password}@cluster86890.fgczccf.mongodb.net/?retryWrites=true&w=majority`;
+let mongoURI = settings.mongoURI
 
 const client = new MongoClient(mongoURI)
 

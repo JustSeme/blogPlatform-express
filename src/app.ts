@@ -9,9 +9,10 @@ import { authRouter } from './routes/auth-router'
 import { postsService } from './domain/posts-service'
 import { blogsService } from './domain/blogs-service'
 import { usersService } from './domain/users-service'
+import { settings } from './settings'
 
 export const app = express()
-const port = process.env.PORT || 3000
+const port = settings.PORT
 const jsonBodyMiddleware = express.json()
 app.use(jsonBodyMiddleware)
 
