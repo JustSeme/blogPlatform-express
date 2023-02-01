@@ -15,18 +15,17 @@ exports.usersQueryRepository = {
     findUsers(queryParams) {
         return __awaiter(this, void 0, void 0, function* () {
             const { sortDirection = 'desc', sortBy = 'createdAt', pageNumber = 1, pageSize = 10, searchLoginTerm = null, searchEmailTerm = null } = queryParams;
-            const filterByEmail = {};
-            const filterByLogin = {};
+            const filterArray = [];
             if (searchEmailTerm) {
-                filterByEmail.email = { $regex: searchEmailTerm, $options: 'i' };
+                filterArray.push({ email: { $regex: searchEmailTerm, $options: 'i' } });
             }
             if (searchLoginTerm) {
-                filterByLogin.login = { $regex: searchLoginTerm, $options: 'i' };
+                filterArray.push({ login: { $regex: searchLoginTerm, $options: 'i' } });
             }
-            const totalCount = yield db_1.usersCollection.count({ $or: [filterByEmail, filterByLogin] });
+            const totalCount = yield db_1.usersCollection.count({ $or: filterArray });
             const pagesCount = Math.ceil(totalCount / +pageSize);
             const skipCount = (+pageNumber - 1) * +pageSize;
-            let usersCursor = yield db_1.usersCollection.find({ $or: [filterByEmail, filterByLogin] }, { projection: { _id: 0 } }).skip(skipCount).limit(+pageSize);
+            let usersCursor = yield db_1.usersCollection.find({ $or: filterArray }, { projection: { _id: 0 } }).skip(skipCount).limit(+pageSize);
             const sortDirectionNumber = sortDirection === 'asc' ? 1 : -1;
             const resultedUsers = yield usersCursor.sort({ [sortBy]: sortDirectionNumber }).toArray();
             const displayedUsers = resultedUsers.map(u => ({

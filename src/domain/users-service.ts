@@ -6,15 +6,13 @@ import { usersRepository } from '../repositories/users-db-repository'
 
 export const usersService = {
     async createUser(login: string, password: string, email: string): Promise<UserViewModel> {
-        const passwordSalt = await bcrypt.genSalt(10)
-        const passwordHash = await this._generateHash(password, passwordSalt)
+        const passwordHash = await bcrypt.hash(password, 10)
 
         const newUser: UserDBModel = {
             id: randomUUID(),
             login: login,
             email: email,
             passwordHash,
-            passwordSalt,
             createdAt: new Date().toISOString()
         }
 
@@ -32,11 +30,8 @@ export const usersService = {
     async checkCredentials(loginOrEmail: string, password: string) {
         const user = await usersRepository.findUserByLoginOrEmail(loginOrEmail)
         if(!user) return false
-        
-        const passwordHash = await this._generateHash(password, user.passwordSalt)
-        if(user.passwordHash !== passwordHash) return false
 
-        return true
+        return bcrypt.compare(password, user.passwordHash)
     },
 
     async deleteUsers(userId: string | null) {
@@ -44,9 +39,5 @@ export const usersService = {
             return await usersRepository.deleteUser(userId)
         }
         return await usersRepository.deleteUsers()
-    },
-
-    async _generateHash(password: string, salt: string): Promise<string> {
-        return await bcrypt.hash(password, salt)
     }
 }

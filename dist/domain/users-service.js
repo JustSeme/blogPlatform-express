@@ -19,14 +19,13 @@ const users_db_repository_1 = require("../repositories/users-db-repository");
 exports.usersService = {
     createUser(login, password, email) {
         return __awaiter(this, void 0, void 0, function* () {
-            const passwordSalt = yield bcrypt_1.default.genSalt(10);
-            const passwordHash = yield this._generateHash(password, passwordSalt);
+            //const passwordSalt = await bcrypt.genSalt(10)
+            const passwordHash = yield bcrypt_1.default.hash(password, 10);
             const newUser = {
                 id: (0, crypto_1.randomUUID)(),
                 login: login,
                 email: email,
                 passwordHash,
-                passwordSalt,
                 createdAt: new Date().toISOString()
             };
             users_db_repository_1.usersRepository.createUser(newUser);
@@ -44,10 +43,11 @@ exports.usersService = {
             const user = yield users_db_repository_1.usersRepository.findUserByLoginOrEmail(loginOrEmail);
             if (!user)
                 return false;
-            const passwordHash = yield this._generateHash(password, user.passwordSalt);
-            if (user.passwordHash !== passwordHash)
-                return false;
-            return true;
+            return bcrypt_1.default.compare(password, user.passwordHash);
+            /* const passwordHash = await this._generateHash(password, user.passwordSalt)
+            if(user.passwordHash !== passwordHash) return false
+    
+            return true */
         });
     },
     deleteUsers(userId) {
@@ -56,11 +56,6 @@ exports.usersService = {
                 return yield users_db_repository_1.usersRepository.deleteUser(userId);
             }
             return yield users_db_repository_1.usersRepository.deleteUsers();
-        });
-    },
-    _generateHash(password, salt) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield bcrypt_1.default.hash(password, salt);
         });
     }
 };
