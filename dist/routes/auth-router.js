@@ -38,7 +38,6 @@ exports.authRouter.post('/login', loginOrEmailValidation, passwordValidation, in
     res.send(jwtTokenObj);
 }));
 exports.authRouter.get('/me', auth_middleware_1.authMiddleware, (req, res) => {
-    //@ts-ignore
     const user = req.user;
     res.send({
         email: user.email,

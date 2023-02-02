@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.contentValidation = exports.shortDescriptionValidation = exports.titleValidation = exports.postsRouter = void 0;
+exports.postContentValidation = exports.shortDescriptionValidation = exports.titleValidation = exports.postsRouter = void 0;
 const express_1 = require("express");
 const express_validator_1 = require("express-validator");
 const app_1 = require("../app");
@@ -18,6 +18,8 @@ const basic_authorizatoin_middleware_1 = require("../middlewares/basic-authoriza
 const posts_service_1 = require("../domain/posts-service");
 const posts_query_repository_1 = require("../repositories/query/posts-query-repository");
 const blogs_query_repository_1 = require("../repositories/query/blogs-query-repository");
+const auth_middleware_1 = require("../middlewares/auth-middleware");
+const comments_service_1 = require("../domain/comments-service");
 exports.postsRouter = (0, express_1.Router)({});
 exports.titleValidation = (0, express_validator_1.body)('title')
     .exists()
@@ -30,7 +32,7 @@ exports.shortDescriptionValidation = (0, express_validator_1.body)('shortDescrip
     .trim()
     .notEmpty()
     .isLength({ min: 1, max: 100 });
-exports.contentValidation = (0, express_validator_1.body)('content')
+exports.postContentValidation = (0, express_validator_1.body)('content')
     .exists()
     .trim()
     .notEmpty()
@@ -49,6 +51,12 @@ const blogIdValidation = (0, express_validator_1.body)('blogId')
     return true;
 }))
     .isLength({ min: 1, max: 100 });
+const commentContentValidation = (0, express_validator_1.body)('content')
+    .exists()
+    .trim()
+    .notEmpty()
+    .isString()
+    .isLength({ min: 20, max: 300 });
 exports.postsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const findedPosts = yield posts_query_repository_1.postsQueryRepository.findPosts(req.query, null);
     if (!findedPosts.items.length) {
@@ -65,13 +73,22 @@ exports.postsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, 
     }
     res.json(findedPosts);
 }));
-exports.postsRouter.post('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, exports.titleValidation, exports.shortDescriptionValidation, exports.contentValidation, blogIdValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.postsRouter.post('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, exports.titleValidation, exports.shortDescriptionValidation, exports.postContentValidation, blogIdValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const createdPost = yield posts_service_1.postsService.createPost(req.body, null);
     res
         .status(app_1.HTTP_STATUSES.CREATED_201)
         .send(createdPost);
 }));
-exports.postsRouter.put('/:id', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, exports.titleValidation, exports.shortDescriptionValidation, exports.contentValidation, blogIdValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.postsRouter.post('/:postId/comments', auth_middleware_1.authMiddleware, commentContentValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const commentedPost = yield posts_query_repository_1.postsQueryRepository.findPostById(req.params.postId);
+    if (!commentedPost) {
+        res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
+        return;
+    }
+    const createdComment = yield comments_service_1.commentsService.createComment(req.body.content, req.user);
+    res.send(createdComment);
+}));
+exports.postsRouter.put('/:id', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, exports.titleValidation, exports.shortDescriptionValidation, exports.postContentValidation, blogIdValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const isUpdated = yield posts_service_1.postsService.updatePost(req.params.id, req.body);
     if (!isUpdated) {
         res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);

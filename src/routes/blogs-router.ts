@@ -7,11 +7,11 @@ import { BlogInputModel } from "../models/blogs/BlogInputModel";
 import { BlogViewModel } from "../models/blogs/BlogViewModel";
 import { ErrorMessagesOutputModel } from "../models/ErrorMessagesOutputModel";
 import { blogsService } from "../domain/blogs-service";
-import { RequestWithBody, RequestWithParams, RequestWithParamsAndBody, RequestWithParamsAndQuery } from "../types";
+import { RequestWithBody, RequestWithParams, RequestWithParamsAndBody, RequestWithParamsAndQuery } from "../types/types";
 import { blogsQueryRepository } from "../repositories/query/blogs-query-repository";
 import { BlogsWithQueryOutputModel } from '../models/blogs/BlogViewModel'
-import { RequestWithQuery } from '../types'
-import { contentValidation, shortDescriptionValidation, titleValidation } from "./posts-router";
+import { RequestWithQuery } from '../types/types'
+import { postContentValidation, shortDescriptionValidation, titleValidation } from "./posts-router";
 import { PostsWithQueryOutputModel, PostViewModel } from "../models/posts/PostViewModel";
 import { postsQueryRepository } from "../repositories/query/posts-query-repository";
 import { PostInputModel } from "../models/posts/PostInputModel";
@@ -102,7 +102,7 @@ blogsRouter.post('/',
 blogsRouter.post('/:blogId/posts',
     basicAuthorizationMiddleware,
     titleValidation,
-    contentValidation,
+    postContentValidation,
     shortDescriptionValidation,
     blogIdValidationMiddleware,
     blogIdValidation,

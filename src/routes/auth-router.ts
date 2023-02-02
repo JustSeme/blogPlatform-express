@@ -9,7 +9,7 @@ import { LoginInputModel } from "../models/auth/LoginInputModel";
 import { MeOutputModel } from "../models/auth/MeOutputModel";
 import { ErrorMessagesOutputModel } from "../models/ErrorMessagesOutputModel";
 import { UserDBModel } from "../models/users/UserDBModel";
-import { RequestWithBody } from "../types";
+import { RequestWithBody } from "../types/types";
 
 export const authRouter = Router({})
 
@@ -43,8 +43,7 @@ authRouter.post('/login',
 authRouter.get('/me', 
     authMiddleware,
     (req: Request, res: Response<MeOutputModel>) => {
-        //@ts-ignore
-        const user: UserDBModel = req.user
+        const user: UserDBModel = req.user!
         res.send({
             email: user.email,
             login: user.login,

@@ -6,7 +6,7 @@ import { ErrorMessagesOutputModel } from "../models/ErrorMessagesOutputModel";
 import { UpdateVideoInputModel } from "../models/videos/UpdateVideoInputModel";
 import { resolutionsList, VideoViewModel } from "../models/videos/VideoViewModel";
 import { videosRepository } from "../repositories/videos-in-memory-repository";
-import { RequestWithBody, RequestWithParams, RequestWithParamsAndBody } from "../types";
+import { RequestWithBody, RequestWithParams, RequestWithParamsAndBody } from "../types/types";
 
 export const videosRouter = Router({})
 

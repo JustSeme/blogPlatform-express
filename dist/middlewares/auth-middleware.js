@@ -24,7 +24,6 @@ const authMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
         res.sendStatus(app_1.HTTP_STATUSES.UNAUTHORIZED_401);
         return;
     }
-    //@ts-ignore
     req.user = yield users_query_repository_1.usersQueryRepository.findUserById(userId);
     next();
 });

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.runDB = exports.usersCollection = exports.blogsCollection = exports.postsCollection = void 0;
+exports.runDB = exports.commentsCollection = exports.usersCollection = exports.blogsCollection = exports.postsCollection = void 0;
 const mongodb_1 = require("mongodb");
 const settings_1 = require("../settings");
 let mongoURI = settings_1.settings.mongoURI;
@@ -18,6 +18,7 @@ const blogPlatformDB = client.db('blog_platform');
 exports.postsCollection = blogPlatformDB.collection('posts');
 exports.blogsCollection = blogPlatformDB.collection('blogs');
 exports.usersCollection = blogPlatformDB.collection('users');
+exports.commentsCollection = blogPlatformDB.collection('comments');
 function runDB() {
     return __awaiter(this, void 0, void 0, function* () {
         try {

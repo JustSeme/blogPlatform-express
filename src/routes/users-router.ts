@@ -9,7 +9,7 @@ import { ReadUsersQuery } from "../models/users/ReadUsersQuery";
 import { UserInputModel } from "../models/users/UserInputModel";
 import { UsersWithQueryOutputModel, UserViewModel } from "../models/users/UsersViewModel";
 import { usersQueryRepository } from "../repositories/query/users-query-repository";
-import { RequestWithBody, RequestWithParams, RequestWithQuery } from "../types";
+import { RequestWithBody, RequestWithParams, RequestWithQuery } from "../types/types";
 
 export const usersRouter = Router({})
 

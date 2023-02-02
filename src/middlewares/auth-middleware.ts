@@ -17,7 +17,6 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
         return
     }
 
-    //@ts-ignore
     req.user = await usersQueryRepository.findUserById(userId)
     next()
 }
