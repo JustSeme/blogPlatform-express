@@ -24,5 +24,9 @@ export const commentsService = {
             commentatorInfo: {...createdComment.commentatorInfo},
             createdAt: createdComment.createdAt
         }
+    },
+
+    async deleteComment(commentId: string) {
+        return await commentsRepository.deleteComment(commentId)
     }
 }

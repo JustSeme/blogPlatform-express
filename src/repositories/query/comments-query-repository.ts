@@ -1,4 +1,4 @@
-import { CommentsWithQueryOutputModel } from "../../models/comments/CommentViewModel"
+import { CommentsWithQueryOutputModel, CommentViewModel } from "../../models/comments/CommentViewModel"
 import { ReadCommentsQueryParams } from "../../models/comments/ReadCommentsQuery"
 import { commentsCollection } from "../db"
 
@@ -15,7 +15,7 @@ export const commentsQueryRepository = {
 
         const skipCount = (+pageNumber - 1) * +pageSize
         
-        let commentsCursor = await commentsCollection.find(filter, { projection: { _id: 0 }}).skip(skipCount).limit(+pageSize)
+        let commentsCursor = await commentsCollection.find(filter, { projection: { _id: 0, postId: 0 }}).skip(skipCount).limit(+pageSize)
 
         const sortDirectionNumber = sortDirection === 'asc' ? 1 : -1
         const resultedComments = await commentsCursor.sort({[sortBy]: sortDirectionNumber}).toArray()
@@ -28,4 +28,8 @@ export const commentsQueryRepository = {
             items: resultedComments
         }
     },
+
+    async findCommentById(commentId: string) {
+        return await commentsCollection.findOne({id: commentId}, { projection: { _id: 0, postId: 0 }})
+    }
 }

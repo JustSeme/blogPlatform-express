@@ -16,6 +16,12 @@ exports.commentsRepository = {
         return __awaiter(this, void 0, void 0, function* () {
             yield db_1.commentsCollection.insertOne(createdComment);
         });
+    },
+    deleteComment(commentId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield db_1.commentsCollection.deleteOne({ id: commentId });
+            return result.deletedCount === 1;
+        });
     }
 };
 //# sourceMappingURL=comments-db-repository.js.map

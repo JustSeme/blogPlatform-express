@@ -10,6 +10,7 @@ import { postsService } from './domain/posts-service'
 import { blogsService } from './domain/blogs-service'
 import { usersService } from './domain/users-service'
 import { settings } from './settings'
+import { commentsRouter } from './routes/comments-router'
 
 export const app = express()
 const port = settings.PORT
@@ -23,7 +24,8 @@ export const HTTP_STATUSES = {
 
     NOT_FOUND_404: 404,
     BAD_REQUEST_400: 400,
-    UNAUTHORIZED_401: 401
+    UNAUTHORIZED_401: 401,
+    FORBIDDEN_403: 403,
 }
 
 const startApp = async () => {
@@ -40,6 +42,8 @@ app.use('/homeworks/posts', postsRouter)
 
 app.use('/homeworks/users', usersRouter)
 app.use('/homeworks/auth', authRouter)
+
+app.use('/homeworks/comments', commentsRouter)
 
 app.delete('/homework01/testing/all-data', async (req: Request, res: Response) => {
     await videosRepository.deleteVideo(null)

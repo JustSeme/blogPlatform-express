@@ -33,6 +33,11 @@ exports.commentsService = {
                 createdAt: createdComment.createdAt
             };
         });
+    },
+    deleteComment(commentId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield comments_db_repository_1.commentsRepository.deleteComment(commentId);
+        });
     }
 };
 //# sourceMappingURL=comments-service.js.map

@@ -21,7 +21,7 @@ exports.commentsQueryRepository = {
             const totalCount = yield db_1.commentsCollection.count(filter);
             const pagesCount = Math.ceil(totalCount / +pageSize);
             const skipCount = (+pageNumber - 1) * +pageSize;
-            let commentsCursor = yield db_1.commentsCollection.find(filter, { projection: { _id: 0 } }).skip(skipCount).limit(+pageSize);
+            let commentsCursor = yield db_1.commentsCollection.find(filter, { projection: { _id: 0, postId: 0 } }).skip(skipCount).limit(+pageSize);
             const sortDirectionNumber = sortDirection === 'asc' ? 1 : -1;
             const resultedComments = yield commentsCursor.sort({ [sortBy]: sortDirectionNumber }).toArray();
             return {
@@ -33,5 +33,10 @@ exports.commentsQueryRepository = {
             };
         });
     },
+    findCommentById(commentId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield db_1.commentsCollection.findOne({ id: commentId }, { projection: { _id: 0, postId: 0 } });
+        });
+    }
 };
 //# sourceMappingURL=comments-query-repository.js.map
