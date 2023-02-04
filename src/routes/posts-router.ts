@@ -4,7 +4,7 @@ import { HTTP_STATUSES } from "../app";
 import { ErrorMessagesOutputModel } from "../models/ErrorMessagesOutputModel";
 import { PostInputModel } from "../models/posts/PostInputModel";
 import { PostsWithQueryOutputModel, PostViewModel } from "../models/posts/PostViewModel";
-import { RequestWithBody, RequestWithParams, RequestWithParamsAndBody, RequestWithQuery } from "../types/types";
+import { RequestWithBody, RequestWithParams, RequestWithParamsAndBody, RequestWithParamsAndQuery, RequestWithQuery } from "../types/types";
 import { inputValidationMiddleware } from "../middlewares/input-validation-middleware";
 import { basicAuthorizationMiddleware } from "../middlewares/basic-authorizatoin-middleware";
 import { postsService } from "../domain/posts-service";
@@ -15,6 +15,10 @@ import { authMiddleware } from "../middlewares/auth-middleware";
 import { CommentInputModel } from "../models/comments/CommentInputModel";
 import { CommentViewModel } from "../models/comments/CommentViewModel";
 import { commentsService } from "../domain/comments-service";
+import { postIdValidationMiddleware } from "../middlewares/postId-validation-middleware";
+import { ReadCommentsQueryParams } from "../models/comments/ReadCommentsQuery";
+import { CommentsWithQueryOutputModel } from "../models/comments/CommentViewModel";
+import { commentsQueryRepository } from "../repositories/query/comments-query-repository";
 
 export const postsRouter = Router({})
 
@@ -79,6 +83,13 @@ postsRouter.get('/:id', async (req: RequestWithParams<{ id: string }>, res: Resp
     res.json(findedPosts as PostViewModel)
 })
 
+postsRouter.get('/:postId/comments',
+    postIdValidationMiddleware,
+    async (req: RequestWithParamsAndQuery<{postId: string}, ReadCommentsQueryParams>, res: Response<CommentsWithQueryOutputModel>) => {
+        const findedComments = await commentsQueryRepository.findComments(req.query, req.params.postId)
+        res.send(findedComments)
+    })
+
 postsRouter.post('/',
     basicAuthorizationMiddleware,
     titleValidation,
@@ -96,16 +107,11 @@ postsRouter.post('/',
 
 postsRouter.post('/:postId/comments', 
     authMiddleware,
+    postIdValidationMiddleware,
     commentContentValidation,
     inputValidationMiddleware,
     async (req: RequestWithParamsAndBody<{postId: string}, CommentInputModel>, res: Response<CommentViewModel | ErrorMessagesOutputModel>) => {
-        const commentedPost = await postsQueryRepository.findPostById(req.params.postId)
-        if(!commentedPost) {
-            res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
-            return
-        }
-
-        const createdComment = await commentsService.createComment(req.body.content, req.user!)
+        const createdComment = await commentsService.createComment(req.body.content, req.user!, req.params.postId)
         res.send(createdComment)
     })
 

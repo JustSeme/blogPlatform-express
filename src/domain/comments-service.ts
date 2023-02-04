@@ -1,22 +1,28 @@
 import { randomUUID } from "crypto";
-import { CommentViewModel } from "../models/comments/CommentViewModel";
+import { CommentDBModel } from "../models/comments/CommentDBModel";
 import { UserDBModel } from "../models/users/UserDBModel";
 import { commentsRepository } from "../repositories/comments-db-repository";
 
 export const commentsService = {
-    async createComment(content: string, commentator: UserDBModel) {
-        const createdComment: CommentViewModel = {
+    async createComment(content: string, commentator: UserDBModel, postId: string) {
+        const createdComment: CommentDBModel = {
             id: randomUUID(),
             content,
             commentatorInfo: {
                 userId: commentator.id,
                 userLogin: commentator.login
             },
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),
+            postId
         }
 
         await commentsRepository.createComment(createdComment)
 
-        return createdComment
+        return {
+            id: createdComment.id,
+            content: createdComment.content,
+            commentatorInfo: {...createdComment.commentatorInfo},
+            createdAt: createdComment.createdAt
+        }
     }
 }

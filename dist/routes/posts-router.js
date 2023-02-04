@@ -20,6 +20,8 @@ const posts_query_repository_1 = require("../repositories/query/posts-query-repo
 const blogs_query_repository_1 = require("../repositories/query/blogs-query-repository");
 const auth_middleware_1 = require("../middlewares/auth-middleware");
 const comments_service_1 = require("../domain/comments-service");
+const postId_validation_middleware_1 = require("../middlewares/postId-validation-middleware");
+const comments_query_repository_1 = require("../repositories/query/comments-query-repository");
 exports.postsRouter = (0, express_1.Router)({});
 exports.titleValidation = (0, express_validator_1.body)('title')
     .exists()
@@ -73,19 +75,18 @@ exports.postsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, 
     }
     res.json(findedPosts);
 }));
+exports.postsRouter.get('/:postId/comments', postId_validation_middleware_1.postIdValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const findedComments = yield comments_query_repository_1.commentsQueryRepository.findComments(req.query, req.params.postId);
+    res.send(findedComments);
+}));
 exports.postsRouter.post('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, exports.titleValidation, exports.shortDescriptionValidation, exports.postContentValidation, blogIdValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const createdPost = yield posts_service_1.postsService.createPost(req.body, null);
     res
         .status(app_1.HTTP_STATUSES.CREATED_201)
         .send(createdPost);
 }));
-exports.postsRouter.post('/:postId/comments', auth_middleware_1.authMiddleware, commentContentValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const commentedPost = yield posts_query_repository_1.postsQueryRepository.findPostById(req.params.postId);
-    if (!commentedPost) {
-        res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
-        return;
-    }
-    const createdComment = yield comments_service_1.commentsService.createComment(req.body.content, req.user);
+exports.postsRouter.post('/:postId/comments', auth_middleware_1.authMiddleware, postId_validation_middleware_1.postIdValidationMiddleware, commentContentValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const createdComment = yield comments_service_1.commentsService.createComment(req.body.content, req.user, req.params.postId);
     res.send(createdComment);
 }));
 exports.postsRouter.put('/:id', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, exports.titleValidation, exports.shortDescriptionValidation, exports.postContentValidation, blogIdValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {

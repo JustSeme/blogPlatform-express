@@ -13,7 +13,7 @@ exports.commentsService = void 0;
 const crypto_1 = require("crypto");
 const comments_db_repository_1 = require("../repositories/comments-db-repository");
 exports.commentsService = {
-    createComment(content, commentator) {
+    createComment(content, commentator, postId) {
         return __awaiter(this, void 0, void 0, function* () {
             const createdComment = {
                 id: (0, crypto_1.randomUUID)(),
@@ -22,10 +22,16 @@ exports.commentsService = {
                     userId: commentator.id,
                     userLogin: commentator.login
                 },
-                createdAt: new Date().toISOString()
+                createdAt: new Date().toISOString(),
+                postId
             };
             yield comments_db_repository_1.commentsRepository.createComment(createdComment);
-            return createdComment;
+            return {
+                id: createdComment.id,
+                content: createdComment.content,
+                commentatorInfo: Object.assign({}, createdComment.commentatorInfo),
+                createdAt: createdComment.createdAt
+            };
         });
     }
 };

@@ -1,6 +1,6 @@
 import { MongoClient } from 'mongodb'
 import { BlogViewModel } from '../models/blogs/BlogViewModel';
-import { CommentViewModel } from '../models/comments/CommentViewModel';
+import { CommentDBModel } from '../models/comments/CommentDBModel';
 import { PostViewModel } from '../models/posts/PostViewModel';
 import { UserDBModel } from '../models/users/UserDBModel';
 import { settings } from '../settings';
@@ -14,7 +14,7 @@ const blogPlatformDB = client.db('blog_platform')
 export const postsCollection = blogPlatformDB.collection<PostViewModel>('posts')
 export const blogsCollection = blogPlatformDB.collection<BlogViewModel>('blogs')
 export const usersCollection = blogPlatformDB.collection<UserDBModel>('users')
-export const commentsCollection = blogPlatformDB.collection<CommentViewModel>('comments')
+export const commentsCollection = blogPlatformDB.collection<CommentDBModel>('comments')
 
 export async function runDB() {
     try {
