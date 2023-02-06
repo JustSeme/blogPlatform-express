@@ -15,6 +15,7 @@ const express_validator_1 = require("express-validator");
 const app_1 = require("../app");
 const comments_service_1 = require("../domain/comments-service");
 const auth_middleware_1 = require("../middlewares/auth-middleware");
+const commentId_validation_middleware_1 = require("../middlewares/commentId-validation-middleware");
 const input_validation_middleware_1 = require("../middlewares/input-validation-middleware");
 const ownership_validation_middleware_1 = require("../middlewares/ownership-validation-middleware");
 const comments_query_repository_1 = require("../repositories/query/comments-query-repository");
@@ -33,7 +34,7 @@ exports.commentsRouter.get('/:commentId', (req, res) => __awaiter(void 0, void 0
     }
     res.send(findedComment);
 }));
-exports.commentsRouter.delete('/:commentId', auth_middleware_1.authMiddleware, ownership_validation_middleware_1.ownershipValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.commentsRouter.delete('/:commentId', auth_middleware_1.authMiddleware, commentId_validation_middleware_1.commentIdValidationMiddleware, ownership_validation_middleware_1.ownershipValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const isDeleted = yield comments_service_1.commentsService.deleteComment(req.params.commentId);
     if (!isDeleted) {
         res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
@@ -41,7 +42,7 @@ exports.commentsRouter.delete('/:commentId', auth_middleware_1.authMiddleware, o
     }
     res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
 }));
-exports.commentsRouter.put('/:commentId', auth_middleware_1.authMiddleware, ownership_validation_middleware_1.ownershipValidationMiddleware, exports.commentContentValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.commentsRouter.put('/:commentId', auth_middleware_1.authMiddleware, commentId_validation_middleware_1.commentIdValidationMiddleware, ownership_validation_middleware_1.ownershipValidationMiddleware, exports.commentContentValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const isUpdated = yield comments_service_1.commentsService.updateComment(req.params.commentId, req.body.content);
     if (!isUpdated) {
         res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);

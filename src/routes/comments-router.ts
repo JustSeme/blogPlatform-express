@@ -3,6 +3,7 @@ import { body } from "express-validator";
 import { HTTP_STATUSES } from "../app";
 import { commentsService } from "../domain/comments-service";
 import { authMiddleware } from "../middlewares/auth-middleware";
+import { commentIdValidationMiddleware } from "../middlewares/commentId-validation-middleware";
 import { inputValidationMiddleware } from "../middlewares/input-validation-middleware";
 import { ownershipValidationMiddleware } from "../middlewares/ownership-validation-middleware";
 import { CommentInputModel } from "../models/comments/CommentInputModel";
@@ -33,6 +34,7 @@ commentsRouter.get('/:commentId',
 
 commentsRouter.delete('/:commentId', 
     authMiddleware,
+    commentIdValidationMiddleware,
     ownershipValidationMiddleware,
     async (req: RequestWithParams<{commentId: string}>, res: Response) => {
         const isDeleted = await commentsService.deleteComment(req.params.commentId)
@@ -46,6 +48,7 @@ commentsRouter.delete('/:commentId',
 
 commentsRouter.put('/:commentId',
     authMiddleware,
+    commentIdValidationMiddleware,
     ownershipValidationMiddleware,
     commentContentValidation,
     inputValidationMiddleware,
