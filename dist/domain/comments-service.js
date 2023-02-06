@@ -38,6 +38,11 @@ exports.commentsService = {
         return __awaiter(this, void 0, void 0, function* () {
             return yield comments_db_repository_1.commentsRepository.deleteComment(commentId);
         });
+    },
+    updateComment(commentId, content) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield comments_db_repository_1.commentsRepository.updateComment(commentId, content);
+        });
     }
 };
 //# sourceMappingURL=comments-service.js.map

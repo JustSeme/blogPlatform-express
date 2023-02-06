@@ -19,6 +19,7 @@ import { postIdValidationMiddleware } from "../middlewares/postId-validation-mid
 import { ReadCommentsQueryParams } from "../models/comments/ReadCommentsQuery";
 import { CommentsWithQueryOutputModel } from "../models/comments/CommentViewModel";
 import { commentsQueryRepository } from "../repositories/query/comments-query-repository";
+import { commentContentValidation } from "./comments-router";
 
 export const postsRouter = Router({})
 
@@ -55,13 +56,6 @@ const blogIdValidation = body('blogId')
     return true
 })
 .isLength({ min: 1, max: 100 })
-
-const commentContentValidation = body('content')
-.exists()
-.trim()
-.notEmpty()
-.isString()
-.isLength({ min: 20, max: 300 })
 
 postsRouter.get('/', async (req: RequestWithQuery<ReadPostsQueryParams>, res: Response<PostsWithQueryOutputModel>) => {
     const findedPosts = await postsQueryRepository.findPosts(req.query, null)

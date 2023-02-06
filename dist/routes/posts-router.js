@@ -22,6 +22,7 @@ const auth_middleware_1 = require("../middlewares/auth-middleware");
 const comments_service_1 = require("../domain/comments-service");
 const postId_validation_middleware_1 = require("../middlewares/postId-validation-middleware");
 const comments_query_repository_1 = require("../repositories/query/comments-query-repository");
+const comments_router_1 = require("./comments-router");
 exports.postsRouter = (0, express_1.Router)({});
 exports.titleValidation = (0, express_validator_1.body)('title')
     .exists()
@@ -53,12 +54,6 @@ const blogIdValidation = (0, express_validator_1.body)('blogId')
     return true;
 }))
     .isLength({ min: 1, max: 100 });
-const commentContentValidation = (0, express_validator_1.body)('content')
-    .exists()
-    .trim()
-    .notEmpty()
-    .isString()
-    .isLength({ min: 20, max: 300 });
 exports.postsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const findedPosts = yield posts_query_repository_1.postsQueryRepository.findPosts(req.query, null);
     if (!findedPosts.items.length) {
@@ -85,7 +80,7 @@ exports.postsRouter.post('/', basic_authorizatoin_middleware_1.basicAuthorizatio
         .status(app_1.HTTP_STATUSES.CREATED_201)
         .send(createdPost);
 }));
-exports.postsRouter.post('/:postId/comments', auth_middleware_1.authMiddleware, postId_validation_middleware_1.postIdValidationMiddleware, commentContentValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.postsRouter.post('/:postId/comments', auth_middleware_1.authMiddleware, postId_validation_middleware_1.postIdValidationMiddleware, comments_router_1.commentContentValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const createdComment = yield comments_service_1.commentsService.createComment(req.body.content, req.user, req.params.postId);
     res.send(createdComment);
 }));

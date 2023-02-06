@@ -9,13 +9,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.commentsRouter = void 0;
+exports.commentContentValidation = exports.commentsRouter = void 0;
 const express_1 = require("express");
+const express_validator_1 = require("express-validator");
 const app_1 = require("../app");
 const comments_service_1 = require("../domain/comments-service");
 const auth_middleware_1 = require("../middlewares/auth-middleware");
+const ownership_validation_middleware_1 = require("../middlewares/ownership-validation-middleware");
 const comments_query_repository_1 = require("../repositories/query/comments-query-repository");
 exports.commentsRouter = (0, express_1.Router)({});
+exports.commentContentValidation = (0, express_validator_1.body)('content')
+    .exists()
+    .trim()
+    .notEmpty()
+    .isString()
+    .isLength({ min: 20, max: 300 });
 exports.commentsRouter.get('/:commentId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const findedComment = yield comments_query_repository_1.commentsQueryRepository.findCommentById(req.params.commentId);
     if (!findedComment) {
@@ -26,6 +34,13 @@ exports.commentsRouter.get('/:commentId', (req, res) => __awaiter(void 0, void 0
 exports.commentsRouter.delete('/:commentId', auth_middleware_1.authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const isDeleted = yield comments_service_1.commentsService.deleteComment(req.params.commentId);
     if (!isDeleted) {
+        res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
+    }
+    res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
+}));
+exports.commentsRouter.put('/:commentId', auth_middleware_1.authMiddleware, ownership_validation_middleware_1.ownershipValidationMiddleware, exports.commentContentValidation, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const isUpdated = yield comments_service_1.commentsService.updateComment(req.params.commentId, req.body.content);
+    if (!isUpdated) {
         res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
     }
     res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
