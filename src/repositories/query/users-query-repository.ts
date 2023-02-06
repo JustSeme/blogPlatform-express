@@ -14,11 +14,13 @@ export const usersQueryRepository = {
             filterArray.push({login: {$regex: searchLoginTerm, $options: 'i'}})
         }
 
-        const totalCount = await usersCollection.count({$or: filterArray})
+        const filterObject = filterArray.length ? {$or: filterArray} : {}
+
+        const totalCount = await usersCollection.count(filterObject)
         const pagesCount = Math.ceil(totalCount / +pageSize)
         
         const skipCount = (+pageNumber - 1) * +pageSize
-        let usersCursor = await usersCollection.find({$or: filterArray}, { projection: { _id: 0 }}).skip(skipCount).limit(+pageSize)
+        let usersCursor = await usersCollection.find(filterObject, { projection: { _id: 0 }}).skip(skipCount).limit(+pageSize)
 
         const sortDirectionNumber = sortDirection === 'asc' ? 1 : -1
         const resultedUsers = await usersCursor.sort({[sortBy]: sortDirectionNumber}).toArray()

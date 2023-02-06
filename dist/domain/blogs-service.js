@@ -25,6 +25,7 @@ exports.blogsService = {
                 description: body.description,
                 websiteUrl: body.websiteUrl,
                 createdAt: new Date().toISOString(),
+                isMembership: true
             };
             yield blogs_db_repository_1.blogsRepository.createBlog(createdBlog);
             //@ts-ignore
