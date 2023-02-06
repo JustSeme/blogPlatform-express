@@ -82,7 +82,13 @@ exports.postsRouter.post('/', basic_authorizatoin_middleware_1.basicAuthorizatio
 }));
 exports.postsRouter.post('/:postId/comments', auth_middleware_1.authMiddleware, postId_validation_middleware_1.postIdValidationMiddleware, comments_router_1.commentContentValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const createdComment = yield comments_service_1.commentsService.createComment(req.body.content, req.user, req.params.postId);
-    res.send(createdComment);
+    if (!createdComment) {
+        res.sendStatus(app_1.HTTP_STATUSES.UNAUTHORIZED_401);
+        return;
+    }
+    res
+        .status(app_1.HTTP_STATUSES.CREATED_201)
+        .send(createdComment);
 }));
 exports.postsRouter.put('/:id', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, exports.titleValidation, exports.shortDescriptionValidation, exports.postContentValidation, blogIdValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const isUpdated = yield posts_service_1.postsService.updatePost(req.params.id, req.body);

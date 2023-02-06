@@ -4,7 +4,11 @@ import { UserDBModel } from "../models/users/UserDBModel";
 import { commentsRepository } from "../repositories/comments-db-repository";
 
 export const commentsService = {
-    async createComment(content: string, commentator: UserDBModel, postId: string) {
+    async createComment(content: string, commentator: UserDBModel | null, postId: string) {
+        if(!commentator) {
+            return null
+        }
+
         const createdComment: CommentDBModel = {
             id: randomUUID(),
             content,

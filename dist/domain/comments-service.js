@@ -15,6 +15,9 @@ const comments_db_repository_1 = require("../repositories/comments-db-repository
 exports.commentsService = {
     createComment(content, commentator, postId) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (!commentator) {
+                return null;
+            }
             const createdComment = {
                 id: (0, crypto_1.randomUUID)(),
                 content,

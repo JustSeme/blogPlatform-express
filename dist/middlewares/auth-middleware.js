@@ -15,7 +15,7 @@ const jwtService_1 = require("../application/jwtService");
 const users_query_repository_1 = require("../repositories/query/users-query-repository");
 const authMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.headers.authorization) {
-        res.send(app_1.HTTP_STATUSES.UNAUTHORIZED_401);
+        res.sendStatus(app_1.HTTP_STATUSES.UNAUTHORIZED_401);
         return;
     }
     const token = req.headers.authorization.split(' ')[1];

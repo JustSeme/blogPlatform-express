@@ -105,8 +105,15 @@ postsRouter.post('/:postId/comments',
     commentContentValidation,
     inputValidationMiddleware,
     async (req: RequestWithParamsAndBody<{postId: string}, CommentInputModel>, res: Response<CommentViewModel | ErrorMessagesOutputModel>) => {
-        const createdComment = await commentsService.createComment(req.body.content, req.user!, req.params.postId)
-        res.send(createdComment)
+        const createdComment = await commentsService.createComment(req.body.content, req.user, req.params.postId)
+        if(!createdComment) {
+            res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
+            return
+        }
+        
+        res
+            .status(HTTP_STATUSES.CREATED_201)
+            .send(createdComment)
     })
 
 postsRouter.put('/:id',
