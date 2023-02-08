@@ -1,5 +1,6 @@
 import { Request, Response, Router } from "express";
 import { body } from "express-validator";
+import { emailAdapter } from "../adapters/emailAdapter";
 import { HTTP_STATUSES } from "../app";
 import { jwtService } from "../application/jwtService";
 import { usersService } from "../domain/users-service";
@@ -47,8 +48,11 @@ authRouter.post('/registration',
     passwordValidation,
     emailValidation,
     inputValidationMiddleware,
-    async (req: RequestWithBody<UserInputModel>, res: Response<ErrorMessagesOutputModel | any>) => {
-        
+    async (req: RequestWithBody<UserInputModel>, res: Response<ErrorMessagesOutputModel>) => {
+        const isSended = await emailAdapter.sendConfirmationCode(req.body.email)
+        if(isSended) {
+            res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
+        }
     })
 
 authRouter.get('/me', 

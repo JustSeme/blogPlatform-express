@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.authRouter = void 0;
 const express_1 = require("express");
 const express_validator_1 = require("express-validator");
+const emailAdapter_1 = require("../adapters/emailAdapter");
 const app_1 = require("../app");
 const jwtService_1 = require("../application/jwtService");
 const users_service_1 = require("../domain/users-service");
@@ -39,6 +40,10 @@ exports.authRouter.post('/login', loginOrEmailValidation, passwordValidation, in
     res.send(jwtTokenObj);
 }));
 exports.authRouter.post('/registration', users_router_1.loginValidation, passwordValidation, users_router_1.emailValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const isSended = yield emailAdapter_1.emailAdapter.sendConfirmationCode(req.body.email);
+    if (isSended) {
+        res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
+    }
 }));
 exports.authRouter.get('/me', auth_middleware_1.authMiddleware, (req, res) => {
     const user = req.user;

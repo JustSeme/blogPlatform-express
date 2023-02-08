@@ -17,5 +17,7 @@ export const emailAdapter = {
             subject: 'Confirmation Code',
             html: "here will be confirmation code",
         });
+        
+        return info.accepted.length > 0
     }
 }
