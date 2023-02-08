@@ -47,7 +47,7 @@ authRouter.post('/registration',
     passwordValidation,
     emailValidation,
     inputValidationMiddleware,
-    (req: RequestWithBody<UserInputModel>, res: Response<ErrorMessagesOutputModel>) => {
+    async (req: RequestWithBody<UserInputModel>, res: Response<ErrorMessagesOutputModel | any>) => {
         
     })
 

@@ -38,8 +38,8 @@ exports.authRouter.post('/login', loginOrEmailValidation, passwordValidation, in
     const jwtTokenObj = yield jwtService_1.jwtService.createJWT(user);
     res.send(jwtTokenObj);
 }));
-exports.authRouter.post('/registration', users_router_1.loginValidation, passwordValidation, users_router_1.emailValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => {
-});
+exports.authRouter.post('/registration', users_router_1.loginValidation, passwordValidation, users_router_1.emailValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+}));
 exports.authRouter.get('/me', auth_middleware_1.authMiddleware, (req, res) => {
     const user = req.user;
     res.send({
