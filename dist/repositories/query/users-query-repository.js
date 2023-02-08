@@ -48,6 +48,16 @@ exports.usersQueryRepository = {
         return __awaiter(this, void 0, void 0, function* () {
             return yield db_1.usersCollection.findOne({ id: userId }, { projection: { _id: 0 } });
         });
+    },
+    findUserByEmail(email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield db_1.usersCollection.findOne({ email: email });
+        });
+    },
+    findUserByLogin(login) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield db_1.usersCollection.findOne({ login: login });
+        });
     }
 };
 //# sourceMappingURL=users-query-repository.js.map

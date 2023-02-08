@@ -13,27 +13,41 @@ import { RequestWithBody, RequestWithParams, RequestWithQuery } from "../types/t
 
 export const usersRouter = Router({})
 
-const loginValidation = body('login')
+export const loginValidation = body('login')
 .exists()
 .trim()
 .notEmpty()
 .isString()
 .isLength({ min: 3, max: 10 })
 .matches(/^[a-zA-Z0-9_-]*$/, 'i')
+.custom(async login => {
+    return usersQueryRepository.findUserByLogin(login).then(user => {
+        if(user) {
+            return Promise.reject('Login already in use')
+        }
+    })
+})
 
-const passwordValidation = body('password')
+export const passwordValidation = body('password')
 .exists()
 .trim()
 .notEmpty()
 .isString()
 .isLength({ min: 6, max: 20 })
 
-const emailValidation = body('email')
+export const emailValidation = body('email')
 .exists()
 .trim()
 .notEmpty()
 .isString()
 .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
+.custom(async email => {
+    return usersQueryRepository.findUserByEmail(email).then(user => {
+        if(user) {
+            return Promise.reject('Email already in use')
+        }
+    })
+})
 
 usersRouter.post('/', 
     basicAuthorizationMiddleware,

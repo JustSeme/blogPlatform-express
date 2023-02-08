@@ -17,6 +17,7 @@ const jwtService_1 = require("../application/jwtService");
 const users_service_1 = require("../domain/users-service");
 const auth_middleware_1 = require("../middlewares/auth-middleware");
 const input_validation_middleware_1 = require("../middlewares/input-validation-middleware");
+const users_router_1 = require("./users-router");
 exports.authRouter = (0, express_1.Router)({});
 const loginOrEmailValidation = (0, express_validator_1.body)('loginOrEmail')
     .exists()
@@ -37,6 +38,8 @@ exports.authRouter.post('/login', loginOrEmailValidation, passwordValidation, in
     const jwtTokenObj = yield jwtService_1.jwtService.createJWT(user);
     res.send(jwtTokenObj);
 }));
+exports.authRouter.post('/registration', users_router_1.loginValidation, passwordValidation, users_router_1.emailValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => {
+});
 exports.authRouter.get('/me', auth_middleware_1.authMiddleware, (req, res) => {
     const user = req.user;
     res.send({

@@ -9,7 +9,9 @@ import { LoginInputModel } from "../models/auth/LoginInputModel";
 import { MeOutputModel } from "../models/auth/MeOutputModel";
 import { ErrorMessagesOutputModel } from "../models/ErrorMessagesOutputModel";
 import { UserDBModel } from "../models/users/UserDBModel";
+import { UserInputModel } from "../models/users/UserInputModel";
 import { RequestWithBody } from "../types/types";
+import { emailValidation, loginValidation } from "./users-router";
 
 export const authRouter = Router({})
 
@@ -39,6 +41,15 @@ authRouter.post('/login',
         const jwtTokenObj = await jwtService.createJWT(user)
         res.send(jwtTokenObj)
 })
+
+authRouter.post('/registration',
+    loginValidation,
+    passwordValidation,
+    emailValidation,
+    inputValidationMiddleware,
+    (req: RequestWithBody<UserInputModel>, res: Response<ErrorMessagesOutputModel>) => {
+        
+    })
 
 authRouter.get('/me', 
     authMiddleware,

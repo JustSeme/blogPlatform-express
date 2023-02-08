@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.usersRouter = void 0;
+exports.emailValidation = exports.passwordValidation = exports.loginValidation = exports.usersRouter = void 0;
 const express_1 = require("express");
 const express_validator_1 = require("express-validator");
 const app_1 = require("../app");
@@ -18,26 +18,40 @@ const basic_authorizatoin_middleware_1 = require("../middlewares/basic-authoriza
 const input_validation_middleware_1 = require("../middlewares/input-validation-middleware");
 const users_query_repository_1 = require("../repositories/query/users-query-repository");
 exports.usersRouter = (0, express_1.Router)({});
-const loginValidation = (0, express_validator_1.body)('login')
+exports.loginValidation = (0, express_validator_1.body)('login')
     .exists()
     .trim()
     .notEmpty()
     .isString()
     .isLength({ min: 3, max: 10 })
-    .matches(/^[a-zA-Z0-9_-]*$/, 'i');
-const passwordValidation = (0, express_validator_1.body)('password')
+    .matches(/^[a-zA-Z0-9_-]*$/, 'i')
+    .custom((login) => __awaiter(void 0, void 0, void 0, function* () {
+    return users_query_repository_1.usersQueryRepository.findUserByLogin(login).then(user => {
+        if (user) {
+            return Promise.reject('Login already in use');
+        }
+    });
+}));
+exports.passwordValidation = (0, express_validator_1.body)('password')
     .exists()
     .trim()
     .notEmpty()
     .isString()
     .isLength({ min: 6, max: 20 });
-const emailValidation = (0, express_validator_1.body)('email')
+exports.emailValidation = (0, express_validator_1.body)('email')
     .exists()
     .trim()
     .notEmpty()
     .isString()
-    .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/);
-exports.usersRouter.post('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, loginValidation, passwordValidation, emailValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
+    .custom((email) => __awaiter(void 0, void 0, void 0, function* () {
+    return users_query_repository_1.usersQueryRepository.findUserByEmail(email).then(user => {
+        if (user) {
+            return Promise.reject('Email already in use');
+        }
+    });
+}));
+exports.usersRouter.post('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, exports.loginValidation, exports.passwordValidation, exports.emailValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const createdUser = yield users_service_1.usersService.createUser(req.body.login, req.body.password, req.body.email);
     res.status(app_1.HTTP_STATUSES.CREATED_201).json(createdUser);
 }));
