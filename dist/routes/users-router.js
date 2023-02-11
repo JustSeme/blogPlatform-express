@@ -13,7 +13,7 @@ exports.emailValidation = exports.passwordValidation = exports.loginValidation =
 const express_1 = require("express");
 const express_validator_1 = require("express-validator");
 const app_1 = require("../app");
-const users_service_1 = require("../domain/users-service");
+const auth_service_1 = require("../domain/auth-service");
 const basic_authorizatoin_middleware_1 = require("../middlewares/basic-authorizatoin-middleware");
 const input_validation_middleware_1 = require("../middlewares/input-validation-middleware");
 const users_query_repository_1 = require("../repositories/query/users-query-repository");
@@ -52,11 +52,15 @@ exports.emailValidation = (0, express_validator_1.body)('email')
     });
 }));
 exports.usersRouter.post('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, exports.loginValidation, exports.passwordValidation, exports.emailValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const createdUser = yield users_service_1.usersService.createUser(req.body.login, req.body.password, req.body.email);
+    const createdUser = yield auth_service_1.authService.createUser(req.body.login, req.body.password, req.body.email);
+    if (!createdUser) {
+        res.sendStatus(app_1.HTTP_STATUSES.BAD_REQUEST_400);
+        return;
+    }
     res.status(app_1.HTTP_STATUSES.CREATED_201).json(createdUser);
 }));
 exports.usersRouter.delete('/:id', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const isDeleted = yield users_service_1.usersService.deleteUsers(req.params.id);
+    const isDeleted = yield auth_service_1.authService.deleteUsers(req.params.id);
     if (!isDeleted) {
         res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
         return;

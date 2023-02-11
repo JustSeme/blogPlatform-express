@@ -1,7 +1,7 @@
 import { Router, Response } from "express";
 import { body } from "express-validator";
 import { HTTP_STATUSES } from "../app";
-import { usersService } from "../domain/users-service";
+import { authService } from "../domain/auth-service";
 import { basicAuthorizationMiddleware } from "../middlewares/basic-authorizatoin-middleware";
 import { inputValidationMiddleware } from "../middlewares/input-validation-middleware";
 import { ErrorMessagesOutputModel } from "../models/ErrorMessagesOutputModel";
@@ -56,15 +56,18 @@ usersRouter.post('/',
     emailValidation,
     inputValidationMiddleware,
     async (req: RequestWithBody<UserInputModel>, res: Response<UserViewModel | ErrorMessagesOutputModel>) => {
-        const createdUser = await usersService.createUser(req.body.login, req.body.password, req.body.email)
-    
+        const createdUser = await authService.createUser(req.body.login, req.body.password, req.body.email)
+        if(!createdUser) {
+            res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
+            return
+        }
         res.status(HTTP_STATUSES.CREATED_201).json(createdUser)
 })
 
 usersRouter.delete('/:id',
     basicAuthorizationMiddleware,
     async (req: RequestWithParams<{id: string}>, res: Response) => {
-        const isDeleted = await usersService.deleteUsers(req.params.id)
+        const isDeleted = await authService.deleteUsers(req.params.id)
         if(!isDeleted) {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
             return

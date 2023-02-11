@@ -8,7 +8,7 @@ import { usersRouter } from './routes/users-router'
 import { authRouter } from './routes/auth-router'
 import { postsService } from './domain/posts-service'
 import { blogsService } from './domain/blogs-service'
-import { usersService } from './domain/users-service'
+import { authService } from './domain/auth-service'
 import { settings } from './settings'
 import { commentsRouter } from './routes/comments-router'
 
@@ -53,7 +53,7 @@ app.delete('/homework01/testing/all-data', async (req: Request, res: Response) =
 app.delete('/homeworks/testing/all-data', async (req: Request, res: Response) => {
     await postsService.deletePosts(null)
     await blogsService.deleteBlog(null)
-    await usersService.deleteUsers(null)
+    await authService.deleteUsers(null)
     res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
 })
 

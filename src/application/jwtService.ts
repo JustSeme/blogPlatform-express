@@ -1,10 +1,9 @@
-import { UserDBModel } from "../models/users/UserDBModel";
 import jwt from 'jsonwebtoken'
 import { settings } from "../settings";
 
 export const jwtService = {
-    async createJWT(user: UserDBModel) {
-        const token = await jwt.sign({userId: user.id}, settings.JWT_SECRET, {expiresIn: '60h'})
+    async createJWT(userId: string) {
+        const token = await jwt.sign({userId: userId}, settings.JWT_SECRET, {expiresIn: '60h'})
         return {
             accessToken: token
         }

@@ -22,6 +22,11 @@ exports.usersRepository = {
             return yield db_1.usersCollection.findOne({ $or: [{ login: loginOrEmail }, { email: loginOrEmail }] });
         });
     },
+    findUserByConfirmationCode(code) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield db_1.usersCollection.findOne({ 'emailConfirmation.confirmationCode': code });
+        });
+    },
     deleteUser(id) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield db_1.usersCollection.deleteOne({ id: id });
@@ -34,5 +39,11 @@ exports.usersRepository = {
             return result.deletedCount > 0;
         });
     },
+    updateConfirmation(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield db_1.usersCollection.updateOne({ id: userId }, { $set: { 'emailConfirmation.isConfirmed': true } });
+            return result.modifiedCount === 1;
+        });
+    }
 };
 //# sourceMappingURL=users-db-repository.js.map

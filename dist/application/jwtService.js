@@ -16,9 +16,9 @@ exports.jwtService = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const settings_1 = require("../settings");
 exports.jwtService = {
-    createJWT(user) {
+    createJWT(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const token = yield jsonwebtoken_1.default.sign({ userId: user.id }, settings_1.settings.JWT_SECRET, { expiresIn: '60h' });
+            const token = yield jsonwebtoken_1.default.sign({ userId: userId }, settings_1.settings.JWT_SECRET, { expiresIn: '60h' });
             return {
                 accessToken: token
             };

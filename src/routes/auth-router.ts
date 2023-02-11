@@ -1,11 +1,8 @@
 import { Request, Response, Router } from "express";
 import { body } from "express-validator";
-import { emailAdapter } from "../adapters/emailAdapter";
 import { HTTP_STATUSES } from "../app";
 import { jwtService } from "../application/jwtService";
 import { authService } from "../domain/auth-service";
-import { usersService } from "../domain/users-service";
-import { emailManager } from "../managers/emailManager";
 import { authMiddleware } from "../middlewares/auth-middleware";
 import { inputValidationMiddleware } from "../middlewares/input-validation-middleware";
 import { LoginInputModel } from "../models/auth/LoginInputModel";
@@ -35,13 +32,13 @@ authRouter.post('/login',
     passwordValidation,
     inputValidationMiddleware,
     async (req: RequestWithBody<LoginInputModel>, res: Response<ErrorMessagesOutputModel | {accessToken: string}>) => {
-        const user = await usersService.checkCredentials(req.body.loginOrEmail, req.body.password)
+        const user = await authService.checkCredentials(req.body.loginOrEmail, req.body.password)
         if(!user) {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
             return
         }
         
-        const jwtTokenObj = await jwtService.createJWT(user)
+        const jwtTokenObj = await jwtService.createJWT(user.id)
         res.send(jwtTokenObj)
 })
 
@@ -51,10 +48,25 @@ authRouter.post('/registration',
     emailValidation,
     inputValidationMiddleware,
     async (req: RequestWithBody<UserInputModel>, res: Response<ErrorMessagesOutputModel>) => {
-        const isSended = await authService.sendConfirmationCode(req.body.email, req.headers.origin || 'https://somesite.com/confirm-email?code=your_confirmation_code')
-        if(isSended) {
-            res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
+        const createdUser = await authService.createUser(req.body.login, req.body.password, req.body.email)
+        if(!createdUser) {
+            res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
         }
+        res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
+    })
+
+authRouter.post('/registration-confirmation', 
+    async (req: RequestWithBody<{code: string}>, res: Response<ErrorMessagesOutputModel>) => {
+        const isConfirmed = authService.confirmEmail(req.body.code)
+        if(!isConfirmed) {
+            res
+                .status(HTTP_STATUSES.BAD_REQUEST_400)
+                .send({errorsMessages: [{
+                    message: 'the confirmation code is incorrect, expired or already been applied',
+                    field: 'code'
+                }]})
+        }
+        res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
     })
 
 authRouter.get('/me', 

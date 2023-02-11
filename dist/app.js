@@ -23,7 +23,7 @@ const users_router_1 = require("./routes/users-router");
 const auth_router_1 = require("./routes/auth-router");
 const posts_service_1 = require("./domain/posts-service");
 const blogs_service_1 = require("./domain/blogs-service");
-const users_service_1 = require("./domain/users-service");
+const auth_service_1 = require("./domain/auth-service");
 const settings_1 = require("./settings");
 const comments_router_1 = require("./routes/comments-router");
 exports.app = (0, express_1.default)();
@@ -58,7 +58,7 @@ exports.app.delete('/homework01/testing/all-data', (req, res) => __awaiter(void 
 exports.app.delete('/homeworks/testing/all-data', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield posts_service_1.postsService.deletePosts(null);
     yield blogs_service_1.blogsService.deleteBlog(null);
-    yield users_service_1.usersService.deleteUsers(null);
+    yield auth_service_1.authService.deleteUsers(null);
     res.sendStatus(exports.HTTP_STATUSES.NO_CONTENT_204);
 }));
 startApp();
