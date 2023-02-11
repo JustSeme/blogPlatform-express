@@ -16,7 +16,7 @@ exports.emailAdapter = void 0;
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const settings_1 = require("../settings");
 exports.emailAdapter = {
-    sendConfirmationCode(email) {
+    sendEmail(email, subject, messageBody) {
         return __awaiter(this, void 0, void 0, function* () {
             let transport = nodemailer_1.default.createTransport({
                 service: 'gmail',
@@ -28,8 +28,8 @@ exports.emailAdapter = {
             let info = yield transport.sendMail({
                 from: `"Blog Platform" <${settings_1.settings.GMAIL_LOGIN}>`,
                 to: email,
-                subject: 'Confirmation Code',
-                html: "here will be confirmation code",
+                subject: subject,
+                html: messageBody,
             });
             return info.accepted.length > 0;
         });

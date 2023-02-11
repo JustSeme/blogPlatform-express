@@ -3,7 +3,9 @@ import { body } from "express-validator";
 import { emailAdapter } from "../adapters/emailAdapter";
 import { HTTP_STATUSES } from "../app";
 import { jwtService } from "../application/jwtService";
+import { authService } from "../domain/auth-service";
 import { usersService } from "../domain/users-service";
+import { emailManager } from "../managers/emailManager";
 import { authMiddleware } from "../middlewares/auth-middleware";
 import { inputValidationMiddleware } from "../middlewares/input-validation-middleware";
 import { LoginInputModel } from "../models/auth/LoginInputModel";
@@ -49,7 +51,7 @@ authRouter.post('/registration',
     emailValidation,
     inputValidationMiddleware,
     async (req: RequestWithBody<UserInputModel>, res: Response<ErrorMessagesOutputModel>) => {
-        const isSended = await emailAdapter.sendConfirmationCode(req.body.email)
+        const isSended = await authService.sendConfirmationCode(req.body.email, req.headers.origin || 'https://somesite.com/confirm-email?code=your_confirmation_code')
         if(isSended) {
             res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
         }

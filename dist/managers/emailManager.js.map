@@ -1,0 +1,1 @@
+{"version":3,"file":"emailManager.js","sourceRoot":"","sources":["../../src/managers/emailManager.ts"],"names":[],"mappings":";;;;;;;;;;;;AAAA,2DAAuD;AAE1C,QAAA,YAAY,GAAG;IAClB,oBAAoB,CAAC,cAAsB,EAAE,uBAA+B;;YAC9E,MAAM,WAAW,GAAG;;;SAGnB,CAAA;YACD,2BAAY,CAAC,SAAS,CAAC,cAAc,EAAE,kBAAkB,EAAE,WAAW,CAAC,CAAA;QAC3E,CAAC;KAAA;CACJ,CAAA"}

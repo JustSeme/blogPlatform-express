@@ -2,7 +2,7 @@ import nodemailer from 'nodemailer'
 import { settings } from "../settings";
 
 export const emailAdapter = {
-    async sendConfirmationCode(email: string) {
+    async sendEmail(email: string, subject: string, messageBody: string) {
         let transport = nodemailer.createTransport({
             service: 'gmail',
             auth: {
@@ -14,8 +14,8 @@ export const emailAdapter = {
         let info = await transport.sendMail({
             from: `"Blog Platform" <${settings.GMAIL_LOGIN}>`,
             to: email,
-            subject: 'Confirmation Code',
-            html: "here will be confirmation code",
+            subject: subject,
+            html: messageBody,
         });
         
         return info.accepted.length > 0
