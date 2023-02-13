@@ -25,9 +25,8 @@ exports.authService = {
         return __awaiter(this, void 0, void 0, function* () {
             const passwordHash = yield bcrypt_1.default.hash(password, 10);
             const registrationCountLastFiveMinutes = yield users_query_repository_1.usersQueryRepository.getRegistrationsCount(ip, 5);
-            console.log(registrationCountLastFiveMinutes);
             if (registrationCountLastFiveMinutes > 3) {
-                return null;
+                return false;
             }
             const newUser = {
                 id: (0, crypto_1.randomUUID)(),
@@ -48,20 +47,38 @@ exports.authService = {
                 }
             };
             yield users_db_repository_1.usersRepository.createUser(newUser);
+            yield emailManager_1.emailManager.sendConfirmationCode(email, login, newUser.emailConfirmation.confirmationCode);
+            return true;
+        });
+    },
+    createUserWithBasicAuth(login, password, email, ip = 'superAdmin') {
+        return __awaiter(this, void 0, void 0, function* () {
+            const passwordHash = yield bcrypt_1.default.hash(password, 10);
+            const newUser = {
+                id: (0, crypto_1.randomUUID)(),
+                login: login,
+                email: email,
+                passwordHash,
+                createdAt: new Date().toISOString(),
+                emailConfirmation: {
+                    confirmationCode: (0, uuid_1.v4)(),
+                    expirationDate: (0, add_1.default)(new Date(), {
+                        hours: 1,
+                        minutes: 3
+                    }),
+                    isConfirmed: true
+                },
+                registrationData: {
+                    ip: ip
+                }
+            };
+            yield users_db_repository_1.usersRepository.createUser(newUser);
             const displayedUser = {
                 id: newUser.id,
                 login: newUser.login,
                 email: newUser.email,
                 createdAt: newUser.createdAt
             };
-            try {
-                yield emailManager_1.emailManager.sendConfirmationCode(email, login, newUser.emailConfirmation.confirmationCode);
-            }
-            catch (error) {
-                console.error(error);
-                users_db_repository_1.usersRepository.deleteUser(newUser.id);
-                return null;
-            }
             return displayedUser;
         });
     },

@@ -56,7 +56,7 @@ usersRouter.post('/',
     emailValidationWithCustomSearch,
     inputValidationMiddleware,
     async (req: RequestWithBody<UserInputModel>, res: Response<UserViewModel | ErrorMessagesOutputModel>) => {
-        const createdUser = await authService.createUser(req.body.login, req.body.password, req.body.email)
+        const createdUser = await authService.createUserWithBasicAuth(req.body.login, req.body.password, req.body.email)
         if(!createdUser) {
             res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
             return

@@ -9,14 +9,12 @@ import { emailManager } from '../managers/emailManager'
 import { usersQueryRepository } from '../repositories/query/users-query-repository'
 
 export const authService = {
-    async createUser(login: string, password: string, email: string, ip: string = ''): Promise<UserViewModel | null> {
+    async createUser(login: string, password: string, email: string, ip: string = ''): Promise<boolean> {
         const passwordHash = await bcrypt.hash(password, 10)
 
         const registrationCountLastFiveMinutes = await usersQueryRepository.getRegistrationsCount(ip, 5)
-        console.log(registrationCountLastFiveMinutes);
-        
         if(registrationCountLastFiveMinutes > 3) {
-            return null
+            return false
         }
 
         const newUser: UserDBModel = {
@@ -39,19 +37,42 @@ export const authService = {
         }
 
         await usersRepository.createUser(newUser)
+        
+        await emailManager.sendConfirmationCode(email, login, newUser.emailConfirmation.confirmationCode)
+
+        return true
+    },
+
+    async createUserWithBasicAuth(login: string, password: string, email: string, ip: string = 'superAdmin'): Promise<UserViewModel | null> {
+        const passwordHash = await bcrypt.hash(password, 10)
+
+        const newUser: UserDBModel = {
+            id: randomUUID(),
+            login: login,
+            email: email,
+            passwordHash,
+            createdAt: new Date().toISOString(),
+            emailConfirmation: {
+                confirmationCode: uuidv4(),
+                expirationDate: add(new Date(), {
+                    hours: 1,
+                    minutes: 3
+                }),
+                isConfirmed: true
+            },
+            registrationData: {
+                ip: ip
+            }
+        }
+
+        await usersRepository.createUser(newUser)
         const displayedUser: UserViewModel = {
             id: newUser.id,
             login: newUser.login,
             email: newUser.email,
             createdAt: newUser.createdAt
         }
-        try {
-            await emailManager.sendConfirmationCode(email, login, newUser.emailConfirmation.confirmationCode)
-        } catch (error) {
-            console.error(error)
-            usersRepository.deleteUser(newUser.id)
-            return null
-        }
+
         return displayedUser
     },
 

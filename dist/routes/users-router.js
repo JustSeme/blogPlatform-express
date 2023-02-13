@@ -52,7 +52,7 @@ exports.emailValidationWithCustomSearch = (0, express_validator_1.body)('email')
     });
 }));
 exports.usersRouter.post('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, exports.loginValidation, exports.passwordValidation, exports.emailValidationWithCustomSearch, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const createdUser = yield auth_service_1.authService.createUser(req.body.login, req.body.password, req.body.email);
+    const createdUser = yield auth_service_1.authService.createUserWithBasicAuth(req.body.login, req.body.password, req.body.email);
     if (!createdUser) {
         res.sendStatus(app_1.HTTP_STATUSES.BAD_REQUEST_400);
         return;
