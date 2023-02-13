@@ -13,7 +13,7 @@ export const authService = {
         const passwordHash = await bcrypt.hash(password, 10)
 
         const registrationCountLastFiveMinutes = await usersQueryRepository.getRegistrationsCount(ip, 5)
-        if(registrationCountLastFiveMinutes > 3) {
+        if(registrationCountLastFiveMinutes > 50) {
             return false
         }
 
