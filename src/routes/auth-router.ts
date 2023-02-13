@@ -11,17 +11,11 @@ import { ErrorMessagesOutputModel } from "../models/ErrorMessagesOutputModel";
 import { UserDBModel } from "../models/users/UserDBModel";
 import { UserInputModel } from "../models/users/UserInputModel";
 import { RequestWithBody } from "../types/types";
-import { emailValidationWithCustomSearch, loginValidation } from "./users-router";
+import { emailValidationWithCustomSearch, loginValidation, passwordValidation } from "./users-router";
 
 export const authRouter = Router({})
 
 const loginOrEmailValidation = body('loginOrEmail')
-.exists()
-.trim()
-.notEmpty()
-.isString()
-
-const passwordValidation = body('password')
 .exists()
 .trim()
 .notEmpty()
@@ -85,7 +79,12 @@ authRouter.post('/registration-email-resending',
     async (req: RequestWithBody<{email: string}>, res: Response<ErrorMessagesOutputModel>) => {
         const result = await authService.resendConfirmationCode(req.body.email)
         if(!result) {
-            res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
+            res
+                .status(HTTP_STATUSES.BAD_REQUEST_400)
+                .send({errorsMessages: [{
+                    message: 'Your email is already confirmed or doesnt exist',
+                    field: 'email'
+                }]})
             return
         }
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
