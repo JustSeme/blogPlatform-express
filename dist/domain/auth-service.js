@@ -19,10 +19,16 @@ const users_db_repository_1 = require("../repositories/users-db-repository");
 const uuid_1 = require("uuid");
 const add_1 = __importDefault(require("date-fns/add"));
 const emailManager_1 = require("../managers/emailManager");
+const users_query_repository_1 = require("../repositories/query/users-query-repository");
 exports.authService = {
-    createUser(login, password, email) {
+    createUser(login, password, email, ip = '') {
         return __awaiter(this, void 0, void 0, function* () {
             const passwordHash = yield bcrypt_1.default.hash(password, 10);
+            const registrationCountLastFiveMinutes = yield users_query_repository_1.usersQueryRepository.getRegistrationsCount(ip, 5);
+            console.log(registrationCountLastFiveMinutes);
+            if (registrationCountLastFiveMinutes > 3) {
+                return null;
+            }
             const newUser = {
                 id: (0, crypto_1.randomUUID)(),
                 login: login,
@@ -36,6 +42,9 @@ exports.authService = {
                         minutes: 3
                     }),
                     isConfirmed: false
+                },
+                registrationData: {
+                    ip: ip
                 }
             };
             yield users_db_repository_1.usersRepository.createUser(newUser);
@@ -46,7 +55,7 @@ exports.authService = {
                 createdAt: newUser.createdAt
             };
             try {
-                emailManager_1.emailManager.sendConfirmationCode(email, login, newUser.emailConfirmation.confirmationCode);
+                yield emailManager_1.emailManager.sendConfirmationCode(email, login, newUser.emailConfirmation.confirmationCode);
             }
             catch (error) {
                 console.error(error);
@@ -58,20 +67,41 @@ exports.authService = {
     },
     confirmEmail(code) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield users_db_repository_1.usersRepository.findUserByConfirmationCode(code);
-            if (!user) {
+            const user = yield users_query_repository_1.usersQueryRepository.findUserByConfirmationCode(code);
+            if (!user)
+                return false;
+            if (user.emailConfirmation.isConfirmed)
+                return false;
+            if (user.emailConfirmation.confirmationCode !== code)
+                return false;
+            if (user.emailConfirmation.expirationDate < new Date())
+                return false;
+            return yield users_db_repository_1.usersRepository.updateIsConfirmed(user.id);
+        });
+    },
+    resendConfirmationCode(email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield users_query_repository_1.usersQueryRepository.findUserByEmail(email);
+            if (!user || user.emailConfirmation.isConfirmed)
+                return false;
+            const newConfirmationCode = (0, uuid_1.v4)();
+            yield users_db_repository_1.usersRepository.updateEmailConfirmationInfo(user.id, newConfirmationCode);
+            try {
+                return yield emailManager_1.emailManager.sendConfirmationCode(email, user.login, newConfirmationCode);
+            }
+            catch (error) {
+                console.error(error);
+                users_db_repository_1.usersRepository.deleteUser(user.id);
                 return false;
             }
-            if (user.emailConfirmation.expirationDate > new Date() && user.emailConfirmation.confirmationCode === code) {
-                return yield users_db_repository_1.usersRepository.updateConfirmation(user.id);
-            }
-            return false;
         });
     },
     checkCredentials(loginOrEmail, password) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield users_db_repository_1.usersRepository.findUserByLoginOrEmail(loginOrEmail);
+            const user = yield users_query_repository_1.usersQueryRepository.findUserByLoginOrEmail(loginOrEmail);
             if (!user)
+                return false;
+            if (!user.emailConfirmation.isConfirmed)
                 return false;
             const isConfirmed = yield bcrypt_1.default.compare(password, user.passwordHash);
             if (isConfirmed) {

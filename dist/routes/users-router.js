@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.emailValidation = exports.passwordValidation = exports.loginValidation = exports.usersRouter = void 0;
+exports.emailValidationWithCustomSearch = exports.passwordValidation = exports.loginValidation = exports.usersRouter = void 0;
 const express_1 = require("express");
 const express_validator_1 = require("express-validator");
 const app_1 = require("../app");
@@ -38,7 +38,7 @@ exports.passwordValidation = (0, express_validator_1.body)('password')
     .notEmpty()
     .isString()
     .isLength({ min: 6, max: 20 });
-exports.emailValidation = (0, express_validator_1.body)('email')
+exports.emailValidationWithCustomSearch = (0, express_validator_1.body)('email')
     .exists()
     .trim()
     .notEmpty()
@@ -51,7 +51,7 @@ exports.emailValidation = (0, express_validator_1.body)('email')
         }
     });
 }));
-exports.usersRouter.post('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, exports.loginValidation, exports.passwordValidation, exports.emailValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.usersRouter.post('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, exports.loginValidation, exports.passwordValidation, exports.emailValidationWithCustomSearch, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const createdUser = yield auth_service_1.authService.createUser(req.body.login, req.body.password, req.body.email);
     if (!createdUser) {
         res.sendStatus(app_1.HTTP_STATUSES.BAD_REQUEST_400);

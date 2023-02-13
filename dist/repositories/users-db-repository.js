@@ -10,21 +10,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.usersRepository = void 0;
+const date_fns_1 = require("date-fns");
 const db_1 = require("./db");
 exports.usersRepository = {
     createUser(newUser) {
         return __awaiter(this, void 0, void 0, function* () {
             yield db_1.usersCollection.insertOne(newUser);
-        });
-    },
-    findUserByLoginOrEmail(loginOrEmail) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield db_1.usersCollection.findOne({ $or: [{ login: loginOrEmail }, { email: loginOrEmail }] });
-        });
-    },
-    findUserByConfirmationCode(code) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield db_1.usersCollection.findOne({ 'emailConfirmation.confirmationCode': code });
         });
     },
     deleteUser(id) {
@@ -39,9 +30,21 @@ exports.usersRepository = {
             return result.deletedCount > 0;
         });
     },
-    updateConfirmation(userId) {
+    updateIsConfirmed(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.usersCollection.updateOne({ id: userId }, { $set: { 'emailConfirmation.isConfirmed': true } });
+            const result = yield db_1.usersCollection.updateOne({ id: id }, { $set: { 'emailConfirmation.isConfirmed': true } });
+            return result.modifiedCount === 1;
+        });
+    },
+    updateEmailConfirmationInfo(id, code) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield db_1.usersCollection.updateOne({ id: id }, { $set: {
+                    'emailConfirmation.confirmationCode': code,
+                    'emailConfirmation.expirationDate': (0, date_fns_1.add)(new Date(), {
+                        hours: 1,
+                        minutes: 3
+                    })
+                } });
             return result.modifiedCount === 1;
         });
     }

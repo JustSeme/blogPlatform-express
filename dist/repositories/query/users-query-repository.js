@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.usersQueryRepository = void 0;
+const date_fns_1 = require("date-fns");
 const db_1 = require("../db");
 exports.usersQueryRepository = {
     findUsers(queryParams) {
@@ -29,6 +30,7 @@ exports.usersQueryRepository = {
             let usersCursor = yield db_1.usersCollection.find(filterObject, { projection: { _id: 0 } }).skip(skipCount).limit(+pageSize);
             const sortDirectionNumber = sortDirection === 'asc' ? 1 : -1;
             const resultedUsers = yield usersCursor.sort({ [sortBy]: sortDirectionNumber }).toArray();
+            console.log(resultedUsers);
             const displayedUsers = resultedUsers.map(u => ({
                 id: u.id,
                 login: u.login,
@@ -57,6 +59,28 @@ exports.usersQueryRepository = {
     findUserByLogin(login) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield db_1.usersCollection.findOne({ login: login });
+        });
+    },
+    findUserByLoginOrEmail(loginOrEmail) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield db_1.usersCollection.findOne({ $or: [{ login: loginOrEmail }, { email: loginOrEmail }] });
+        });
+    },
+    findUserByConfirmationCode(code) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield db_1.usersCollection.findOne({ 'emailConfirmation.confirmationCode': code });
+        });
+    },
+    getRegistrationsCount(ip, minutes) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield db_1.usersCollection.count({
+                'registrationData.ip': ip,
+                'timestamp': {
+                    $gte: (0, date_fns_1.add)(new Date(), {
+                        minutes: minutes
+                    })
+                }
+            });
         });
     }
 };

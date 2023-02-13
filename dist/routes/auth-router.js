@@ -29,6 +29,12 @@ const passwordValidation = (0, express_validator_1.body)('password')
     .trim()
     .notEmpty()
     .isString();
+const emailValidation = (0, express_validator_1.body)('email')
+    .exists()
+    .trim()
+    .notEmpty()
+    .isString()
+    .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/);
 exports.authRouter.post('/login', loginOrEmailValidation, passwordValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield auth_service_1.authService.checkCredentials(req.body.loginOrEmail, req.body.password);
     if (!user) {
@@ -38,22 +44,33 @@ exports.authRouter.post('/login', loginOrEmailValidation, passwordValidation, in
     const jwtTokenObj = yield jwtService_1.jwtService.createJWT(user.id);
     res.send(jwtTokenObj);
 }));
-exports.authRouter.post('/registration', users_router_1.loginValidation, passwordValidation, users_router_1.emailValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const createdUser = yield auth_service_1.authService.createUser(req.body.login, req.body.password, req.body.email);
+exports.authRouter.post('/registration', users_router_1.loginValidation, passwordValidation, users_router_1.emailValidationWithCustomSearch, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    const createdUser = yield auth_service_1.authService.createUser(req.body.login, req.body.password, req.body.email, clientIp);
     if (!createdUser) {
         res.sendStatus(app_1.HTTP_STATUSES.BAD_REQUEST_400);
+        return;
     }
     res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
 }));
 exports.authRouter.post('/registration-confirmation', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const isConfirmed = auth_service_1.authService.confirmEmail(req.body.code);
+    const isConfirmed = yield auth_service_1.authService.confirmEmail(req.body.code);
     if (!isConfirmed) {
         res
             .status(app_1.HTTP_STATUSES.BAD_REQUEST_400)
             .send({ errorsMessages: [{
-                    message: 'the confirmation code is incorrect, expired or already been applied',
+                    message: 'The confirmation code is incorrect, expired or already been applied',
                     field: 'code'
                 }] });
+        return;
+    }
+    res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
+}));
+exports.authRouter.post('/registration-email-resending', emailValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield auth_service_1.authService.resendConfirmationCode(req.body.email);
+    if (!result) {
+        res.sendStatus(app_1.HTTP_STATUSES.BAD_REQUEST_400);
+        return;
     }
     res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
 }));

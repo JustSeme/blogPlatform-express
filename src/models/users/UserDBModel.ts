@@ -4,9 +4,16 @@ export type UserDBModel = {
     email: string,
     passwordHash: string,
     createdAt: string,
-    emailConfirmation: {
-        confirmationCode: string
-        expirationDate: Date
-        isConfirmed: boolean
-    }
+    emailConfirmation: EmailConfirmationData
+    registrationData: RegistrationData
+}
+
+type EmailConfirmationData = {
+    confirmationCode: string
+    expirationDate: Date
+    isConfirmed: boolean
+}
+
+type RegistrationData = {
+    ip: string
 }

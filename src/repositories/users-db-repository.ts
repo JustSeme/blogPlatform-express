@@ -1,17 +1,10 @@
+import { add } from "date-fns";
 import { UserDBModel } from "../models/users/UserDBModel";
 import { usersCollection } from "./db";
 
 export const usersRepository = {
     async createUser(newUser: UserDBModel) {
         await usersCollection.insertOne(newUser)
-    },
-
-    async findUserByLoginOrEmail(loginOrEmail: string): Promise<UserDBModel | null> {
-        return await usersCollection.findOne({$or: [{login: loginOrEmail}, {email: loginOrEmail}]})
-    },
-
-    async findUserByConfirmationCode(code: string) {
-        return await usersCollection.findOne({'emailConfirmation.confirmationCode': code})
     },
 
     async deleteUser(id: string): Promise<boolean> {
@@ -24,8 +17,19 @@ export const usersRepository = {
         return result.deletedCount > 0
     },
 
-    async updateConfirmation(userId: string) {
-        const result = await usersCollection.updateOne({id: userId}, {$set: {'emailConfirmation.isConfirmed': true}})
+    async updateIsConfirmed(id: string) {
+        const result = await usersCollection.updateOne({id: id}, {$set: {'emailConfirmation.isConfirmed': true}})
+        return result.modifiedCount === 1
+    },
+
+    async updateEmailConfirmationInfo(id: string, code: string) {
+        const result = await usersCollection.updateOne({id: id}, {$set: {
+            'emailConfirmation.confirmationCode': code,
+            'emailConfirmation.expirationDate': add(new Date(), {
+                hours: 1,
+                minutes: 3
+            })
+        }})
         return result.modifiedCount === 1
     }
 }

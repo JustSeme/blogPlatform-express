@@ -35,7 +35,7 @@ export const passwordValidation = body('password')
 .isString()
 .isLength({ min: 6, max: 20 })
 
-export const emailValidation = body('email')
+export const emailValidationWithCustomSearch = body('email')
 .exists()
 .trim()
 .notEmpty()
@@ -53,7 +53,7 @@ usersRouter.post('/',
     basicAuthorizationMiddleware,
     loginValidation,
     passwordValidation,
-    emailValidation,
+    emailValidationWithCustomSearch,
     inputValidationMiddleware,
     async (req: RequestWithBody<UserInputModel>, res: Response<UserViewModel | ErrorMessagesOutputModel>) => {
         const createdUser = await authService.createUser(req.body.login, req.body.password, req.body.email)

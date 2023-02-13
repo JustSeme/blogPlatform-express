@@ -1,4 +1,6 @@
+import { add } from "date-fns";
 import { ReadUsersQuery } from "../../models/users/ReadUsersQuery";
+import { UserDBModel } from "../../models/users/UserDBModel";
 import { UsersWithQueryOutputModel, UserViewModel } from "../../models/users/UsersViewModel";
 import { usersCollection } from "../db";
 
@@ -24,6 +26,9 @@ export const usersQueryRepository = {
 
         const sortDirectionNumber = sortDirection === 'asc' ? 1 : -1
         const resultedUsers = await usersCursor.sort({[sortBy]: sortDirectionNumber}).toArray()
+
+        console.log(resultedUsers);
+        
         const displayedUsers: UserViewModel[] = resultedUsers.map(u => ({
             id: u.id,
             login: u.login,
@@ -50,5 +55,24 @@ export const usersQueryRepository = {
     
     async findUserByLogin(login: string) {
         return await usersCollection.findOne({login: login})
+    },
+
+    async findUserByLoginOrEmail(loginOrEmail: string): Promise<UserDBModel | null> {
+        return await usersCollection.findOne({$or: [{login: loginOrEmail}, {email: loginOrEmail}]})
+    },
+
+    async findUserByConfirmationCode(code: string) {
+        return await usersCollection.findOne({'emailConfirmation.confirmationCode': code})
+    },
+
+    async getRegistrationsCount(ip: string, minutes: number) {
+        return await usersCollection.count({
+            'registrationData.ip': ip,
+            'timestamp': {
+                $gte: add(new Date(), {
+                    minutes: minutes
+                })
+            }
+        })
     }
 }

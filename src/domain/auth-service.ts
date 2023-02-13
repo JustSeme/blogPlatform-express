@@ -6,10 +6,18 @@ import { usersRepository } from '../repositories/users-db-repository'
 import { v4 as uuidv4 } from 'uuid'
 import add from 'date-fns/add'
 import { emailManager } from '../managers/emailManager'
+import { usersQueryRepository } from '../repositories/query/users-query-repository'
 
 export const authService = {
-    async createUser(login: string, password: string, email: string): Promise<UserViewModel | null> {
+    async createUser(login: string, password: string, email: string, ip: string = ''): Promise<UserViewModel | null> {
         const passwordHash = await bcrypt.hash(password, 10)
+
+        const registrationCountLastFiveMinutes = await usersQueryRepository.getRegistrationsCount(ip, 5)
+        console.log(registrationCountLastFiveMinutes);
+        
+        if(registrationCountLastFiveMinutes > 3) {
+            return null
+        }
 
         const newUser: UserDBModel = {
             id: randomUUID(),
@@ -24,6 +32,9 @@ export const authService = {
                     minutes: 3
                 }),
                 isConfirmed: false
+            },
+            registrationData: {
+                ip: ip
             }
         }
 
@@ -35,7 +46,7 @@ export const authService = {
             createdAt: newUser.createdAt
         }
         try {
-            emailManager.sendConfirmationCode(email, login, newUser.emailConfirmation.confirmationCode)
+            await emailManager.sendConfirmationCode(email, login, newUser.emailConfirmation.confirmationCode)
         } catch (error) {
             console.error(error)
             usersRepository.deleteUser(newUser.id)
@@ -45,21 +56,35 @@ export const authService = {
     },
 
     async confirmEmail(code: string) {
-        const user = await usersRepository.findUserByConfirmationCode(code)
-        if(!user) {
+        const user = await usersQueryRepository.findUserByConfirmationCode(code)
+        if(!user) return false
+        if(user.emailConfirmation.isConfirmed) return false
+        if(user.emailConfirmation.confirmationCode !== code) return false
+        if(user.emailConfirmation.expirationDate < new Date()) return false
+        
+        return await usersRepository.updateIsConfirmed(user.id)
+    },
+
+    async resendConfirmationCode(email: string) {
+        const user = await usersQueryRepository.findUserByEmail(email)
+        if(!user || user.emailConfirmation.isConfirmed) return false
+
+        const newConfirmationCode = uuidv4()
+        await usersRepository.updateEmailConfirmationInfo(user.id, newConfirmationCode)
+
+        try {
+            return await emailManager.sendConfirmationCode(email, user.login, newConfirmationCode)
+        } catch (error) {
+            console.error(error)
+            usersRepository.deleteUser(user.id)
             return false
         }
-
-        if(user.emailConfirmation.expirationDate > new Date() && user.emailConfirmation.confirmationCode === code) {
-            return await usersRepository.updateConfirmation(user.id)
-        }
-
-        return false
     },
 
     async checkCredentials(loginOrEmail: string, password: string) {
-        const user = await usersRepository.findUserByLoginOrEmail(loginOrEmail)
+        const user = await usersQueryRepository.findUserByLoginOrEmail(loginOrEmail)
         if(!user) return false
+        if(!user.emailConfirmation.isConfirmed) return false
 
         const isConfirmed = await bcrypt.compare(password, user.passwordHash)
         if(isConfirmed) {
