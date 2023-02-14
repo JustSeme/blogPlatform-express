@@ -58,8 +58,13 @@ authRouter.post('/refresh-token',
         res.send({
             accessToken: newAccessToken
         })
-
 })
+
+authRouter.post('/logout',
+    refreshTokenMiddleware,
+    (req: Request, res: Response) => {
+        res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
+    })
 
 authRouter.post('/registration',
     loginValidation,
