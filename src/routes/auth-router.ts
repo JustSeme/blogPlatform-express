@@ -5,6 +5,7 @@ import { jwtService } from "../application/jwtService";
 import { authService } from "../domain/auth-service";
 import { authMiddleware } from "../middlewares/auth-middleware";
 import { inputValidationMiddleware } from "../middlewares/input-validation-middleware";
+import { refreshTokenMiddleware } from "../middlewares/refresh-token-middleware";
 import { LoginInputModel } from "../models/auth/LoginInputModel";
 import { MeOutputModel } from "../models/auth/MeOutputModel";
 import { ErrorMessagesOutputModel } from "../models/ErrorMessagesOutputModel";
@@ -39,8 +40,25 @@ authRouter.post('/login',
             return
         }
         
-        const jwtTokenObj = await jwtService.createJWT(user.id)
-        res.send(jwtTokenObj)
+        const accessToken = await jwtService.createJWT(user.id, '10s')
+        const refreshToken = await jwtService.createJWT(user.id, '20h')
+        res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true});
+        res.send({
+            accessToken: accessToken
+        })
+})
+
+authRouter.post('/refresh-token',
+    refreshTokenMiddleware,
+    async (req: Request, res: Response<{ accessToken: string }>) => {
+        //newRefreshToken was installed in headers in refreshTokenMiddleware
+        //userId was installed in req.user in refreshTokenMiddleware
+        //@ts-ignore
+        const newAccessToken = await jwtService.createJWT(req.userId, '10s')
+        res.send({
+            accessToken: newAccessToken
+        })
+
 })
 
 authRouter.post('/registration',

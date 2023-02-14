@@ -14,14 +14,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.jwtService = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const db_1 = require("../repositories/db");
 const settings_1 = require("../settings");
 exports.jwtService = {
-    createJWT(userId) {
+    createJWT(userId, expiresTime) {
         return __awaiter(this, void 0, void 0, function* () {
-            const token = yield jsonwebtoken_1.default.sign({ userId: userId }, settings_1.settings.JWT_SECRET, { expiresIn: '60h' });
-            return {
-                accessToken: token
-            };
+            return yield jsonwebtoken_1.default.sign({ userId: userId }, settings_1.settings.JWT_SECRET, { expiresIn: expiresTime });
         });
     },
     getUserIdByToken(token) {
@@ -31,6 +29,27 @@ exports.jwtService = {
                 return result.userId;
             }
             catch (err) {
+                return null;
+            }
+        });
+    },
+    refreshToken(verifiedToken) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const tokenInBlacklist = yield db_1.refreshTokenBlacklist.find({ outDatedToken: verifiedToken }).toArray();
+            if (tokenInBlacklist.length) {
+                return null;
+            }
+            try {
+                const result = yield jsonwebtoken_1.default.verify(verifiedToken, settings_1.settings.JWT_SECRET);
+                yield db_1.refreshTokenBlacklist.insertOne({ outDatedToken: verifiedToken });
+                const newRefreshToken = yield this.createJWT(result.userId, '20s');
+                return {
+                    newRefreshToken,
+                    userId: result.userId
+                };
+            }
+            catch (err) {
+                console.error(err);
                 return null;
             }
         });

@@ -15,6 +15,7 @@ export const postsCollection = blogPlatformDB.collection<PostViewModel>('posts')
 export const blogsCollection = blogPlatformDB.collection<BlogViewModel>('blogs')
 export const usersCollection = blogPlatformDB.collection<UserDBModel>('users')
 export const commentsCollection = blogPlatformDB.collection<CommentDBModel>('comments')
+export const refreshTokenBlacklist = blogPlatformDB.collection('refreshTokensBlacklist')
 
 export async function runDB() {
     try {

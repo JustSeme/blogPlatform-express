@@ -17,6 +17,7 @@ const jwtService_1 = require("../application/jwtService");
 const auth_service_1 = require("../domain/auth-service");
 const auth_middleware_1 = require("../middlewares/auth-middleware");
 const input_validation_middleware_1 = require("../middlewares/input-validation-middleware");
+const refresh_token_middleware_1 = require("../middlewares/refresh-token-middleware");
 const users_router_1 = require("./users-router");
 exports.authRouter = (0, express_1.Router)({});
 const loginOrEmailValidation = (0, express_validator_1.body)('loginOrEmail')
@@ -36,8 +37,21 @@ exports.authRouter.post('/login', loginOrEmailValidation, users_router_1.passwor
         res.sendStatus(app_1.HTTP_STATUSES.UNAUTHORIZED_401);
         return;
     }
-    const jwtTokenObj = yield jwtService_1.jwtService.createJWT(user.id);
-    res.send(jwtTokenObj);
+    const accessToken = yield jwtService_1.jwtService.createJWT(user.id, '10s');
+    const refreshToken = yield jwtService_1.jwtService.createJWT(user.id, '20h');
+    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true });
+    res.send({
+        accessToken: accessToken
+    });
+}));
+exports.authRouter.post('/refresh-token', refresh_token_middleware_1.refreshTokenMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //newRefreshToken was installed in headers in refreshTokenMiddleware
+    //userId was installed in req.user in refreshTokenMiddleware
+    //@ts-ignore
+    const newAccessToken = yield jwtService_1.jwtService.createJWT(req.userId, '10s');
+    res.send({
+        accessToken: newAccessToken
+    });
 }));
 exports.authRouter.post('/registration', users_router_1.loginValidation, users_router_1.passwordValidation, users_router_1.emailValidationWithCustomSearch, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
