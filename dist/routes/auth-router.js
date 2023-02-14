@@ -38,7 +38,7 @@ exports.authRouter.post('/login', loginOrEmailValidation, users_router_1.passwor
         return;
     }
     const accessToken = yield jwtService_1.jwtService.createJWT(user.id, '10s');
-    const refreshToken = yield jwtService_1.jwtService.createJWT(user.id, '20h');
+    const refreshToken = yield jwtService_1.jwtService.createJWT(user.id, '20s');
     res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true });
     res.send({
         accessToken: accessToken
