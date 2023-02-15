@@ -37,8 +37,8 @@ exports.authRouter.post('/login', loginOrEmailValidation, users_router_1.passwor
         res.sendStatus(app_1.HTTP_STATUSES.UNAUTHORIZED_401);
         return;
     }
-    const accessToken = yield jwtService_1.jwtService.createJWT(user.id, '5min');
-    const refreshToken = yield jwtService_1.jwtService.createJWT(user.id, '10min');
+    const accessToken = yield jwtService_1.jwtService.createJWT(user.id, '10s');
+    const refreshToken = yield jwtService_1.jwtService.createJWT(user.id, '20s');
     res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true });
     res.send({
         accessToken: accessToken
