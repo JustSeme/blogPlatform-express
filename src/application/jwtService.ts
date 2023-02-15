@@ -16,23 +16,47 @@ export const jwtService = {
         }
     },
 
-    async refreshToken(verifiedToken: string) {
+    async verifyToken(verifiedToken: string) {
         const tokenInBlacklist = await refreshTokenBlacklist.find({ outDatedToken: verifiedToken }).toArray()
         if(tokenInBlacklist.length) {
             return null
         }
-
+        
         try {
             const result = await jwt.verify(verifiedToken, settings.JWT_SECRET) as JwtPayload
-            await refreshTokenBlacklist.insertOne({ outDatedToken: verifiedToken })
-            const newRefreshToken = await this.createJWT(result.userId, '20s')
-            return {
-                newRefreshToken,
-                userId: result.userId
-            }
+            return result
         } catch (err) {
-            console.error(err);
+            console.error(err)
             return null
-        }   
+        }
+    },
+
+    async refreshTokens(verifiedToken: string) {
+        const result = await this.verifyToken(verifiedToken)
+        if(!result) {
+            return null
+        }
+        
+        await refreshTokenBlacklist.insertOne({ outDatedToken: verifiedToken })
+        
+        const newRefreshToken = await this.createJWT(result.userId, '20s')
+        const newAccessToken = await this.createJWT(result.userId, '10s')
+        return {
+            newRefreshToken,
+            newAccessToken
+        }
+    },
+
+    async logout(usedToken: string) {
+        const result = this.verifyToken(usedToken)
+        if(!result) {
+            return false
+        }
+
+        const insertResult = await refreshTokenBlacklist.insertOne({ outDatedToken: usedToken })
+        if(!insertResult.acknowledged) {
+            return false
+        }
+        return true
     }
 }

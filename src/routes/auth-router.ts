@@ -5,7 +5,7 @@ import { jwtService } from "../application/jwtService";
 import { authService } from "../domain/auth-service";
 import { authMiddleware } from "../middlewares/auth-middleware";
 import { inputValidationMiddleware } from "../middlewares/input-validation-middleware";
-import { refreshTokenMiddleware } from "../middlewares/refresh-token-middleware";
+import { refreshTokenValidation } from "../middlewares/refreshToken-validation-middleware";
 import { LoginInputModel } from "../models/auth/LoginInputModel";
 import { MeOutputModel } from "../models/auth/MeOutputModel";
 import { ErrorMessagesOutputModel } from "../models/ErrorMessagesOutputModel";
@@ -49,20 +49,30 @@ authRouter.post('/login',
 })
 
 authRouter.post('/refresh-token',
-    refreshTokenMiddleware,
+    refreshTokenValidation,
     async (req: Request, res: Response<{ accessToken: string }>) => {
-        //newRefreshToken was installed in headers in refreshTokenMiddleware
-        //userId was installed in req.user in refreshTokenMiddleware
-        //@ts-ignore
-        const newAccessToken = await jwtService.createJWT(req.userId, '10s')
+        const refreshToken = req.headers["set-cookie"]
+        const newTokens = await jwtService.refreshTokens(refreshToken![0])
+        if(!newTokens) {
+            res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
+            return
+        }
+
+        res.cookie('set-cookie', newTokens.newRefreshToken, {httpOnly: true, secure: true})
         res.send({
-            accessToken: newAccessToken
+            accessToken: newTokens.newAccessToken
         })
 })
 
 authRouter.post('/logout',
-    refreshTokenMiddleware,
+    refreshTokenValidation,
     (req: Request, res: Response) => {
+        const refreshToken = req.headers["set-cookie"]
+        const isLogout = jwtService.logout(refreshToken![0])
+        if(!isLogout) {
+            res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
+        }
+        
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
     })
 

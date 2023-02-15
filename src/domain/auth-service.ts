@@ -14,7 +14,7 @@ export const authService = {
 
         const registrationCountLastFiveMinutes = await usersQueryRepository.getRegistrationsCount(ip, 5)
         if(registrationCountLastFiveMinutes > 3) {
-            return false
+            return true
         }
 
         const newUser: UserDBModel = {
