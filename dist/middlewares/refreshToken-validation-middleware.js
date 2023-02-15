@@ -13,12 +13,12 @@ exports.refreshTokenValidation = void 0;
 const app_1 = require("../app");
 const jwtService_1 = require("../application/jwtService");
 const refreshTokenValidation = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const refreshToken = req.headers["set-cookie"];
+    const refreshToken = req.cookies.refreshToken;
     if (!refreshToken) {
         res.sendStatus(app_1.HTTP_STATUSES.UNAUTHORIZED_401);
         return;
     }
-    const result = jwtService_1.jwtService.verifyToken(refreshToken[0]);
+    const result = jwtService_1.jwtService.verifyToken(refreshToken);
     if (!result) {
         res.sendStatus(app_1.HTTP_STATUSES.UNAUTHORIZED_401);
         return;

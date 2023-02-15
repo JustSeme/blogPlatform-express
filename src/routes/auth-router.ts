@@ -40,8 +40,8 @@ authRouter.post('/login',
             return
         }
         
-        const accessToken = await jwtService.createJWT(user.id, '10s')
-        const refreshToken = await jwtService.createJWT(user.id, '20s')
+        const accessToken = await jwtService.createJWT(user.id, '5min')
+        const refreshToken = await jwtService.createJWT(user.id, '10min')
         res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true});
         res.send({
             accessToken: accessToken
@@ -51,8 +51,8 @@ authRouter.post('/login',
 authRouter.post('/refresh-token',
     refreshTokenValidation,
     async (req: Request, res: Response<{ accessToken: string }>) => {
-        const refreshToken = req.headers["set-cookie"]
-        const newTokens = await jwtService.refreshTokens(refreshToken![0])
+        const refreshToken = req.cookies.refreshToken
+        const newTokens = await jwtService.refreshTokens(refreshToken)
         if(!newTokens) {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
             return
@@ -67,8 +67,8 @@ authRouter.post('/refresh-token',
 authRouter.post('/logout',
     refreshTokenValidation,
     (req: Request, res: Response) => {
-        const refreshToken = req.headers["set-cookie"]
-        const isLogout = jwtService.logout(refreshToken![0])
+        const refreshToken = req.cookies.refreshToken
+        const isLogout = jwtService.logout(refreshToken)
         if(!isLogout) {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
         }

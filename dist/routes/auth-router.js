@@ -37,16 +37,16 @@ exports.authRouter.post('/login', loginOrEmailValidation, users_router_1.passwor
         res.sendStatus(app_1.HTTP_STATUSES.UNAUTHORIZED_401);
         return;
     }
-    const accessToken = yield jwtService_1.jwtService.createJWT(user.id, '10s');
-    const refreshToken = yield jwtService_1.jwtService.createJWT(user.id, '20s');
+    const accessToken = yield jwtService_1.jwtService.createJWT(user.id, '5min');
+    const refreshToken = yield jwtService_1.jwtService.createJWT(user.id, '10min');
     res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true });
     res.send({
         accessToken: accessToken
     });
 }));
 exports.authRouter.post('/refresh-token', refreshToken_validation_middleware_1.refreshTokenValidation, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const refreshToken = req.headers["set-cookie"];
-    const newTokens = yield jwtService_1.jwtService.refreshTokens(refreshToken[0]);
+    const refreshToken = req.cookies.refreshToken;
+    const newTokens = yield jwtService_1.jwtService.refreshTokens(refreshToken);
     if (!newTokens) {
         res.sendStatus(app_1.HTTP_STATUSES.UNAUTHORIZED_401);
         return;
@@ -57,8 +57,8 @@ exports.authRouter.post('/refresh-token', refreshToken_validation_middleware_1.r
     });
 }));
 exports.authRouter.post('/logout', refreshToken_validation_middleware_1.refreshTokenValidation, (req, res) => {
-    const refreshToken = req.headers["set-cookie"];
-    const isLogout = jwtService_1.jwtService.logout(refreshToken[0]);
+    const refreshToken = req.cookies.refreshToken;
+    const isLogout = jwtService_1.jwtService.logout(refreshToken);
     if (!isLogout) {
         res.sendStatus(app_1.HTTP_STATUSES.UNAUTHORIZED_401);
     }
