@@ -26,7 +26,6 @@ export const jwtService = {
             const result = await jwt.verify(verifiedToken, settings.JWT_SECRET) as JwtPayload
             return result
         } catch (err) {
-            console.error(err)
             return null
         }
     },

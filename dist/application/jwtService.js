@@ -33,7 +33,7 @@ exports.jwtService = {
             }
         });
     },
-    refreshToken(verifiedToken) {
+    verifyToken(verifiedToken) {
         return __awaiter(this, void 0, void 0, function* () {
             const tokenInBlacklist = yield db_1.refreshTokenBlacklist.find({ outDatedToken: verifiedToken }).toArray();
             if (tokenInBlacklist.length) {
@@ -41,17 +41,39 @@ exports.jwtService = {
             }
             try {
                 const result = yield jsonwebtoken_1.default.verify(verifiedToken, settings_1.settings.JWT_SECRET);
-                yield db_1.refreshTokenBlacklist.insertOne({ outDatedToken: verifiedToken });
-                const newRefreshToken = yield this.createJWT(result.userId, '20s');
-                return {
-                    newRefreshToken,
-                    userId: result.userId
-                };
+                return result;
             }
             catch (err) {
-                console.error(err);
                 return null;
             }
+        });
+    },
+    refreshTokens(verifiedToken) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield this.verifyToken(verifiedToken);
+            if (!result) {
+                return null;
+            }
+            yield db_1.refreshTokenBlacklist.insertOne({ outDatedToken: verifiedToken });
+            const newRefreshToken = yield this.createJWT(result.userId, '20s');
+            const newAccessToken = yield this.createJWT(result.userId, '10s');
+            return {
+                newRefreshToken,
+                newAccessToken
+            };
+        });
+    },
+    logout(usedToken) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = this.verifyToken(usedToken);
+            if (!result) {
+                return false;
+            }
+            const insertResult = yield db_1.refreshTokenBlacklist.insertOne({ outDatedToken: usedToken });
+            if (!insertResult.acknowledged) {
+                return false;
+            }
+            return true;
         });
     }
 };

@@ -58,7 +58,7 @@ authRouter.post('/refresh-token',
             return
         }
 
-        res.cookie('set-cookie', newTokens.newRefreshToken, {httpOnly: true, secure: true})
+        res.cookie('refreshToken', newTokens.newRefreshToken, {httpOnly: true, secure: true})
         res.send({
             accessToken: newTokens.newAccessToken
         })
@@ -72,7 +72,7 @@ authRouter.post('/logout',
         if(!isLogout) {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
         }
-        
+
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
     })
 
