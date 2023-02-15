@@ -26,10 +26,12 @@ const blogs_service_1 = require("./domain/blogs-service");
 const auth_service_1 = require("./domain/auth-service");
 const settings_1 = require("./settings");
 const comments_router_1 = require("./routes/comments-router");
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
 exports.app = (0, express_1.default)();
 const port = settings_1.settings.PORT;
 const jsonBodyMiddleware = express_1.default.json();
 exports.app.use(jsonBodyMiddleware);
+exports.app.use((0, cookie_parser_1.default)());
 exports.HTTP_STATUSES = {
     OK_200: 200,
     CREATED_201: 201,

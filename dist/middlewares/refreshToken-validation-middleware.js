@@ -18,7 +18,7 @@ const refreshTokenValidation = (req, res, next) => __awaiter(void 0, void 0, voi
         res.sendStatus(app_1.HTTP_STATUSES.UNAUTHORIZED_401);
         return;
     }
-    const result = jwtService_1.jwtService.verifyToken(refreshToken);
+    const result = yield jwtService_1.jwtService.verifyToken(refreshToken);
     if (!result) {
         res.sendStatus(app_1.HTTP_STATUSES.UNAUTHORIZED_401);
         return;

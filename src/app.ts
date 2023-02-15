@@ -11,11 +11,13 @@ import { blogsService } from './domain/blogs-service'
 import { authService } from './domain/auth-service'
 import { settings } from './settings'
 import { commentsRouter } from './routes/comments-router'
+import cookieParser from 'cookie-parser'
 
 export const app = express()
 const port = settings.PORT
 const jsonBodyMiddleware = express.json()
 app.use(jsonBodyMiddleware)
+app.use(cookieParser())
 
 export const HTTP_STATUSES = {
     OK_200: 200,

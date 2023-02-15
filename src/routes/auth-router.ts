@@ -52,6 +52,7 @@ authRouter.post('/refresh-token',
     refreshTokenValidation,
     async (req: Request, res: Response<{ accessToken: string }>) => {
         const refreshToken = req.cookies.refreshToken
+        
         const newTokens = await jwtService.refreshTokens(refreshToken)
         if(!newTokens) {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
