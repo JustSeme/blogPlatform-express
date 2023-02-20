@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { validationResult } from "express-validator/src/validation-result";
-import { HTTP_STATUSES } from "../app";
+import { HTTP_STATUSES } from "../../app";
 
 export const inputValidationMiddleware = (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);

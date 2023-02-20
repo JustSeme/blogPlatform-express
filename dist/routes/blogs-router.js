@@ -13,14 +13,14 @@ exports.blogsRouter = void 0;
 const express_1 = require("express");
 const express_validator_1 = require("express-validator");
 const app_1 = require("../app");
-const basic_authorizatoin_middleware_1 = require("../middlewares/basic-authorizatoin-middleware");
-const input_validation_middleware_1 = require("../middlewares/input-validation-middleware");
+const basic_authorizatoin_middleware_1 = require("../middlewares/auth/basic-authorizatoin-middleware");
+const input_validation_middleware_1 = require("../middlewares/validations/input-validation-middleware");
 const blogs_service_1 = require("../domain/blogs-service");
 const blogs_query_repository_1 = require("../repositories/query/blogs-query-repository");
 const posts_router_1 = require("./posts-router");
 const posts_query_repository_1 = require("../repositories/query/posts-query-repository");
 const posts_service_1 = require("../domain/posts-service");
-const blogId_validation_middleware_1 = require("../middlewares/blogId-validation-middleware");
+const blogId_validation_middleware_1 = require("../middlewares/validations/blogId-validation-middleware");
 exports.blogsRouter = (0, express_1.Router)({});
 const nameValidation = (0, express_validator_1.body)('name')
     .exists()

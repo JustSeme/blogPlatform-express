@@ -1,8 +1,8 @@
 import { Router, Response } from "express";
 import { body, param } from "express-validator";
 import { HTTP_STATUSES } from "../app";
-import { basicAuthorizationMiddleware } from "../middlewares/basic-authorizatoin-middleware";
-import { inputValidationMiddleware } from "../middlewares/input-validation-middleware";
+import { basicAuthorizationMiddleware } from "../middlewares/auth/basic-authorizatoin-middleware";
+import { inputValidationMiddleware } from "../middlewares/validations/input-validation-middleware";
 import { BlogInputModel } from "../models/blogs/BlogInputModel";
 import { BlogViewModel } from "../models/blogs/BlogViewModel";
 import { ErrorMessagesOutputModel } from "../models/ErrorMessagesOutputModel";
@@ -16,7 +16,7 @@ import { PostsWithQueryOutputModel, PostViewModel } from "../models/posts/PostVi
 import { postsQueryRepository } from "../repositories/query/posts-query-repository";
 import { PostInputModel } from "../models/posts/PostInputModel";
 import { postsService } from "../domain/posts-service";
-import { blogIdValidationMiddleware } from "../middlewares/blogId-validation-middleware";
+import { blogIdValidationMiddleware } from "../middlewares/validations/blogId-validation-middleware";
 import { ReadBlogsQueryParams } from "../models/blogs/ReadBlogsQuery";
 import { ReadPostsQueryParams } from "../models/posts/ReadPostsQuery";
 

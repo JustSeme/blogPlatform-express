@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import { HTTP_STATUSES } from "../app";
-import { jwtService } from "../application/jwtService";
-import { usersQueryRepository } from "../repositories/query/users-query-repository";
+import { HTTP_STATUSES } from "../../app";
+import { jwtService } from "../../application/jwtService";
+import { usersQueryRepository } from "../../repositories/query/users-query-repository";
 
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     if(!req.headers.authorization) {

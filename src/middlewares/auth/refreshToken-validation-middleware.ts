@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express"
-import { HTTP_STATUSES } from "../app"
-import { jwtService } from "../application/jwtService"
+import { HTTP_STATUSES } from "../../app"
+import { jwtService } from "../../application/jwtService"
 
 
 export const refreshTokenValidation = async (req: Request, res: Response, next: NextFunction) => {

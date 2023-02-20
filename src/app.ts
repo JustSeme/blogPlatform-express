@@ -18,6 +18,7 @@ const port = settings.PORT
 const jsonBodyMiddleware = express.json()
 app.use(jsonBodyMiddleware)
 app.use(cookieParser())
+app.set('trust proxy', true)
 
 export const HTTP_STATUSES = {
     OK_200: 200,
@@ -28,6 +29,7 @@ export const HTTP_STATUSES = {
     BAD_REQUEST_400: 400,
     UNAUTHORIZED_401: 401,
     FORBIDDEN_403: 403,
+    TOO_MANY_REQUESTS_429: 429
 }
 
 const startApp = async () => {

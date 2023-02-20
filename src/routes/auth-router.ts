@@ -3,9 +3,9 @@ import { body } from "express-validator";
 import { HTTP_STATUSES } from "../app";
 import { jwtService } from "../application/jwtService";
 import { authService } from "../domain/auth-service";
-import { authMiddleware } from "../middlewares/auth-middleware";
-import { inputValidationMiddleware } from "../middlewares/input-validation-middleware";
-import { refreshTokenValidation } from "../middlewares/refreshToken-validation-middleware";
+import { authMiddleware } from "../middlewares/auth/auth-middleware";
+import { inputValidationMiddleware } from "../middlewares/validations/input-validation-middleware";
+import { refreshTokenValidation } from "../middlewares/auth/refreshToken-validation-middleware";
 import { LoginInputModel } from "../models/auth/LoginInputModel";
 import { MeOutputModel } from "../models/auth/MeOutputModel";
 import { ErrorMessagesOutputModel } from "../models/ErrorMessagesOutputModel";
@@ -42,7 +42,7 @@ authRouter.post('/login',
         
         const accessToken = await jwtService.createJWT(user.id, '10s')
         const refreshToken = await jwtService.createJWT(user.id, '20s')
-        res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true});
+        res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true });
         res.send({
             accessToken: accessToken
         })

@@ -32,6 +32,7 @@ const port = settings_1.settings.PORT;
 const jsonBodyMiddleware = express_1.default.json();
 exports.app.use(jsonBodyMiddleware);
 exports.app.use((0, cookie_parser_1.default)());
+exports.app.set('trust proxy', true);
 exports.HTTP_STATUSES = {
     OK_200: 200,
     CREATED_201: 201,
@@ -40,6 +41,7 @@ exports.HTTP_STATUSES = {
     BAD_REQUEST_400: 400,
     UNAUTHORIZED_401: 401,
     FORBIDDEN_403: 403,
+    TOO_MANY_REQUESTS_429: 429
 };
 const startApp = () => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, db_1.runDB)();
