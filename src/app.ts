@@ -29,7 +29,9 @@ export const HTTP_STATUSES = {
     BAD_REQUEST_400: 400,
     UNAUTHORIZED_401: 401,
     FORBIDDEN_403: 403,
-    TOO_MANY_REQUESTS_429: 429
+    TOO_MANY_REQUESTS_429: 429,
+
+    NOT_IMPLEMENTED_501: 501
 }
 
 const startApp = async () => {

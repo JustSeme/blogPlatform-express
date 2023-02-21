@@ -14,12 +14,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.jwtService = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const db_1 = require("../repositories/db");
 const settings_1 = require("../settings");
+const uuid_1 = require("uuid");
+const device_db_repository_1 = require("../repositories/device-db-repository");
 exports.jwtService = {
-    createJWT(userId, expiresTime) {
+    createJWT(expiresTime, ...payload) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield jsonwebtoken_1.default.sign({ userId: userId }, settings_1.settings.JWT_SECRET, { expiresIn: expiresTime });
+            return yield jsonwebtoken_1.default.sign(Object.assign({}, payload), settings_1.settings.JWT_SECRET, { expiresIn: expiresTime });
         });
     },
     getUserIdByToken(token) {
@@ -35,10 +36,10 @@ exports.jwtService = {
     },
     verifyToken(verifiedToken) {
         return __awaiter(this, void 0, void 0, function* () {
-            const tokenInBlacklist = yield db_1.refreshTokenBlacklist.find({ outDatedToken: verifiedToken }).toArray();
-            if (tokenInBlacklist.length) {
-                return null;
-            }
+            /* const tokenInBlacklist = await refreshTokenBlacklist.find({ outDatedToken: verifiedToken }).toArray()
+            if(tokenInBlacklist.length) {
+                return null
+            } */
             try {
                 const result = yield jsonwebtoken_1.default.verify(verifiedToken, settings_1.settings.JWT_SECRET);
                 return result;
@@ -54,23 +55,39 @@ exports.jwtService = {
             if (!result) {
                 return null;
             }
-            yield db_1.refreshTokenBlacklist.insertOne({ outDatedToken: verifiedToken });
-            const newRefreshToken = yield this.createJWT(result.userId, '20s');
-            const newAccessToken = yield this.createJWT(result.userId, '10s');
+            /* await refreshTokenBlacklist.insertOne({ outDatedToken: verifiedToken }) */
+            const newRefreshToken = yield this.createJWT('20s', result.userId);
+            const newAccessToken = yield this.createJWT('10s', result.userId);
             return {
                 newRefreshToken,
                 newAccessToken
             };
         });
     },
+    login(userId, userIp, deviceName) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const deviceId = (0, uuid_1.v4)();
+            const accessToken = yield this.createJWT('10min', userId);
+            const refreshToken = yield this.createJWT('20min', userId, deviceId);
+            const result = jsonwebtoken_1.default.decode(refreshToken);
+            const isAdded = yield device_db_repository_1.deviceRepository.addSession(result.iat, result.exp, userId, userIp, deviceId, deviceName);
+            if (!isAdded) {
+                return null;
+            }
+            return {
+                accessToken,
+                refreshToken
+            };
+        });
+    },
     logout(usedToken) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = this.verifyToken(usedToken);
+            const result = yield this.verifyToken(usedToken);
             if (!result) {
                 return false;
             }
-            const insertResult = yield db_1.refreshTokenBlacklist.insertOne({ outDatedToken: usedToken });
-            if (!insertResult.acknowledged) {
+            const isDeleted = device_db_repository_1.deviceRepository.destroySesion(result.deviceId);
+            if (!isDeleted) {
                 return false;
             }
             return true;

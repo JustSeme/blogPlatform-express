@@ -29,6 +29,8 @@ const emailValidation = body('email')
 .isString()
 .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
 
+/* Напиши тесты */
+
 authRouter.post('/login',
     loginOrEmailValidation,
     passwordValidation,
@@ -40,11 +42,16 @@ authRouter.post('/login',
             return
         }
         
-        const accessToken = await jwtService.createJWT(user.id, '10s')
-        const refreshToken = await jwtService.createJWT(user.id, '20s')
-        res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true });
+        const deviceName = req.headers["user-agent"] || 'undefined'
+        const pairOfTokens = await jwtService.login(user.id, req.ip, deviceName)
+        if(!pairOfTokens) {
+            res.sendStatus(HTTP_STATUSES.NOT_IMPLEMENTED_501)
+            return
+        }
+        
+        res.cookie('refreshToken', pairOfTokens.refreshToken, /* { httpOnly: true, secure: true } */);
         res.send({
-            accessToken: accessToken
+            accessToken: pairOfTokens.accessToken
         })
 })
 

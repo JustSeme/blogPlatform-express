@@ -1,4 +1,5 @@
 import { MongoClient } from 'mongodb'
+import { DeviceAuthSessionsModel } from '../models/auth/DeviceAuthSessionsModel';
 import { BlogViewModel } from '../models/blogs/BlogViewModel';
 import { CommentDBModel } from '../models/comments/CommentDBModel';
 import { PostViewModel } from '../models/posts/PostViewModel';
@@ -15,7 +16,7 @@ export const postsCollection = blogPlatformDB.collection<PostViewModel>('posts')
 export const blogsCollection = blogPlatformDB.collection<BlogViewModel>('blogs')
 export const usersCollection = blogPlatformDB.collection<UserDBModel>('users')
 export const commentsCollection = blogPlatformDB.collection<CommentDBModel>('comments')
-export const refreshTokenBlacklist = blogPlatformDB.collection('refreshTokensBlacklist')
+export const deviceAuthSessions = blogPlatformDB.collection<DeviceAuthSessionsModel>('deviceAuthSessions')
 
 export async function runDB() {
     try {

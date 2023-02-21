@@ -41,7 +41,8 @@ exports.HTTP_STATUSES = {
     BAD_REQUEST_400: 400,
     UNAUTHORIZED_401: 401,
     FORBIDDEN_403: 403,
-    TOO_MANY_REQUESTS_429: 429
+    TOO_MANY_REQUESTS_429: 429,
+    NOT_IMPLEMENTED_501: 501
 };
 const startApp = () => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, db_1.runDB)();

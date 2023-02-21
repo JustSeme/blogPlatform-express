@@ -31,17 +31,22 @@ const emailValidation = (0, express_validator_1.body)('email')
     .notEmpty()
     .isString()
     .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/);
+/* Напиши тесты */
 exports.authRouter.post('/login', loginOrEmailValidation, users_router_1.passwordValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield auth_service_1.authService.checkCredentials(req.body.loginOrEmail, req.body.password);
     if (!user) {
         res.sendStatus(app_1.HTTP_STATUSES.UNAUTHORIZED_401);
         return;
     }
-    const accessToken = yield jwtService_1.jwtService.createJWT(user.id, '10s');
-    const refreshToken = yield jwtService_1.jwtService.createJWT(user.id, '20s');
-    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true });
+    const deviceName = req.headers["user-agent"] || 'undefined';
+    const pairOfTokens = yield jwtService_1.jwtService.login(user.id, req.ip, deviceName);
+    if (!pairOfTokens) {
+        res.sendStatus(app_1.HTTP_STATUSES.NOT_IMPLEMENTED_501);
+        return;
+    }
+    res.cookie('refreshToken', pairOfTokens.refreshToken);
     res.send({
-        accessToken: accessToken
+        accessToken: pairOfTokens.accessToken
     });
 }));
 exports.authRouter.post('/refresh-token', refreshToken_validation_middleware_1.refreshTokenValidation, (req, res) => __awaiter(void 0, void 0, void 0, function* () {

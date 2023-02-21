@@ -1,10 +1,13 @@
+import { add } from 'date-fns';
 import jwt, { JwtPayload } from 'jsonwebtoken'
-import { refreshTokenBlacklist } from '../repositories/db';
 import { settings } from "../settings";
+import { v4 as uuid } from 'uuid';
+import { deviceAuthSessions } from '../repositories/db';
+import { deviceRepository } from '../repositories/device-db-repository';
 
 export const jwtService = {
-    async createJWT(userId: string, expiresTime: string) {
-        return await jwt.sign({userId: userId}, settings.JWT_SECRET, {expiresIn: expiresTime})
+    async createJWT(expiresTime: string, ...payload: Array<string | Date>) {
+        return await jwt.sign({...payload}, settings.JWT_SECRET, {expiresIn: expiresTime})
     },
 
     async getUserIdByToken(token: string) {
@@ -17,10 +20,10 @@ export const jwtService = {
     },
 
     async verifyToken(verifiedToken: string) {
-        const tokenInBlacklist = await refreshTokenBlacklist.find({ outDatedToken: verifiedToken }).toArray()
+        /* const tokenInBlacklist = await refreshTokenBlacklist.find({ outDatedToken: verifiedToken }).toArray()
         if(tokenInBlacklist.length) {
             return null
-        }
+        } */
         
         try {
             const result = await jwt.verify(verifiedToken, settings.JWT_SECRET) as JwtPayload
@@ -36,24 +39,43 @@ export const jwtService = {
             return null
         }
         
-        await refreshTokenBlacklist.insertOne({ outDatedToken: verifiedToken })
+        /* await refreshTokenBlacklist.insertOne({ outDatedToken: verifiedToken }) */
         
-        const newRefreshToken = await this.createJWT(result.userId, '20s')
-        const newAccessToken = await this.createJWT(result.userId, '10s')
+        const newRefreshToken = await this.createJWT('20s', result.userId)
+        const newAccessToken = await this.createJWT('10s', result.userId)
         return {
             newRefreshToken,
             newAccessToken
         }
     },
 
+    async login(userId: string, userIp: string, deviceName: string) {
+        const deviceId = uuid()
+
+        const accessToken = await this.createJWT('10min', userId)
+        const refreshToken = await this.createJWT('20min', userId, deviceId)
+        const result = jwt.decode(refreshToken) as JwtPayload
+        
+        const isAdded = await deviceRepository.addSession(result.iat!, result.exp!, userId, userIp, deviceId, deviceName)
+        if(!isAdded) {
+            return null
+        }
+
+        return {
+            accessToken,
+            refreshToken
+        }
+    },
+
     async logout(usedToken: string) {
-        const result = this.verifyToken(usedToken)
+        const result = await this.verifyToken(usedToken)
         if(!result) {
             return false
         }
 
-        const insertResult = await refreshTokenBlacklist.insertOne({ outDatedToken: usedToken })
-        if(!insertResult.acknowledged) {
+        const isDeleted = deviceRepository.destroySesion(result.deviceId)
+
+        if(!isDeleted) {
             return false
         }
         return true
