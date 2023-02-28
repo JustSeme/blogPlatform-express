@@ -18,8 +18,13 @@ export const deviceRepository = {
         return result.acknowledged
     },
 
-    async destroySesion(deviceId: string) {
+    async destroySession(deviceId: string) {
         const result = await deviceAuthSessions.deleteOne({'deviceInfo.deviceId': deviceId})
+        return result.acknowledged
+    },
+
+    async updateSession(deviceId: string, issuedAt: number, expireDate: number) {
+        const result = await deviceAuthSessions.updateOne({"deviceInfo.deviceId": deviceId}, {$set: {issuedAt, expireDate}})
         return result.acknowledged
     }
 }

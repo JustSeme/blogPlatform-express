@@ -17,10 +17,16 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const settings_1 = require("../settings");
 const uuid_1 = require("uuid");
 const device_db_repository_1 = require("../repositories/device-db-repository");
+const device_query_repository_1 = require("../repositories/query/device-query-repository");
 exports.jwtService = {
-    createJWT(expiresTime, ...payload) {
+    createAccessToken(expiresTime, userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield jsonwebtoken_1.default.sign(Object.assign({}, payload), settings_1.settings.JWT_SECRET, { expiresIn: expiresTime });
+            return yield jsonwebtoken_1.default.sign({ userId }, settings_1.settings.JWT_SECRET, { expiresIn: expiresTime });
+        });
+    },
+    createRefreshToken(expiresTime, deviceId, userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield jsonwebtoken_1.default.sign({ deviceId, userId }, settings_1.settings.JWT_SECRET, { expiresIn: expiresTime });
         });
     },
     getUserIdByToken(token) {
@@ -36,12 +42,12 @@ exports.jwtService = {
     },
     verifyToken(verifiedToken) {
         return __awaiter(this, void 0, void 0, function* () {
-            /* const tokenInBlacklist = await refreshTokenBlacklist.find({ outDatedToken: verifiedToken }).toArray()
-            if(tokenInBlacklist.length) {
-                return null
-            } */
             try {
                 const result = yield jsonwebtoken_1.default.verify(verifiedToken, settings_1.settings.JWT_SECRET);
+                const issuedAtForDeviceId = yield device_query_repository_1.deviceQueryRepository.getCurrentIssuedAt(result.deviceId);
+                if (issuedAtForDeviceId > result.iat) {
+                    return null;
+                }
                 return result;
             }
             catch (err) {
@@ -55,9 +61,13 @@ exports.jwtService = {
             if (!result) {
                 return null;
             }
-            /* await refreshTokenBlacklist.insertOne({ outDatedToken: verifiedToken }) */
-            const newRefreshToken = yield this.createJWT('20s', result.userId);
-            const newAccessToken = yield this.createJWT('10s', result.userId);
+            const newRefreshToken = yield this.createRefreshToken('20s', result.deviceId, result.userId);
+            const newAccessToken = yield this.createAccessToken('10s', result.userId);
+            const resultOfCreatedToken = jsonwebtoken_1.default.decode(newRefreshToken);
+            const isUpdated = device_db_repository_1.deviceRepository.updateSession(result.deviceId, resultOfCreatedToken.iat, resultOfCreatedToken.exp);
+            if (!isUpdated) {
+                return null;
+            }
             return {
                 newRefreshToken,
                 newAccessToken
@@ -67,8 +77,8 @@ exports.jwtService = {
     login(userId, userIp, deviceName) {
         return __awaiter(this, void 0, void 0, function* () {
             const deviceId = (0, uuid_1.v4)();
-            const accessToken = yield this.createJWT('10min', userId);
-            const refreshToken = yield this.createJWT('20min', userId, deviceId);
+            const accessToken = yield this.createAccessToken('10min', userId);
+            const refreshToken = yield this.createRefreshToken('20min', deviceId, userId);
             const result = jsonwebtoken_1.default.decode(refreshToken);
             const isAdded = yield device_db_repository_1.deviceRepository.addSession(result.iat, result.exp, userId, userIp, deviceId, deviceName);
             if (!isAdded) {
@@ -86,7 +96,7 @@ exports.jwtService = {
             if (!result) {
                 return false;
             }
-            const isDeleted = device_db_repository_1.deviceRepository.destroySesion(result.deviceId);
+            const isDeleted = device_db_repository_1.deviceRepository.destroySession(result.deviceId);
             if (!isDeleted) {
                 return false;
             }

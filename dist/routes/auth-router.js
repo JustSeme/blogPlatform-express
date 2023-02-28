@@ -17,7 +17,6 @@ const jwtService_1 = require("../application/jwtService");
 const auth_service_1 = require("../domain/auth-service");
 const auth_middleware_1 = require("../middlewares/auth/auth-middleware");
 const input_validation_middleware_1 = require("../middlewares/validations/input-validation-middleware");
-const refreshToken_validation_middleware_1 = require("../middlewares/auth/refreshToken-validation-middleware");
 const users_router_1 = require("./users-router");
 exports.authRouter = (0, express_1.Router)({});
 const loginOrEmailValidation = (0, express_validator_1.body)('loginOrEmail')
@@ -49,19 +48,19 @@ exports.authRouter.post('/login', loginOrEmailValidation, users_router_1.passwor
         accessToken: pairOfTokens.accessToken
     });
 }));
-exports.authRouter.post('/refresh-token', refreshToken_validation_middleware_1.refreshTokenValidation, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.authRouter.post('/refresh-token', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const refreshToken = req.cookies.refreshToken;
     const newTokens = yield jwtService_1.jwtService.refreshTokens(refreshToken);
     if (!newTokens) {
         res.sendStatus(app_1.HTTP_STATUSES.UNAUTHORIZED_401);
         return;
     }
-    res.cookie('refreshToken', newTokens.newRefreshToken, { httpOnly: true, secure: true });
+    res.cookie('refreshToken', newTokens.newRefreshToken);
     res.send({
         accessToken: newTokens.newAccessToken
     });
 }));
-exports.authRouter.post('/logout', refreshToken_validation_middleware_1.refreshTokenValidation, (req, res) => {
+exports.authRouter.post('/logout', (req, res) => {
     const refreshToken = req.cookies.refreshToken;
     const isLogout = jwtService_1.jwtService.logout(refreshToken);
     if (!isLogout) {

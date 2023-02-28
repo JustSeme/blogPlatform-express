@@ -5,7 +5,6 @@ import { jwtService } from "../application/jwtService";
 import { authService } from "../domain/auth-service";
 import { authMiddleware } from "../middlewares/auth/auth-middleware";
 import { inputValidationMiddleware } from "../middlewares/validations/input-validation-middleware";
-import { refreshTokenValidation } from "../middlewares/auth/refreshToken-validation-middleware";
 import { LoginInputModel } from "../models/auth/LoginInputModel";
 import { MeOutputModel } from "../models/auth/MeOutputModel";
 import { ErrorMessagesOutputModel } from "../models/ErrorMessagesOutputModel";
@@ -56,7 +55,6 @@ authRouter.post('/login',
 })
 
 authRouter.post('/refresh-token',
-    refreshTokenValidation,
     async (req: Request, res: Response<{ accessToken: string }>) => {
         const refreshToken = req.cookies.refreshToken
         
@@ -66,14 +64,13 @@ authRouter.post('/refresh-token',
             return
         }
 
-        res.cookie('refreshToken', newTokens.newRefreshToken, {httpOnly: true, secure: true})
+        res.cookie('refreshToken', newTokens.newRefreshToken, /* {httpOnly: true, secure: true} */)
         res.send({
             accessToken: newTokens.newAccessToken
         })
 })
 
 authRouter.post('/logout',
-    refreshTokenValidation,
     (req: Request, res: Response) => {
         const refreshToken = req.cookies.refreshToken
         const isLogout = jwtService.logout(refreshToken)

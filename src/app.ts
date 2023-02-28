@@ -12,6 +12,7 @@ import { authService } from './domain/auth-service'
 import { settings } from './settings'
 import { commentsRouter } from './routes/comments-router'
 import cookieParser from 'cookie-parser'
+import { securityRouter } from './routes/security-router'
 
 export const app = express()
 const port = settings.PORT
@@ -50,6 +51,8 @@ app.use('/homeworks/users', usersRouter)
 app.use('/homeworks/auth', authRouter)
 
 app.use('/homeworks/comments', commentsRouter)
+
+app.use('/homeworks/security', securityRouter)
 
 app.delete('/homework01/testing/all-data', async (req: Request, res: Response) => {
     await videosRepository.deleteVideo(null)

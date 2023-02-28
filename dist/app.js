@@ -27,6 +27,7 @@ const auth_service_1 = require("./domain/auth-service");
 const settings_1 = require("./settings");
 const comments_router_1 = require("./routes/comments-router");
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const security_router_1 = require("./routes/security-router");
 exports.app = (0, express_1.default)();
 const port = settings_1.settings.PORT;
 const jsonBodyMiddleware = express_1.default.json();
@@ -56,6 +57,7 @@ exports.app.use('/homeworks/posts', posts_router_1.postsRouter);
 exports.app.use('/homeworks/users', users_router_1.usersRouter);
 exports.app.use('/homeworks/auth', auth_router_1.authRouter);
 exports.app.use('/homeworks/comments', comments_router_1.commentsRouter);
+exports.app.use('/homeworks/security', security_router_1.securityRouter);
 exports.app.delete('/homework01/testing/all-data', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield videos_in_memory_repository_1.videosRepository.deleteVideo(null);
     res.sendStatus(exports.HTTP_STATUSES.NO_CONTENT_204);

@@ -1,5 +1,5 @@
 import { MongoClient } from 'mongodb'
-import { DeviceAuthSessionsModel } from '../models/auth/DeviceAuthSessionsModel';
+import { DeviceAuthSessionsModel } from '../models/devices/DeviceSessionsDBModel';
 import { BlogViewModel } from '../models/blogs/BlogViewModel';
 import { CommentDBModel } from '../models/comments/CommentDBModel';
 import { PostViewModel } from '../models/posts/PostViewModel';

@@ -1,18 +1,21 @@
-import { add } from 'date-fns';
 import jwt, { JwtPayload } from 'jsonwebtoken'
 import { settings } from "../settings";
 import { v4 as uuid } from 'uuid';
-import { deviceAuthSessions } from '../repositories/db';
 import { deviceRepository } from '../repositories/device-db-repository';
+import { deviceQueryRepository } from '../repositories/query/device-query-repository';
 
 export const jwtService = {
-    async createJWT(expiresTime: string, ...payload: Array<string | Date>) {
-        return await jwt.sign({...payload}, settings.JWT_SECRET, {expiresIn: expiresTime})
+    async createAccessToken(expiresTime: string, userId: string) {
+        return await jwt.sign({userId}, settings.JWT_SECRET, {expiresIn: expiresTime})
+    },
+
+    async createRefreshToken(expiresTime: string, deviceId: string, userId: string) {
+        return await jwt.sign({deviceId, userId}, settings.JWT_SECRET, {expiresIn: expiresTime})
     },
 
     async getUserIdByToken(token: string) {
         try {
-            const result: any = await jwt.verify(token, settings.JWT_SECRET)
+            const result = await jwt.verify(token, settings.JWT_SECRET) as JwtPayload
             return result.userId
         } catch (err) {
             return null
@@ -20,13 +23,13 @@ export const jwtService = {
     },
 
     async verifyToken(verifiedToken: string) {
-        /* const tokenInBlacklist = await refreshTokenBlacklist.find({ outDatedToken: verifiedToken }).toArray()
-        if(tokenInBlacklist.length) {
-            return null
-        } */
-        
         try {
             const result = await jwt.verify(verifiedToken, settings.JWT_SECRET) as JwtPayload
+            const issuedAtForDeviceId = await deviceQueryRepository.getCurrentIssuedAt(result.deviceId)
+            if(issuedAtForDeviceId > result.iat!) {
+                return null
+            }
+
             return result
         } catch (err) {
             return null
@@ -39,10 +42,16 @@ export const jwtService = {
             return null
         }
         
-        /* await refreshTokenBlacklist.insertOne({ outDatedToken: verifiedToken }) */
+        const newRefreshToken = await this.createRefreshToken('20s', result.deviceId, result.userId)
+        const newAccessToken = await this.createAccessToken('10s', result.userId)
+        const resultOfCreatedToken = jwt.decode(newRefreshToken) as JwtPayload
+
+        const isUpdated = deviceRepository.updateSession(result.deviceId, resultOfCreatedToken.iat!, resultOfCreatedToken.exp!)
         
-        const newRefreshToken = await this.createJWT('20s', result.userId)
-        const newAccessToken = await this.createJWT('10s', result.userId)
+        if(!isUpdated) {
+            return null
+        }
+
         return {
             newRefreshToken,
             newAccessToken
@@ -52,8 +61,8 @@ export const jwtService = {
     async login(userId: string, userIp: string, deviceName: string) {
         const deviceId = uuid()
 
-        const accessToken = await this.createJWT('10min', userId)
-        const refreshToken = await this.createJWT('20min', userId, deviceId)
+        const accessToken = await this.createAccessToken('10min', userId)
+        const refreshToken = await this.createRefreshToken('20min', deviceId, userId)
         const result = jwt.decode(refreshToken) as JwtPayload
         
         const isAdded = await deviceRepository.addSession(result.iat!, result.exp!, userId, userIp, deviceId, deviceName)
@@ -73,7 +82,7 @@ export const jwtService = {
             return false
         }
 
-        const isDeleted = deviceRepository.destroySesion(result.deviceId)
+        const isDeleted = deviceRepository.destroySession(result.deviceId)
 
         if(!isDeleted) {
             return false
