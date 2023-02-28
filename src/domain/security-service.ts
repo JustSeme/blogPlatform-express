@@ -1,4 +1,5 @@
 import { DeviceSessionsViewModel } from "../models/devices/DeviceSessionsViewModel"
+import { deviceRepository } from "../repositories/device-db-repository"
 import { deviceQueryRepository } from "../repositories/query/device-query-repository"
 
 export const securityService = {
@@ -15,5 +16,9 @@ export const securityService = {
             deviceId: el.deviceInfo.deviceId
         }))
         return displayedActiveSessionsForUser
-    }
+    },
+    
+    async destroyAllSessions(userId: string, deviceId: string) { // exclude current session
+        return await deviceRepository.deleteAllSessions(userId, deviceId)
+    } 
 }

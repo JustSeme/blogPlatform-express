@@ -35,11 +35,17 @@ exports.deviceRepository = {
             return result.acknowledged;
         });
     },
+    deleteAllSessions(userId, deviceId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield db_1.deviceAuthSessions.deleteMany({ $and: [{ 'userInfo.userId': userId }, { 'deviceInfo.deviceId': { $ne: deviceId } }] });
+            return result.acknowledged;
+        });
+    },
     updateSession(deviceId, issuedAt, expireDate) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield db_1.deviceAuthSessions.updateOne({ "deviceInfo.deviceId": deviceId }, { $set: { issuedAt, expireDate } });
             return result.acknowledged;
         });
-    }
+    },
 };
 //# sourceMappingURL=device-db-repository.js.map

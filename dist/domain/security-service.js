@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.securityService = void 0;
+const device_db_repository_1 = require("../repositories/device-db-repository");
 const device_query_repository_1 = require("../repositories/query/device-query-repository");
 exports.securityService = {
     getActiveDevicesForUser(userId) {
@@ -25,6 +26,11 @@ exports.securityService = {
                 deviceId: el.deviceInfo.deviceId
             }));
             return displayedActiveSessionsForUser;
+        });
+    },
+    destroyAllSessions(userId, deviceId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield device_db_repository_1.deviceRepository.deleteAllSessions(userId, deviceId);
         });
     }
 };
