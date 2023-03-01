@@ -4,7 +4,7 @@ import { HTTP_STATUSES } from "../app";
 import { jwtService } from "../application/jwtService";
 import { securityService } from "../domain/security-service";
 import { DeviceSessionsViewModel } from "../models/devices/DeviceSessionsViewModel";
-import { RequestWithParams } from "../types/types";
+import { RequestWithQuery } from "../types/types";
 
 export const securityRouter = Router({})
 
@@ -43,4 +43,27 @@ securityRouter.delete('/devices',
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
     })
 
-securityRouter.delete('/devices/:deviceId',)
+securityRouter.delete('/devices/:deviceId',
+    async (req: RequestWithQuery<{deviceId: string}>, res: Response) => {
+        const refreshToken = req.cookies.refreshToken
+        const result = await jwtService.verifyToken(refreshToken) as JwtPayload
+        if(!result) {
+            res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
+            return
+        }
+
+        const devicesForCurrentUser = await securityService.getActiveDevicesForUser(result.userId)
+        const currentDevice = devicesForCurrentUser?.find(device => device.deviceId === result.deviceId)
+        if(!currentDevice) {
+            res.sendStatus(HTTP_STATUSES.FORBIDDEN_403)
+            return
+        }
+
+        const isDeleted = await securityService.deleteDevice(result.deviceId)
+        if(!isDeleted) {
+            res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+            return
+        }
+
+        res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
+    })

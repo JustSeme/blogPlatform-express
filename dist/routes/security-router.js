@@ -43,5 +43,24 @@ exports.securityRouter.delete('/devices', (req, res) => __awaiter(void 0, void 0
     }
     res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
 }));
-exports.securityRouter.delete('/devices/:deviceId');
+exports.securityRouter.delete('/devices/:deviceId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const refreshToken = req.cookies.refreshToken;
+    const result = yield jwtService_1.jwtService.verifyToken(refreshToken);
+    if (!result) {
+        res.sendStatus(app_1.HTTP_STATUSES.UNAUTHORIZED_401);
+        return;
+    }
+    const devicesForCurrentUser = yield security_service_1.securityService.getActiveDevicesForUser(result.userId);
+    const currentDevice = devicesForCurrentUser === null || devicesForCurrentUser === void 0 ? void 0 : devicesForCurrentUser.find(device => device.deviceId === result.deviceId);
+    if (!currentDevice) {
+        res.sendStatus(app_1.HTTP_STATUSES.FORBIDDEN_403);
+        return;
+    }
+    const isDeleted = yield security_service_1.securityService.deleteDevice(result.deviceId);
+    if (!isDeleted) {
+        res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
+        return;
+    }
+    res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
+}));
 //# sourceMappingURL=security-router.js.map

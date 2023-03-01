@@ -32,6 +32,11 @@ exports.securityService = {
         return __awaiter(this, void 0, void 0, function* () {
             return yield device_db_repository_1.deviceRepository.deleteAllSessions(userId, deviceId);
         });
+    },
+    deleteDevice(deviceId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield device_db_repository_1.deviceRepository.destroySession(deviceId);
+        });
     }
 };
 //# sourceMappingURL=security-service.js.map

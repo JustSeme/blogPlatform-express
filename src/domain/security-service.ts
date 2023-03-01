@@ -20,5 +20,9 @@ export const securityService = {
     
     async destroyAllSessions(userId: string, deviceId: string) { // exclude current session
         return await deviceRepository.deleteAllSessions(userId, deviceId)
-    } 
+    },
+
+    async deleteDevice(deviceId: string) {
+        return await deviceRepository.destroySession(deviceId)
+    }
 }

@@ -23,6 +23,6 @@ exports.deviceQueryRepository = {
             const result = yield db_1.deviceAuthSessions.find({ "userInfo.userId": userId }).toArray();
             return result;
         });
-    }
+    },
 };
 //# sourceMappingURL=device-query-repository.js.map

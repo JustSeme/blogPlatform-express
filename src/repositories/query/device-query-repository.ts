@@ -9,5 +9,5 @@ export const deviceQueryRepository = {
     async getSessionsForUser(userId: string) {
         const result = await deviceAuthSessions.find({"userInfo.userId": userId}).toArray()
         return result
-    }
+    },
 }
