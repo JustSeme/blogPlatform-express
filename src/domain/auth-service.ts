@@ -1,5 +1,3 @@
-import bcrypt from 'bcrypt'
-import { randomUUID } from 'crypto'
 import { UserDBModel } from '../models/users/UserDBModel'
 import { UserViewModel } from '../models/users/UsersViewModel'
 import { usersRepository } from '../repositories/users-db-repository'
@@ -7,13 +5,14 @@ import { v4 as uuidv4 } from 'uuid'
 import add from 'date-fns/add'
 import { emailManager } from '../managers/emailManager'
 import { usersQueryRepository } from '../repositories/query/users-query-repository'
+import { bcryptAdapter } from '../adapters/bcryptAdapter'
 
 export const authService = {
     async createUser(login: string, password: string, email: string, ip: string = ''): Promise<boolean> {
-        const passwordHash = await bcrypt.hash(password, 10)
+        const passwordHash = await bcryptAdapter.generatePasswordHash(password, 10)
 
         const newUser: UserDBModel = {
-            id: randomUUID(),
+            id: uuidv4(),
             login: login,
             email: email,
             passwordHash,
@@ -39,10 +38,10 @@ export const authService = {
     },
 
     async createUserWithBasicAuth(login: string, password: string, email: string, ip: string = 'superAdmin'): Promise<UserViewModel | null> {
-        const passwordHash = await bcrypt.hash(password, 10)
+        const passwordHash = await bcryptAdapter.generatePasswordHash(password, 10)
 
         const newUser: UserDBModel = {
-            id: randomUUID(),
+            id: uuidv4(),
             login: login,
             email: email,
             passwordHash,
@@ -102,7 +101,7 @@ export const authService = {
         if(!user) return false
         if(!user.emailConfirmation.isConfirmed) return false
 
-        const isConfirmed = await bcrypt.compare(password, user.passwordHash)
+        const isConfirmed = await bcryptAdapter.comparePassword(password, user.passwordHash)
         if(isConfirmed) {
             return user
         }

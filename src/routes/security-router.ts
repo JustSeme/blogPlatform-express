@@ -54,7 +54,7 @@ securityRouter.delete('/devices/:deviceId',
         }
 
         const deletingDevice = await deviceQueryRepository.getDeviceByDeviceId(req.query.deviceId)
-        if(!deletingDevice) {
+        if(!deletingDevice || !req.query.deviceId) {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
             return
         }

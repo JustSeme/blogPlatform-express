@@ -52,7 +52,7 @@ exports.securityRouter.delete('/devices/:deviceId', (req, res) => __awaiter(void
         return;
     }
     const deletingDevice = yield device_query_repository_1.deviceQueryRepository.getDeviceByDeviceId(req.query.deviceId);
-    if (!deletingDevice) {
+    if (!deletingDevice || !req.query.deviceId) {
         res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
         return;
     }
