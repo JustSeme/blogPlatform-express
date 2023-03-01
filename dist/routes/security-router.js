@@ -14,6 +14,7 @@ const express_1 = require("express");
 const app_1 = require("../app");
 const jwtService_1 = require("../application/jwtService");
 const security_service_1 = require("../domain/security-service");
+const device_query_repository_1 = require("../repositories/query/device-query-repository");
 exports.securityRouter = (0, express_1.Router)({});
 exports.securityRouter.get('/devices', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const refreshToken = req.cookies.refreshToken;
@@ -36,7 +37,7 @@ exports.securityRouter.delete('/devices', (req, res) => __awaiter(void 0, void 0
         res.sendStatus(app_1.HTTP_STATUSES.UNAUTHORIZED_401);
         return;
     }
-    const isDeleted = yield security_service_1.securityService.destroyAllSessions(result.userId, result.deviceId);
+    const isDeleted = yield security_service_1.securityService.removeAllSessions(result.userId, result.deviceId);
     if (!isDeleted) {
         res.sendStatus(app_1.HTTP_STATUSES.NOT_IMPLEMENTED_501);
         return;
@@ -50,15 +51,20 @@ exports.securityRouter.delete('/devices/:deviceId', (req, res) => __awaiter(void
         res.sendStatus(app_1.HTTP_STATUSES.UNAUTHORIZED_401);
         return;
     }
+    const deletingDevice = yield device_query_repository_1.deviceQueryRepository.getDeviceByDeviceId(req.query.deviceId);
+    if (!deletingDevice) {
+        res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
+        return;
+    }
     const devicesForCurrentUser = yield security_service_1.securityService.getActiveDevicesForUser(result.userId);
-    const currentDevice = devicesForCurrentUser === null || devicesForCurrentUser === void 0 ? void 0 : devicesForCurrentUser.find(device => device.deviceId === result.deviceId);
+    const currentDevice = devicesForCurrentUser === null || devicesForCurrentUser === void 0 ? void 0 : devicesForCurrentUser.find(device => device.deviceId === req.query.deviceId);
     if (!currentDevice) {
         res.sendStatus(app_1.HTTP_STATUSES.FORBIDDEN_403);
         return;
     }
-    const isDeleted = yield security_service_1.securityService.deleteDevice(result.deviceId);
+    const isDeleted = yield security_service_1.securityService.deleteDevice(req.query.deviceId);
     if (!isDeleted) {
-        res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
+        res.sendStatus(app_1.HTTP_STATUSES.NOT_IMPLEMENTED_501);
         return;
     }
     res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);

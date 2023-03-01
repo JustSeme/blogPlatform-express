@@ -29,7 +29,7 @@ exports.deviceRepository = {
             return result.acknowledged;
         });
     },
-    destroySession(deviceId) {
+    removeSession(deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield db_1.deviceAuthSessions.deleteOne({ 'deviceInfo.deviceId': deviceId });
             return result.acknowledged;

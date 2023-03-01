@@ -61,8 +61,8 @@ export const jwtService = {
     async login(userId: string, userIp: string, deviceName: string) {
         const deviceId = uuid()
 
-        const accessToken = await this.createAccessToken('10min', userId)
-        const refreshToken = await this.createRefreshToken('20min', deviceId, userId)
+        const accessToken = await this.createAccessToken('10s', userId)
+        const refreshToken = await this.createRefreshToken('20s', deviceId, userId)
         const result = jwt.decode(refreshToken) as JwtPayload
         
         const isAdded = await deviceRepository.addSession(result.iat!, result.exp!, userId, userIp, deviceId, deviceName)
@@ -82,7 +82,7 @@ export const jwtService = {
             return false
         }
 
-        const isDeleted = deviceRepository.destroySession(result.deviceId)
+        const isDeleted = deviceRepository.removeSession(result.deviceId)
 
         if(!isDeleted) {
             return false

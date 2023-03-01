@@ -24,10 +24,6 @@ exports.authService = {
     createUser(login, password, email, ip = '') {
         return __awaiter(this, void 0, void 0, function* () {
             const passwordHash = yield bcrypt_1.default.hash(password, 10);
-            const registrationCountLastFiveMinutes = yield users_query_repository_1.usersQueryRepository.getRegistrationsCount(ip, 5);
-            if (registrationCountLastFiveMinutes > 3) {
-                return false;
-            }
             const newUser = {
                 id: (0, crypto_1.randomUUID)(),
                 login: login,

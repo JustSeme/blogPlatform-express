@@ -6,8 +6,12 @@ export const deviceQueryRepository = {
         return result!.issuedAt
     },
 
-    async getSessionsForUser(userId: string) {
+    async getDevicesForUser(userId: string) {
         const result = await deviceAuthSessions.find({"userInfo.userId": userId}).toArray()
         return result
+    },
+
+    async getDeviceByDeviceId(deviceId: string) {
+        return await deviceAuthSessions.findOne({"deviceInfo.deviceId": deviceId})
     },
 }

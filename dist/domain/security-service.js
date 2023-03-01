@@ -15,7 +15,7 @@ const device_query_repository_1 = require("../repositories/query/device-query-re
 exports.securityService = {
     getActiveDevicesForUser(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const activeSessionsForUser = yield device_query_repository_1.deviceQueryRepository.getSessionsForUser(userId);
+            const activeSessionsForUser = yield device_query_repository_1.deviceQueryRepository.getDevicesForUser(userId);
             if (!activeSessionsForUser) {
                 return null;
             }
@@ -28,14 +28,19 @@ exports.securityService = {
             return displayedActiveSessionsForUser;
         });
     },
-    destroyAllSessions(userId, deviceId) {
+    getDeviceByDeviceId(deviceId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield device_query_repository_1.deviceQueryRepository;
+        });
+    },
+    removeAllSessions(userId, deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield device_db_repository_1.deviceRepository.deleteAllSessions(userId, deviceId);
         });
     },
     deleteDevice(deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield device_db_repository_1.deviceRepository.destroySession(deviceId);
+            return yield device_db_repository_1.deviceRepository.removeSession(deviceId);
         });
     }
 };

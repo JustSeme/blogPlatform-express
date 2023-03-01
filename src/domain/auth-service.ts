@@ -12,11 +12,6 @@ export const authService = {
     async createUser(login: string, password: string, email: string, ip: string = ''): Promise<boolean> {
         const passwordHash = await bcrypt.hash(password, 10)
 
-        const registrationCountLastFiveMinutes = await usersQueryRepository.getRegistrationsCount(ip, 5)
-        if(registrationCountLastFiveMinutes > 3) {
-            return false
-        }
-
         const newUser: UserDBModel = {
             id: randomUUID(),
             login: login,

@@ -77,8 +77,8 @@ exports.jwtService = {
     login(userId, userIp, deviceName) {
         return __awaiter(this, void 0, void 0, function* () {
             const deviceId = (0, uuid_1.v4)();
-            const accessToken = yield this.createAccessToken('10min', userId);
-            const refreshToken = yield this.createRefreshToken('20min', deviceId, userId);
+            const accessToken = yield this.createAccessToken('10s', userId);
+            const refreshToken = yield this.createRefreshToken('20s', deviceId, userId);
             const result = jsonwebtoken_1.default.decode(refreshToken);
             const isAdded = yield device_db_repository_1.deviceRepository.addSession(result.iat, result.exp, userId, userIp, deviceId, deviceName);
             if (!isAdded) {
@@ -96,7 +96,7 @@ exports.jwtService = {
             if (!result) {
                 return false;
             }
-            const isDeleted = device_db_repository_1.deviceRepository.destroySession(result.deviceId);
+            const isDeleted = device_db_repository_1.deviceRepository.removeSession(result.deviceId);
             if (!isDeleted) {
                 return false;
             }

@@ -10,7 +10,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.usersQueryRepository = void 0;
-const date_fns_1 = require("date-fns");
 const db_1 = require("../db");
 exports.usersQueryRepository = {
     findUsers(queryParams) {
@@ -69,18 +68,6 @@ exports.usersQueryRepository = {
     findUserByConfirmationCode(code) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield db_1.usersCollection.findOne({ 'emailConfirmation.confirmationCode': code });
-        });
-    },
-    getRegistrationsCount(ip, seconds) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield db_1.usersCollection.count({
-                'registrationData.ip': ip,
-                'timestamp': {
-                    $gte: (0, date_fns_1.add)(new Date(), {
-                        seconds: seconds
-                    })
-                }
-            });
         });
     }
 };

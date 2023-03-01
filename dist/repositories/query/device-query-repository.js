@@ -18,10 +18,15 @@ exports.deviceQueryRepository = {
             return result.issuedAt;
         });
     },
-    getSessionsForUser(userId) {
+    getDevicesForUser(userId) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield db_1.deviceAuthSessions.find({ "userInfo.userId": userId }).toArray();
             return result;
+        });
+    },
+    getDeviceByDeviceId(deviceId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield db_1.deviceAuthSessions.findOne({ "deviceInfo.deviceId": deviceId });
         });
     },
 };

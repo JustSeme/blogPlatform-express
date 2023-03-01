@@ -4,7 +4,7 @@ import { deviceQueryRepository } from "../repositories/query/device-query-reposi
 
 export const securityService = {
     async getActiveDevicesForUser(userId: string) {
-        const activeSessionsForUser = await deviceQueryRepository.getSessionsForUser(userId)
+        const activeSessionsForUser = await deviceQueryRepository.getDevicesForUser(userId)
         if(!activeSessionsForUser) {
             return null
         }
@@ -17,12 +17,16 @@ export const securityService = {
         }))
         return displayedActiveSessionsForUser
     },
+
+    async getDeviceByDeviceId(deviceId: string) {
+        return await deviceQueryRepository
+    },
     
-    async destroyAllSessions(userId: string, deviceId: string) { // exclude current session
+    async removeAllSessions(userId: string, deviceId: string) { // exclude current session
         return await deviceRepository.deleteAllSessions(userId, deviceId)
     },
 
     async deleteDevice(deviceId: string) {
-        return await deviceRepository.destroySession(deviceId)
+        return await deviceRepository.removeSession(deviceId)
     }
 }
