@@ -44,7 +44,7 @@ exports.authRouter.post('/login', rate_limit_middleware_1.rateLimitMiddleware, l
         res.sendStatus(app_1.HTTP_STATUSES.NOT_IMPLEMENTED_501);
         return;
     }
-    res.cookie('refreshToken', pairOfTokens.refreshToken);
+    res.cookie('refreshToken', pairOfTokens.refreshToken, { httpOnly: true, secure: true });
     res.send({
         accessToken: pairOfTokens.accessToken
     });
@@ -56,7 +56,7 @@ exports.authRouter.post('/refresh-token', (req, res) => __awaiter(void 0, void 0
         res.sendStatus(app_1.HTTP_STATUSES.UNAUTHORIZED_401);
         return;
     }
-    res.cookie('refreshToken', newTokens.newRefreshToken);
+    res.cookie('refreshToken2', newTokens.newRefreshToken, { httpOnly: true, secure: true });
     res.send({
         accessToken: newTokens.newAccessToken
     });

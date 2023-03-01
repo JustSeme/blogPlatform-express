@@ -42,7 +42,6 @@ authRouter.post('/login',
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
             return
         }
-        //fdsfdsfds
         
         const deviceName = req.headers["user-agent"] || 'undefined'
         const pairOfTokens = await jwtService.login(user.id, req.ip, deviceName)
@@ -67,7 +66,7 @@ authRouter.post('/refresh-token',
             return
         }
 
-        res.cookie('refreshToken', newTokens.newRefreshToken, {httpOnly: true, secure: true})
+        res.cookie('refreshToken2', newTokens.newRefreshToken, {httpOnly: true, secure: true})
         res.send({
             accessToken: newTokens.newAccessToken
         })
