@@ -14,7 +14,7 @@ const db_1 = require("./db");
 exports.attemptsRepository = {
     getAttemptsCountPerTime(clientIp, requestedUrl, lastAttemptDate) {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.attemptsCollection.countDocuments({
+            return yield db_1.attemptsCollection.countDocuments({
                 clientIp,
                 requestedUrl,
                 requestDate: {

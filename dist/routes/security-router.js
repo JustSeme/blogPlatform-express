@@ -51,18 +51,18 @@ exports.securityRouter.delete('/devices/:deviceId', (req, res) => __awaiter(void
         res.sendStatus(app_1.HTTP_STATUSES.UNAUTHORIZED_401);
         return;
     }
-    const deletingDevice = yield device_query_repository_1.deviceQueryRepository.getDeviceByDeviceId(req.query.deviceId);
-    if (!deletingDevice || !req.query.deviceId) {
+    const deletingDevice = yield device_query_repository_1.deviceQueryRepository.getDeviceByDeviceId(req.params.deviceId);
+    if (!deletingDevice || !req.params.deviceId) {
         res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
         return;
     }
     const devicesForCurrentUser = yield security_service_1.securityService.getActiveDevicesForUser(result.userId);
-    const currentDevice = devicesForCurrentUser === null || devicesForCurrentUser === void 0 ? void 0 : devicesForCurrentUser.find(device => device.deviceId === req.query.deviceId);
+    const currentDevice = devicesForCurrentUser === null || devicesForCurrentUser === void 0 ? void 0 : devicesForCurrentUser.find(device => device.deviceId === req.params.deviceId);
     if (!currentDevice) {
         res.sendStatus(app_1.HTTP_STATUSES.FORBIDDEN_403);
         return;
     }
-    const isDeleted = yield security_service_1.securityService.deleteDevice(req.query.deviceId);
+    const isDeleted = yield security_service_1.securityService.deleteDevice(req.params.deviceId);
     if (!isDeleted) {
         res.sendStatus(app_1.HTTP_STATUSES.NOT_IMPLEMENTED_501);
         return;

@@ -2,7 +2,7 @@ import { attemptsCollection } from "./db"
 
 export const attemptsRepository = {
     async getAttemptsCountPerTime(clientIp: string, requestedUrl: string, lastAttemptDate: Date) {
-        return attemptsCollection.countDocuments({
+        return await attemptsCollection.countDocuments({
             clientIp, 
             requestedUrl,
             requestDate: {

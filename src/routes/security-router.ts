@@ -5,7 +5,7 @@ import { jwtService } from "../application/jwtService";
 import { securityService } from "../domain/security-service";
 import { DeviceSessionsViewModel } from "../models/devices/DeviceSessionsViewModel";
 import { deviceQueryRepository } from "../repositories/query/device-query-repository";
-import { RequestWithQuery } from "../types/types";
+import { RequestWithParams } from "../types/types";
 
 export const securityRouter = Router({})
 
@@ -45,7 +45,7 @@ securityRouter.delete('/devices',
     })
 
 securityRouter.delete('/devices/:deviceId',
-    async (req: RequestWithQuery<{deviceId: string}>, res: Response) => {
+    async (req: RequestWithParams<{deviceId: string}>, res: Response) => {
         const refreshToken = req.cookies.refreshToken
         const result = await jwtService.verifyToken(refreshToken) as JwtPayload
         if(!result) {
@@ -53,20 +53,21 @@ securityRouter.delete('/devices/:deviceId',
             return
         }
 
-        const deletingDevice = await deviceQueryRepository.getDeviceByDeviceId(req.query.deviceId)
-        if(!deletingDevice || !req.query.deviceId) {
+        const deletingDevice = await deviceQueryRepository.getDeviceByDeviceId(req.params.deviceId)
+        
+        if(!deletingDevice || !req.params.deviceId) {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
             return
         }
 
         const devicesForCurrentUser = await securityService.getActiveDevicesForUser(result.userId)
-        const currentDevice = devicesForCurrentUser?.find(device => device.deviceId === req.query.deviceId)
+        const currentDevice = devicesForCurrentUser?.find(device => device.deviceId === req.params.deviceId)
         if(!currentDevice) {
             res.sendStatus(HTTP_STATUSES.FORBIDDEN_403)
             return
         }
 
-        const isDeleted = await securityService.deleteDevice(req.query.deviceId)
+        const isDeleted = await securityService.deleteDevice(req.params.deviceId)
         if(!isDeleted) {
             res.sendStatus(HTTP_STATUSES.NOT_IMPLEMENTED_501)
             return
