@@ -1,6 +1,6 @@
 export type DeviceSessionsViewModel = {
     ip: string
     title: string
-    lastActiveDate: string
+    lastActiveDate: Date
     deviceId: string
 }

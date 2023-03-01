@@ -12,14 +12,10 @@ export const securityService = {
         const displayedActiveSessionsForUser: Array<DeviceSessionsViewModel> = await activeSessionsForUser.map(el => ({
             ip: el.userInfo.userIp,
             title: el.deviceInfo.deviceName,
-            lastActiveDate: el.issuedAt.toString(),
+            lastActiveDate: new Date(el.issuedAt * 1000),
             deviceId: el.deviceInfo.deviceId
         }))
         return displayedActiveSessionsForUser
-    },
-
-    async getDeviceByDeviceId(deviceId: string) {
-        return await deviceQueryRepository
     },
     
     async removeAllSessions(userId: string, deviceId: string) { // exclude current session

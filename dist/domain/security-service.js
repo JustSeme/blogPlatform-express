@@ -22,15 +22,10 @@ exports.securityService = {
             const displayedActiveSessionsForUser = yield activeSessionsForUser.map(el => ({
                 ip: el.userInfo.userIp,
                 title: el.deviceInfo.deviceName,
-                lastActiveDate: el.issuedAt.toString(),
+                lastActiveDate: new Date(el.issuedAt * 1000),
                 deviceId: el.deviceInfo.deviceId
             }));
             return displayedActiveSessionsForUser;
-        });
-    },
-    getDeviceByDeviceId(deviceId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield device_query_repository_1.deviceQueryRepository;
         });
     },
     removeAllSessions(userId, deviceId) {
