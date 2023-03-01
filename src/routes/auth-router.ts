@@ -50,7 +50,7 @@ authRouter.post('/login',
             return
         }
         
-        res.cookie('refreshToken', pairOfTokens.refreshToken, /* { httpOnly: true, secure: true } */);
+        res.cookie('refreshToken', pairOfTokens.refreshToken, { httpOnly: true, secure: true });
         res.send({
             accessToken: pairOfTokens.accessToken
         })
