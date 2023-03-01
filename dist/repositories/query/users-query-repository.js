@@ -71,13 +71,13 @@ exports.usersQueryRepository = {
             return yield db_1.usersCollection.findOne({ 'emailConfirmation.confirmationCode': code });
         });
     },
-    getRegistrationsCount(ip, minutes) {
+    getRegistrationsCount(ip, seconds) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield db_1.usersCollection.count({
                 'registrationData.ip': ip,
                 'timestamp': {
                     $gte: (0, date_fns_1.add)(new Date(), {
-                        minutes: minutes
+                        seconds: seconds
                     })
                 }
             });

@@ -65,12 +65,12 @@ export const usersQueryRepository = {
         return await usersCollection.findOne({'emailConfirmation.confirmationCode': code})
     },
 
-    async getRegistrationsCount(ip: string, minutes: number) {
+    async getRegistrationsCount(ip: string, seconds: number) {
         return await usersCollection.count({
             'registrationData.ip': ip,
             'timestamp': {
                 $gte: add(new Date(), {
-                    minutes: minutes
+                    seconds: seconds
                 })
             }
         })

@@ -4,6 +4,7 @@ import { HTTP_STATUSES } from "../app";
 import { jwtService } from "../application/jwtService";
 import { authService } from "../domain/auth-service";
 import { authMiddleware } from "../middlewares/auth/auth-middleware";
+import { rateLimitMiddleware } from "../middlewares/auth/rate-limit-middleware";
 import { inputValidationMiddleware } from "../middlewares/validations/input-validation-middleware";
 import { LoginInputModel } from "../models/auth/LoginInputModel";
 import { MeOutputModel } from "../models/auth/MeOutputModel";
@@ -31,6 +32,7 @@ const emailValidation = body('email')
 /* Напиши тесты */
 
 authRouter.post('/login',
+    rateLimitMiddleware,
     loginOrEmailValidation,
     passwordValidation,
     inputValidationMiddleware,
@@ -82,6 +84,7 @@ authRouter.post('/logout',
     })
 
 authRouter.post('/registration',
+    rateLimitMiddleware,
     loginValidation,
     passwordValidation,
     emailValidationWithCustomSearch,
@@ -96,7 +99,8 @@ authRouter.post('/registration',
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
     })
 
-authRouter.post('/registration-confirmation', 
+authRouter.post('/registration-confirmation',
+    rateLimitMiddleware,
     async (req: RequestWithBody<{code: string}>, res: Response<ErrorMessagesOutputModel>) => {
         const isConfirmed = await authService.confirmEmail(req.body.code)
         if(!isConfirmed) {
@@ -111,7 +115,8 @@ authRouter.post('/registration-confirmation',
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
     })
 
-authRouter.post('/registration-email-resending', 
+authRouter.post('/registration-email-resending',
+    rateLimitMiddleware,
     emailValidation,
     inputValidationMiddleware,
     async (req: RequestWithBody<{email: string}>, res: Response<ErrorMessagesOutputModel>) => {

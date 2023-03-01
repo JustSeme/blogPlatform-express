@@ -16,6 +16,7 @@ const app_1 = require("../app");
 const jwtService_1 = require("../application/jwtService");
 const auth_service_1 = require("../domain/auth-service");
 const auth_middleware_1 = require("../middlewares/auth/auth-middleware");
+const rate_limit_middleware_1 = require("../middlewares/auth/rate-limit-middleware");
 const input_validation_middleware_1 = require("../middlewares/validations/input-validation-middleware");
 const users_router_1 = require("./users-router");
 exports.authRouter = (0, express_1.Router)({});
@@ -31,7 +32,7 @@ const emailValidation = (0, express_validator_1.body)('email')
     .isString()
     .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/);
 /* Напиши тесты */
-exports.authRouter.post('/login', loginOrEmailValidation, users_router_1.passwordValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.authRouter.post('/login', rate_limit_middleware_1.rateLimitMiddleware, loginOrEmailValidation, users_router_1.passwordValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield auth_service_1.authService.checkCredentials(req.body.loginOrEmail, req.body.password);
     if (!user) {
         res.sendStatus(app_1.HTTP_STATUSES.UNAUTHORIZED_401);
@@ -68,7 +69,7 @@ exports.authRouter.post('/logout', (req, res) => {
     }
     res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
 });
-exports.authRouter.post('/registration', users_router_1.loginValidation, users_router_1.passwordValidation, users_router_1.emailValidationWithCustomSearch, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.authRouter.post('/registration', rate_limit_middleware_1.rateLimitMiddleware, users_router_1.loginValidation, users_router_1.passwordValidation, users_router_1.emailValidationWithCustomSearch, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
     const isCreated = yield auth_service_1.authService.createUser(req.body.login, req.body.password, req.body.email, clientIp);
     if (!isCreated) {
@@ -77,7 +78,7 @@ exports.authRouter.post('/registration', users_router_1.loginValidation, users_r
     }
     res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
 }));
-exports.authRouter.post('/registration-confirmation', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.authRouter.post('/registration-confirmation', rate_limit_middleware_1.rateLimitMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const isConfirmed = yield auth_service_1.authService.confirmEmail(req.body.code);
     if (!isConfirmed) {
         res
@@ -90,7 +91,7 @@ exports.authRouter.post('/registration-confirmation', (req, res) => __awaiter(vo
     }
     res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
 }));
-exports.authRouter.post('/registration-email-resending', emailValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.authRouter.post('/registration-email-resending', rate_limit_middleware_1.rateLimitMiddleware, emailValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield auth_service_1.authService.resendConfirmationCode(req.body.email);
     if (!result) {
         res

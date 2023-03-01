@@ -9,17 +9,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.registrationCountValidationMiddleware = void 0;
+exports.rateLimitMiddleware = void 0;
 const app_1 = require("../../app");
-const users_query_repository_1 = require("../../repositories/query/users-query-repository");
-const registrationCountValidationMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const attempts_db_repository_1 = require("../../repositories/attempts-db-repository");
+const rateLimitMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const interval = 10 * 1000;
     const clientIp = req.ip;
-    const registrationCountPerFiveMinutes = yield users_query_repository_1.usersQueryRepository.getRegistrationsCount(clientIp, 100);
-    if (registrationCountPerFiveMinutes > 5) {
+    const requestedUrl = req.url;
+    const currentDate = new Date();
+    const lastAttemptDate = new Date(currentDate.getTime() - interval);
+    const attemptsCount = yield attempts_db_repository_1.attemptsRepository.getAttemptsCountPerTime(clientIp, requestedUrl, lastAttemptDate);
+    if (attemptsCount > 5) {
         res.sendStatus(app_1.HTTP_STATUSES.TOO_MANY_REQUESTS_429);
         return;
     }
     next();
 });
-exports.registrationCountValidationMiddleware = registrationCountValidationMiddleware;
-//# sourceMappingURL=registrationCount-validation-middlewaere.js.map
+exports.rateLimitMiddleware = rateLimitMiddleware;
+//# sourceMappingURL=rate-limit-middleware.js.map

@@ -5,6 +5,7 @@ import { CommentDBModel } from '../models/comments/CommentDBModel';
 import { PostViewModel } from '../models/posts/PostViewModel';
 import { UserDBModel } from '../models/users/UserDBModel';
 import { settings } from '../settings';
+import { AttemptsDBModel } from '../models/auth/AttemptsDBModel';
 
 let mongoURI = settings.mongoURI
 
@@ -17,6 +18,7 @@ export const blogsCollection = blogPlatformDB.collection<BlogViewModel>('blogs')
 export const usersCollection = blogPlatformDB.collection<UserDBModel>('users')
 export const commentsCollection = blogPlatformDB.collection<CommentDBModel>('comments')
 export const deviceAuthSessions = blogPlatformDB.collection<DeviceAuthSessionsModel>('deviceAuthSessions')
+export const attemptsCollection = blogPlatformDB.collection<AttemptsDBModel>('attempts')
 
 export async function runDB() {
     try {
