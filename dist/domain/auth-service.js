@@ -13,35 +13,35 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.authService = void 0;
-const bcrypt_1 = __importDefault(require("bcrypt"));
-const crypto_1 = require("crypto");
 const users_db_repository_1 = require("../repositories/users-db-repository");
 const uuid_1 = require("uuid");
 const add_1 = __importDefault(require("date-fns/add"));
 const emailManager_1 = require("../managers/emailManager");
 const users_query_repository_1 = require("../repositories/query/users-query-repository");
+const bcryptAdapter_1 = require("../adapters/bcryptAdapter");
+const getUserDto = (login, password, email, isConfirmed) => __awaiter(void 0, void 0, void 0, function* () {
+    const passwordHash = yield bcryptAdapter_1.bcryptAdapter.generatePasswordHash(password, 10);
+    const newUser = {
+        id: (0, uuid_1.v4)(),
+        login: login,
+        email: email,
+        passwordHash,
+        createdAt: new Date().toISOString(),
+        emailConfirmation: {
+            confirmationCode: (0, uuid_1.v4)(),
+            expirationDate: (0, add_1.default)(new Date(), {
+                hours: 1,
+                minutes: 3
+            }),
+            isConfirmed: isConfirmed
+        },
+    };
+    return newUser;
+});
 exports.authService = {
-    createUser(login, password, email, ip = '') {
+    createUser(login, password, email) {
         return __awaiter(this, void 0, void 0, function* () {
-            const passwordHash = yield bcrypt_1.default.hash(password, 10);
-            const newUser = {
-                id: (0, crypto_1.randomUUID)(),
-                login: login,
-                email: email,
-                passwordHash,
-                createdAt: new Date().toISOString(),
-                emailConfirmation: {
-                    confirmationCode: (0, uuid_1.v4)(),
-                    expirationDate: (0, add_1.default)(new Date(), {
-                        hours: 1,
-                        minutes: 3
-                    }),
-                    isConfirmed: false
-                },
-                registrationData: {
-                    ip: ip
-                }
-            };
+            const newUser = yield getUserDto(login, password, email, false);
             yield users_db_repository_1.usersRepository.createUser(newUser);
             yield emailManager_1.emailManager.sendConfirmationCode(email, login, newUser.emailConfirmation.confirmationCode);
             return true;
@@ -49,25 +49,7 @@ exports.authService = {
     },
     createUserWithBasicAuth(login, password, email, ip = 'superAdmin') {
         return __awaiter(this, void 0, void 0, function* () {
-            const passwordHash = yield bcrypt_1.default.hash(password, 10);
-            const newUser = {
-                id: (0, crypto_1.randomUUID)(),
-                login: login,
-                email: email,
-                passwordHash,
-                createdAt: new Date().toISOString(),
-                emailConfirmation: {
-                    confirmationCode: (0, uuid_1.v4)(),
-                    expirationDate: (0, add_1.default)(new Date(), {
-                        hours: 1,
-                        minutes: 3
-                    }),
-                    isConfirmed: true
-                },
-                registrationData: {
-                    ip: ip
-                }
-            };
+            const newUser = yield getUserDto(login, password, email, true);
             yield users_db_repository_1.usersRepository.createUser(newUser);
             const displayedUser = {
                 id: newUser.id,
@@ -116,7 +98,7 @@ exports.authService = {
                 return false;
             if (!user.emailConfirmation.isConfirmed)
                 return false;
-            const isConfirmed = yield bcrypt_1.default.compare(password, user.passwordHash);
+            const isConfirmed = yield bcryptAdapter_1.bcryptAdapter.comparePassword(password, user.passwordHash);
             if (isConfirmed) {
                 return user;
             }

@@ -66,7 +66,7 @@ authRouter.post('/refresh-token',
             return
         }
 
-        res.cookie('refreshToken', newTokens.newRefreshToken, /* {httpOnly: true, secure: true} */)
+        res.cookie('refreshToken', newTokens.newRefreshToken, {httpOnly: true, secure: true})
         res.send({
             accessToken: newTokens.newAccessToken
         })
@@ -91,7 +91,7 @@ authRouter.post('/registration',
     inputValidationMiddleware,
     async (req: RequestWithBody<UserInputModel>, res: Response<ErrorMessagesOutputModel>) => {
         const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress
-        const isCreated = await authService.createUser(req.body.login, req.body.password, req.body.email, clientIp as string)
+        const isCreated = await authService.createUser(req.body.login, req.body.password, req.body.email)
         if(!isCreated) {
             res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
             return

@@ -7,28 +7,31 @@ import { emailManager } from '../managers/emailManager'
 import { usersQueryRepository } from '../repositories/query/users-query-repository'
 import { bcryptAdapter } from '../adapters/bcryptAdapter'
 
+const getUserDto = async (login: string, email: string, isConfirmed: boolean, passwordHash: string) => {
+    const newUser: UserDBModel = {
+        id: uuidv4(),
+        login: login,
+        email: email,
+        passwordHash,
+        createdAt: new Date().toISOString(),
+        emailConfirmation: {
+            confirmationCode: uuidv4(),
+            expirationDate: add(new Date(), {
+                hours: 1,
+                minutes: 3
+            }),
+            isConfirmed: isConfirmed
+        },
+    }
+
+    return newUser
+}
+
 export const authService = {
-    async createUser(login: string, password: string, email: string, ip: string = ''): Promise<boolean> {
+    async createUser(login: string, password: string, email: string): Promise<boolean> {
         const passwordHash = await bcryptAdapter.generatePasswordHash(password, 10)
 
-        const newUser: UserDBModel = {
-            id: uuidv4(),
-            login: login,
-            email: email,
-            passwordHash,
-            createdAt: new Date().toISOString(),
-            emailConfirmation: {
-                confirmationCode: uuidv4(),
-                expirationDate: add(new Date(), {
-                    hours: 1,
-                    minutes: 3
-                }),
-                isConfirmed: false
-            },
-            registrationData: {
-                ip: ip
-            }
-        }
+        const newUser = await getUserDto(login, email, false, passwordHash)
 
         await usersRepository.createUser(newUser)
         
@@ -40,24 +43,7 @@ export const authService = {
     async createUserWithBasicAuth(login: string, password: string, email: string, ip: string = 'superAdmin'): Promise<UserViewModel | null> {
         const passwordHash = await bcryptAdapter.generatePasswordHash(password, 10)
 
-        const newUser: UserDBModel = {
-            id: uuidv4(),
-            login: login,
-            email: email,
-            passwordHash,
-            createdAt: new Date().toISOString(),
-            emailConfirmation: {
-                confirmationCode: uuidv4(),
-                expirationDate: add(new Date(), {
-                    hours: 1,
-                    minutes: 3
-                }),
-                isConfirmed: true
-            },
-            registrationData: {
-                ip: ip
-            }
-        }
+        const newUser = await getUserDto(login, email, true, passwordHash)
 
         await usersRepository.createUser(newUser)
         const displayedUser: UserViewModel = {
