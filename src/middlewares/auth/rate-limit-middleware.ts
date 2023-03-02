@@ -3,7 +3,7 @@ import { HTTP_STATUSES } from "../../app";
 import { attemptsRepository } from "../../repositories/attempts-db-repository";
 
 export const rateLimitMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-    const interval = 1 * 1000
+    const interval = 10 * 1000
     const clientIp = req.ip
     const requestedUrl = req.url
     const currentDate = new Date()
@@ -12,7 +12,6 @@ export const rateLimitMiddleware = async (req: Request, res: Response, next: Nex
     const attemptsCount = await attemptsRepository.getAttemptsCount(clientIp, requestedUrl, lastAttemptDate)
     console.log(attemptsCount);
     
-
     await attemptsRepository.insertAttempt(clientIp, requestedUrl, currentDate)
     
     if(attemptsCount > 5) {
@@ -20,9 +19,9 @@ export const rateLimitMiddleware = async (req: Request, res: Response, next: Nex
         return
     }
 
-    /* setInterval(async () => {
+    setInterval(async () => {
         await attemptsRepository.removeAttempts(clientIp, requestedUrl)
-    }, 20000) */
+    }, 20000)
 
     next()
 }

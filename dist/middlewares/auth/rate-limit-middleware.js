@@ -13,7 +13,7 @@ exports.rateLimitMiddleware = void 0;
 const app_1 = require("../../app");
 const attempts_db_repository_1 = require("../../repositories/attempts-db-repository");
 const rateLimitMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const interval = 1 * 1000;
+    const interval = 10 * 1000;
     const clientIp = req.ip;
     const requestedUrl = req.url;
     const currentDate = new Date();
@@ -25,9 +25,9 @@ const rateLimitMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0
         res.sendStatus(app_1.HTTP_STATUSES.TOO_MANY_REQUESTS_429);
         return;
     }
-    /* setInterval(async () => {
-        await attemptsRepository.removeAttempts(clientIp, requestedUrl)
-    }, 20000) */
+    setInterval(() => __awaiter(void 0, void 0, void 0, function* () {
+        yield attempts_db_repository_1.attemptsRepository.removeAttempts(clientIp, requestedUrl);
+    }), 20000);
     next();
 });
 exports.rateLimitMiddleware = rateLimitMiddleware;
