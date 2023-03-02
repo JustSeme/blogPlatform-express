@@ -42,6 +42,7 @@ exports.jwtService = {
     },
     verifyToken(verifiedToken) {
         return __awaiter(this, void 0, void 0, function* () {
+            console.log('function verify', verifiedToken);
             try {
                 const result = yield jsonwebtoken_1.default.verify(verifiedToken, settings_1.settings.JWT_SECRET);
                 const issuedAtForDeviceId = yield device_query_repository_1.deviceQueryRepository.getCurrentIssuedAt(result.deviceId);

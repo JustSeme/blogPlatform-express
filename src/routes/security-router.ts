@@ -16,9 +16,9 @@ securityRouter.get('/devices',
             return
         }
         const refreshToken = req.cookies?.refreshToken
-        console.log(req.cookies);
         
         const result = await jwtService.verifyToken(refreshToken) as JwtPayload
+        console.log('route', req.cookies);
         
         if(!result) {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)

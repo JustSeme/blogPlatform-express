@@ -23,6 +23,8 @@ export const jwtService = {
     },
 
     async verifyToken(verifiedToken: string) {
+        console.log('function verify', verifiedToken);
+        
         try {
             const result = await jwt.verify(verifiedToken, settings.JWT_SECRET) as JwtPayload
             const issuedAtForDeviceId = await deviceQueryRepository.getCurrentIssuedAt(result.deviceId)
