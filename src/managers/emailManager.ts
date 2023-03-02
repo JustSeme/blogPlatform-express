@@ -8,6 +8,6 @@ export const emailManager = {
                 <p>To continue registration, </p><a href='https://some-front.com/confirm-registration?code=${confirmationCode}'>click here</a>
             </div>
         `
-        return await emailAdapter.sendEmail(recipientEmail, 'ConfirmationCode', messageBody)
+        return emailAdapter.sendEmail(recipientEmail, 'ConfirmationCode', messageBody)
     }
 }

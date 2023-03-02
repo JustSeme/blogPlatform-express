@@ -20,7 +20,7 @@ exports.emailManager = {
                 <p>To continue registration, </p><a href='https://some-front.com/confirm-registration?code=${confirmationCode}'>click here</a>
             </div>
         `;
-            return yield emailAdapter_1.emailAdapter.sendEmail(recipientEmail, 'ConfirmationCode', messageBody);
+            return emailAdapter_1.emailAdapter.sendEmail(recipientEmail, 'ConfirmationCode', messageBody);
         });
     }
 };

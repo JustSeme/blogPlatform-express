@@ -20,13 +20,13 @@ export const loginValidation = body('login')
 .isString()
 .isLength({ min: 3, max: 10 })
 .matches(/^[a-zA-Z0-9_-]*$/, 'i')
-.custom(async login => {
+/* .custom(async login => {
     return usersQueryRepository.findUserByLogin(login).then(user => {
         if(user) {
             return Promise.reject('Login already in use')
         }
     })
-})
+}) */
 
 export const passwordValidation = body('password')
 .exists()
@@ -41,13 +41,13 @@ export const emailValidationWithCustomSearch = body('email')
 .notEmpty()
 .isString()
 .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
-.custom(async email => {
+/* .custom(async email => {
     return usersQueryRepository.findUserByEmail(email).then(user => {
         if(user) {
             return Promise.reject('Email already in use')
         }
     })
-})
+}) */
 
 usersRouter.post('/', 
     basicAuthorizationMiddleware,

@@ -24,14 +24,14 @@ exports.loginValidation = (0, express_validator_1.body)('login')
     .notEmpty()
     .isString()
     .isLength({ min: 3, max: 10 })
-    .matches(/^[a-zA-Z0-9_-]*$/, 'i')
-    .custom((login) => __awaiter(void 0, void 0, void 0, function* () {
-    return users_query_repository_1.usersQueryRepository.findUserByLogin(login).then(user => {
-        if (user) {
-            return Promise.reject('Login already in use');
+    .matches(/^[a-zA-Z0-9_-]*$/, 'i');
+/* .custom(async login => {
+    return usersQueryRepository.findUserByLogin(login).then(user => {
+        if(user) {
+            return Promise.reject('Login already in use')
         }
-    });
-}));
+    })
+}) */
 exports.passwordValidation = (0, express_validator_1.body)('password')
     .exists()
     .trim()
@@ -43,14 +43,14 @@ exports.emailValidationWithCustomSearch = (0, express_validator_1.body)('email')
     .trim()
     .notEmpty()
     .isString()
-    .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
-    .custom((email) => __awaiter(void 0, void 0, void 0, function* () {
-    return users_query_repository_1.usersQueryRepository.findUserByEmail(email).then(user => {
-        if (user) {
-            return Promise.reject('Email already in use');
+    .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/);
+/* .custom(async email => {
+    return usersQueryRepository.findUserByEmail(email).then(user => {
+        if(user) {
+            return Promise.reject('Email already in use')
         }
-    });
-}));
+    })
+}) */
 exports.usersRouter.post('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, exports.loginValidation, exports.passwordValidation, exports.emailValidationWithCustomSearch, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const createdUser = yield auth_service_1.authService.createUserWithBasicAuth(req.body.login, req.body.password, req.body.email);
     if (!createdUser) {
