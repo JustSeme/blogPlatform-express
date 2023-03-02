@@ -18,6 +18,10 @@ const device_query_repository_1 = require("../repositories/query/device-query-re
 exports.securityRouter = (0, express_1.Router)({});
 exports.securityRouter.get('/devices', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
+    if (!req.body) {
+        res.sendStatus(app_1.HTTP_STATUSES.UNAUTHORIZED_401);
+        return;
+    }
     if (!req.cookies) {
         res.sendStatus(app_1.HTTP_STATUSES.UNAUTHORIZED_401);
         return;

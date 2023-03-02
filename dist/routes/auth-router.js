@@ -44,7 +44,7 @@ exports.authRouter.post('/login', rate_limit_middleware_1.rateLimitMiddleware, l
         res.sendStatus(app_1.HTTP_STATUSES.NOT_IMPLEMENTED_501);
         return;
     }
-    res.cookie('refreshToken', pairOfTokens.refreshToken, { httpOnly: true, secure: true });
+    res.cookie('refreshToken', pairOfTokens.refreshToken);
     res.send({
         accessToken: pairOfTokens.accessToken
     });

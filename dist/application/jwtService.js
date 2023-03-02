@@ -79,7 +79,7 @@ exports.jwtService = {
         return __awaiter(this, void 0, void 0, function* () {
             const deviceId = (0, uuid_1.v4)();
             const accessToken = yield this.createAccessToken('10s', userId);
-            const refreshToken = yield this.createRefreshToken('20s', deviceId, userId);
+            const refreshToken = yield this.createRefreshToken('20min', deviceId, userId);
             const result = jsonwebtoken_1.default.decode(refreshToken);
             const isAdded = yield device_db_repository_1.deviceRepository.addSession(result.iat, result.exp, userId, userIp, deviceId, deviceName);
             if (!isAdded) {
