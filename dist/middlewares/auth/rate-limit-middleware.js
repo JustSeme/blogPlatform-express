@@ -18,11 +18,16 @@ const rateLimitMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0
     const requestedUrl = req.url;
     const currentDate = new Date();
     const lastAttemptDate = new Date(currentDate.getTime() - interval);
-    const attemptsCount = yield attempts_db_repository_1.attemptsRepository.getAttemptsCountPerTime(clientIp, requestedUrl, lastAttemptDate);
+    const attemptsCount = yield attempts_db_repository_1.attemptsRepository.getAttemptsCount(clientIp, requestedUrl, lastAttemptDate);
+    console.log(attemptsCount);
+    yield attempts_db_repository_1.attemptsRepository.insertAttempt(clientIp, requestedUrl, currentDate);
     if (attemptsCount > 5) {
         res.sendStatus(app_1.HTTP_STATUSES.TOO_MANY_REQUESTS_429);
         return;
     }
+    setInterval(() => __awaiter(void 0, void 0, void 0, function* () {
+        yield attempts_db_repository_1.attemptsRepository.removeAttempts(clientIp, requestedUrl);
+    }), 20000);
     next();
 });
 exports.rateLimitMiddleware = rateLimitMiddleware;

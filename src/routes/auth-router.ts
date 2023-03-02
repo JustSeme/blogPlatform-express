@@ -66,7 +66,7 @@ authRouter.post('/refresh-token',
             return
         }
 
-        res.cookie('refreshToken2', newTokens.newRefreshToken, {httpOnly: true, secure: true})
+        res.cookie('refreshToken', newTokens.newRefreshToken, {httpOnly: true, secure: true})
         res.send({
             accessToken: newTokens.newAccessToken
         })

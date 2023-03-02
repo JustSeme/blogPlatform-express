@@ -1,7 +1,7 @@
 import { attemptsCollection } from "./db"
 
 export const attemptsRepository = {
-    async getAttemptsCountPerTime(clientIp: string, requestedUrl: string, lastAttemptDate: Date) {
+    async getAttemptsCount(clientIp: string, requestedUrl: string, lastAttemptDate: Date) {
         return await attemptsCollection.countDocuments({
             clientIp, 
             requestedUrl,
@@ -13,6 +13,11 @@ export const attemptsRepository = {
 
     async insertAttempt(clientIp: string, requestedUrl: string, requestDate: Date) {
         const result = await attemptsCollection.insertOne({clientIp, requestedUrl, requestDate})
+        return result.acknowledged
+    },
+    
+    async removeAttempts(clientIp: string, requestedUrl: string) {
+        const result = await attemptsCollection.deleteMany({clientIp, requestedUrl})
         return result.acknowledged
     }
 }

@@ -56,7 +56,7 @@ exports.authRouter.post('/refresh-token', (req, res) => __awaiter(void 0, void 0
         res.sendStatus(app_1.HTTP_STATUSES.UNAUTHORIZED_401);
         return;
     }
-    res.cookie('refreshToken2', newTokens.newRefreshToken, { httpOnly: true, secure: true });
+    res.cookie('refreshToken', newTokens.newRefreshToken, { httpOnly: true, secure: true });
     res.send({
         accessToken: newTokens.newAccessToken
     });
