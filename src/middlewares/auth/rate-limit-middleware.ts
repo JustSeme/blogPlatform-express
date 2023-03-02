@@ -10,10 +10,12 @@ export const rateLimitMiddleware = async (req: Request, res: Response, next: Nex
     const lastAttemptDate = new Date(currentDate.getTime() - interval)
 
     const attemptsCount = await attemptsRepository.getAttemptsCount(clientIp, requestedUrl, lastAttemptDate)
+    console.log(attemptsCount);
+    
 
     await attemptsRepository.insertAttempt(clientIp, requestedUrl, currentDate)
     
-    if(attemptsCount > 5) {
+    if(attemptsCount >= 5) {
         res.sendStatus(HTTP_STATUSES.TOO_MANY_REQUESTS_429)
         return
     }
