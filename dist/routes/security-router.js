@@ -52,21 +52,15 @@ exports.securityRouter.delete('/devices/:deviceId', (req, res) => __awaiter(void
         return;
     }
     const deletingDevice = yield device_query_repository_1.deviceQueryRepository.getDeviceByDeviceId(req.params.deviceId);
-    if (!deletingDevice || !req.params.deviceId) {
+    if (!deletingDevice) {
         res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
         return;
     }
-    const devicesForCurrentUser = yield security_service_1.securityService.getActiveDevicesForUser(result.userId);
-    const currentDevice = devicesForCurrentUser === null || devicesForCurrentUser === void 0 ? void 0 : devicesForCurrentUser.find(device => device.deviceId === req.params.deviceId);
-    if (!currentDevice) {
+    if (result.userId !== deletingDevice.userInfo.userId) {
         res.sendStatus(app_1.HTTP_STATUSES.FORBIDDEN_403);
         return;
     }
-    const isDeleted = yield security_service_1.securityService.deleteDevice(req.params.deviceId);
-    if (!isDeleted) {
-        res.sendStatus(app_1.HTTP_STATUSES.NOT_IMPLEMENTED_501);
-        return;
-    }
+    yield security_service_1.securityService.deleteDevice(req.params.deviceId);
     res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
 }));
 //# sourceMappingURL=security-router.js.map

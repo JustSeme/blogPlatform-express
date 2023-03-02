@@ -21,12 +21,12 @@ const device_query_repository_1 = require("../repositories/query/device-query-re
 exports.jwtService = {
     createAccessToken(expiresTime, userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield jsonwebtoken_1.default.sign({ userId }, settings_1.settings.JWT_SECRET, { expiresIn: expiresTime });
+            return jsonwebtoken_1.default.sign({ userId }, settings_1.settings.JWT_SECRET, { expiresIn: expiresTime });
         });
     },
     createRefreshToken(expiresTime, deviceId, userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield jsonwebtoken_1.default.sign({ deviceId, userId }, settings_1.settings.JWT_SECRET, { expiresIn: expiresTime });
+            return jsonwebtoken_1.default.sign({ deviceId, userId }, settings_1.settings.JWT_SECRET, { expiresIn: expiresTime });
         });
     },
     getUserIdByToken(token) {
