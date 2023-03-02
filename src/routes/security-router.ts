@@ -13,6 +13,7 @@ securityRouter.get('/devices',
     async (req: Request, res: Response<DeviceSessionsViewModel[]>) => {
         const refreshToken = req.cookies.refreshToken
         const result = await jwtService.verifyToken(refreshToken) as JwtPayload
+        
         if(!result) {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
             return

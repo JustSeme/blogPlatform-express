@@ -25,9 +25,9 @@ const rateLimitMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0
         res.sendStatus(app_1.HTTP_STATUSES.TOO_MANY_REQUESTS_429);
         return;
     }
-    /* setInterval(async () => {
-        await attemptsRepository.removeAttempts(clientIp, requestedUrl)
-    }, 20000) */
+    setInterval(() => __awaiter(void 0, void 0, void 0, function* () {
+        yield attempts_db_repository_1.attemptsRepository.removeAttempts(clientIp, requestedUrl);
+    }), 20000);
     next();
 });
 exports.rateLimitMiddleware = rateLimitMiddleware;
