@@ -11,10 +11,6 @@ export const securityRouter = Router({})
 
 securityRouter.get('/devices', 
     async (req: Request, res: Response<DeviceSessionsViewModel[]>) => {
-        if(!req.body) {
-            res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
-            return
-        }
         if(!req.cookies) {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
             return
