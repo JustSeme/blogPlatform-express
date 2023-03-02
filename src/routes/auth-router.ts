@@ -90,11 +90,11 @@ authRouter.post('/registration',
     emailValidationWithCustomSearch,
     inputValidationMiddleware,
     async (req: RequestWithBody<UserInputModel>, res: Response<ErrorMessagesOutputModel>) => {
-        const isCreated = await authService.createUser(req.body.login, req.body.password, req.body.email)
-        if(!isCreated) {
+        const isCreated = /* await */ authService.createUser(req.body.login, req.body.password, req.body.email)
+        /* if(!isCreated) {
             res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
             return
-        }
+        } */
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
     })
 

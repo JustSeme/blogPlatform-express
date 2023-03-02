@@ -21,8 +21,6 @@ const posts_router_1 = require("./routes/posts-router");
 const db_1 = require("./repositories/db");
 const users_router_1 = require("./routes/users-router");
 const auth_router_1 = require("./routes/auth-router");
-const posts_service_1 = require("./domain/posts-service");
-const blogs_service_1 = require("./domain/blogs-service");
 const auth_service_1 = require("./domain/auth-service");
 const settings_1 = require("./settings");
 const comments_router_1 = require("./routes/comments-router");
@@ -64,8 +62,8 @@ exports.app.delete('/homework01/testing/all-data', (req, res) => __awaiter(void 
     res.sendStatus(exports.HTTP_STATUSES.NO_CONTENT_204);
 }));
 exports.app.delete('/homeworks/testing/all-data', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield posts_service_1.postsService.deletePosts(null);
-    yield blogs_service_1.blogsService.deleteBlog(null);
+    /* await postsService.deletePosts(null)
+    await blogsService.deleteBlog(null) */
     yield auth_service_1.authService.deleteUsers(null);
     yield attempts_db_repository_1.attemptsRepository.clearAllAttempts();
     res.sendStatus(exports.HTTP_STATUSES.NO_CONTENT_204);

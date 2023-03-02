@@ -17,11 +17,13 @@ const security_service_1 = require("../domain/security-service");
 const device_query_repository_1 = require("../repositories/query/device-query-repository");
 exports.securityRouter = (0, express_1.Router)({});
 exports.securityRouter.get('/devices', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const refreshToken = req.cookies.refreshToken;
-    if (!refreshToken) {
+    var _a;
+    if (!req.cookies) {
         res.sendStatus(app_1.HTTP_STATUSES.UNAUTHORIZED_401);
         return;
     }
+    const refreshToken = (_a = req.cookies) === null || _a === void 0 ? void 0 : _a.refreshToken;
+    console.log(req.cookies);
     const result = yield jwtService_1.jwtService.verifyToken(refreshToken);
     if (!result) {
         res.sendStatus(app_1.HTTP_STATUSES.UNAUTHORIZED_401);

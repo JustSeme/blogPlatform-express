@@ -61,8 +61,8 @@ app.delete('/homework01/testing/all-data', async (req: Request, res: Response) =
 })
 
 app.delete('/homeworks/testing/all-data', async (req: Request, res: Response) => {
-    await postsService.deletePosts(null)
-    await blogsService.deleteBlog(null)
+    /* await postsService.deletePosts(null)
+    await blogsService.deleteBlog(null) */
     await authService.deleteUsers(null)
     await attemptsRepository.clearAllAttempts()
     res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
