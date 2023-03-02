@@ -55,23 +55,15 @@ securityRouter.delete('/devices/:deviceId',
 
         const deletingDevice = await deviceQueryRepository.getDeviceByDeviceId(req.params.deviceId)
         
-        if(!deletingDevice || !req.params.deviceId) {
+        if(!deletingDevice) {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
             return
         }
-
-        const devicesForCurrentUser = await securityService.getActiveDevicesForUser(result.userId)
-        const currentDevice = devicesForCurrentUser?.find(device => device.deviceId === req.params.deviceId)
-        if(!currentDevice) {
+        if(result.userId !== deletingDevice.userInfo.userId){
             res.sendStatus(HTTP_STATUSES.FORBIDDEN_403)
             return
         }
 
-        const isDeleted = await securityService.deleteDevice(req.params.deviceId)
-        if(!isDeleted) {
-            res.sendStatus(HTTP_STATUSES.NOT_IMPLEMENTED_501)
-            return
-        }
-
+        await securityService.deleteDevice(req.params.deviceId)
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
     })

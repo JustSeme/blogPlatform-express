@@ -6,11 +6,11 @@ import { deviceQueryRepository } from '../repositories/query/device-query-reposi
 
 export const jwtService = {
     async createAccessToken(expiresTime: string, userId: string) {
-        return await jwt.sign({userId}, settings.JWT_SECRET, {expiresIn: expiresTime})
+        return jwt.sign({userId}, settings.JWT_SECRET, {expiresIn: expiresTime})
     },
 
     async createRefreshToken(expiresTime: string, deviceId: string, userId: string) {
-        return await jwt.sign({deviceId, userId}, settings.JWT_SECRET, {expiresIn: expiresTime})
+        return jwt.sign({deviceId, userId}, settings.JWT_SECRET, {expiresIn: expiresTime})
     },
 
     async getUserIdByToken(token: string) {

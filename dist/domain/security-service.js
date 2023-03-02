@@ -30,12 +30,12 @@ exports.securityService = {
     },
     removeAllSessions(userId, deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield device_db_repository_1.deviceRepository.deleteAllSessions(userId, deviceId);
+            return device_db_repository_1.deviceRepository.deleteAllSessions(userId, deviceId);
         });
     },
     deleteDevice(deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield device_db_repository_1.deviceRepository.removeSession(deviceId);
+            return device_db_repository_1.deviceRepository.removeSession(deviceId);
         });
     }
 };
