@@ -19,7 +19,7 @@ const add_1 = __importDefault(require("date-fns/add"));
 const emailManager_1 = require("../managers/emailManager");
 const users_query_repository_1 = require("../repositories/query/users-query-repository");
 const bcryptAdapter_1 = require("../adapters/bcryptAdapter");
-const getUserDto = (login, email, isConfirmed, passwordHash) => __awaiter(void 0, void 0, void 0, function* () {
+const getUserDto = (login, email, isConfirmed, passwordHash) => {
     const newUser = {
         id: (0, uuid_1.v4)(),
         login: login,
@@ -36,13 +36,13 @@ const getUserDto = (login, email, isConfirmed, passwordHash) => __awaiter(void 0
         },
     };
     return newUser;
-});
+};
 exports.authService = {
     createUser(login, password, email) {
         return __awaiter(this, void 0, void 0, function* () {
             const passwordHash = yield bcryptAdapter_1.bcryptAdapter.generatePasswordHash(password, 10);
-            const newUser = yield getUserDto(login, email, false, passwordHash);
-            yield users_db_repository_1.usersRepository.createUser(newUser);
+            const newUser = getUserDto(login, email, false, passwordHash);
+            users_db_repository_1.usersRepository.createUser(newUser);
             emailManager_1.emailManager.sendConfirmationCode(email, login, newUser.emailConfirmation.confirmationCode);
             return true;
         });

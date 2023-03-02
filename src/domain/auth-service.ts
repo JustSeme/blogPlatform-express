@@ -7,7 +7,7 @@ import { emailManager } from '../managers/emailManager'
 import { usersQueryRepository } from '../repositories/query/users-query-repository'
 import { bcryptAdapter } from '../adapters/bcryptAdapter'
 
-const getUserDto = async (login: string, email: string, isConfirmed: boolean, passwordHash: string) => {
+const getUserDto = (login: string, email: string, isConfirmed: boolean, passwordHash: string) => {
     const newUser: UserDBModel = {
         id: uuidv4(),
         login: login,
@@ -31,9 +31,9 @@ export const authService = {
     async createUser(login: string, password: string, email: string): Promise<boolean> {
         const passwordHash = await bcryptAdapter.generatePasswordHash(password, 10)
 
-        const newUser = await getUserDto(login, email, false, passwordHash)
+        const newUser = getUserDto(login, email, false, passwordHash)
 
-        await usersRepository.createUser(newUser)
+        usersRepository.createUser(newUser)
         
         emailManager.sendConfirmationCode(email, login, newUser.emailConfirmation.confirmationCode)
 

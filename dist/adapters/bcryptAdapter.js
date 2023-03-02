@@ -17,12 +17,12 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 exports.bcryptAdapter = {
     generatePasswordHash(password, rounds) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield bcrypt_1.default.hash(password, rounds);
+            return bcrypt_1.default.hash(password, rounds);
         });
     },
     comparePassword(password, passwordHash) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield bcrypt_1.default.compare(password, passwordHash);
+            return bcrypt_1.default.compare(password, passwordHash);
         });
     }
 };
