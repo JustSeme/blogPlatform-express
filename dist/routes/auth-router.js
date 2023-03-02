@@ -70,7 +70,6 @@ exports.authRouter.post('/logout', (req, res) => {
     res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
 });
 exports.authRouter.post('/registration', rate_limit_middleware_1.rateLimitMiddleware, users_router_1.loginValidation, users_router_1.passwordValidation, users_router_1.emailValidationWithCustomSearch, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
     const isCreated = yield auth_service_1.authService.createUser(req.body.login, req.body.password, req.body.email);
     if (!isCreated) {
         res.sendStatus(app_1.HTTP_STATUSES.BAD_REQUEST_400);

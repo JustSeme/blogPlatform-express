@@ -90,7 +90,6 @@ authRouter.post('/registration',
     emailValidationWithCustomSearch,
     inputValidationMiddleware,
     async (req: RequestWithBody<UserInputModel>, res: Response<ErrorMessagesOutputModel>) => {
-        const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress
         const isCreated = await authService.createUser(req.body.login, req.body.password, req.body.email)
         if(!isCreated) {
             res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)

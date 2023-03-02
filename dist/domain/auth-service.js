@@ -43,7 +43,7 @@ exports.authService = {
             const passwordHash = yield bcryptAdapter_1.bcryptAdapter.generatePasswordHash(password, 10);
             const newUser = yield getUserDto(login, email, false, passwordHash);
             yield users_db_repository_1.usersRepository.createUser(newUser);
-            yield emailManager_1.emailManager.sendConfirmationCode(email, login, newUser.emailConfirmation.confirmationCode);
+            emailManager_1.emailManager.sendConfirmationCode(email, login, newUser.emailConfirmation.confirmationCode);
             return true;
         });
     },

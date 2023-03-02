@@ -13,13 +13,12 @@ exports.rateLimitMiddleware = void 0;
 const app_1 = require("../../app");
 const attempts_db_repository_1 = require("../../repositories/attempts-db-repository");
 const rateLimitMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const interval = 10 * 1000;
+    const interval = 15 * 1000;
     const clientIp = req.ip;
     const requestedUrl = req.url;
     const currentDate = new Date();
     const lastAttemptDate = new Date(currentDate.getTime() - interval);
     const attemptsCount = yield attempts_db_repository_1.attemptsRepository.getAttemptsCount(clientIp, requestedUrl, lastAttemptDate);
-    console.log(attemptsCount);
     yield attempts_db_repository_1.attemptsRepository.insertAttempt(clientIp, requestedUrl, currentDate);
     if (attemptsCount > 5) {
         res.sendStatus(app_1.HTTP_STATUSES.TOO_MANY_REQUESTS_429);
