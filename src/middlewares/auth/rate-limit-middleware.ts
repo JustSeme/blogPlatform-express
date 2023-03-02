@@ -20,9 +20,9 @@ export const rateLimitMiddleware = async (req: Request, res: Response, next: Nex
         return
     }
 
-    setInterval(async () => {
+    /* setInterval(async () => {
         await attemptsRepository.removeAttempts(clientIp, requestedUrl)
-    }, 20000)
+    }, 20000) */
 
     next()
 }

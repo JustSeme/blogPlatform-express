@@ -19,5 +19,9 @@ export const attemptsRepository = {
     async removeAttempts(clientIp: string, requestedUrl: string) {
         const result = await attemptsCollection.deleteMany({clientIp, requestedUrl})
         return result.acknowledged
+    },
+
+    async clearAllAttempts() {
+        return await attemptsCollection.deleteMany({})
     }
 }

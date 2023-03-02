@@ -28,6 +28,7 @@ const settings_1 = require("./settings");
 const comments_router_1 = require("./routes/comments-router");
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const security_router_1 = require("./routes/security-router");
+const attempts_db_repository_1 = require("./repositories/attempts-db-repository");
 exports.app = (0, express_1.default)();
 const port = settings_1.settings.PORT;
 const jsonBodyMiddleware = express_1.default.json();
@@ -66,6 +67,7 @@ exports.app.delete('/homeworks/testing/all-data', (req, res) => __awaiter(void 0
     yield posts_service_1.postsService.deletePosts(null);
     yield blogs_service_1.blogsService.deleteBlog(null);
     yield auth_service_1.authService.deleteUsers(null);
+    yield attempts_db_repository_1.attemptsRepository.clearAllAttempts();
     res.sendStatus(exports.HTTP_STATUSES.NO_CONTENT_204);
 }));
 startApp();

@@ -34,6 +34,11 @@ exports.attemptsRepository = {
             const result = yield db_1.attemptsCollection.deleteMany({ clientIp, requestedUrl });
             return result.acknowledged;
         });
+    },
+    clearAllAttempts() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield db_1.attemptsCollection.deleteMany({});
+        });
     }
 };
 //# sourceMappingURL=attempts-db-repository.js.map

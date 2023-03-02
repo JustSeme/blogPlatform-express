@@ -13,6 +13,7 @@ import { settings } from './settings'
 import { commentsRouter } from './routes/comments-router'
 import cookieParser from 'cookie-parser'
 import { securityRouter } from './routes/security-router'
+import { attemptsRepository } from './repositories/attempts-db-repository'
 
 export const app = express()
 const port = settings.PORT
@@ -63,6 +64,7 @@ app.delete('/homeworks/testing/all-data', async (req: Request, res: Response) =>
     await postsService.deletePosts(null)
     await blogsService.deleteBlog(null)
     await authService.deleteUsers(null)
+    await attemptsRepository.clearAllAttempts()
     res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
 })
 
