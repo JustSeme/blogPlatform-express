@@ -17,6 +17,7 @@ const security_service_1 = require("../domain/security-service");
 const device_query_repository_1 = require("../repositories/query/device-query-repository");
 exports.securityRouter = (0, express_1.Router)({});
 exports.securityRouter.get('/devices', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.sendStatus(501);
     const refreshToken = req.cookies.refreshToken;
     const result = yield jwtService_1.jwtService.verifyToken(refreshToken);
     if (!result) {

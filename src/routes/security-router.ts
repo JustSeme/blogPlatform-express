@@ -11,6 +11,7 @@ export const securityRouter = Router({})
 
 securityRouter.get('/devices', 
     async (req: Request, res: Response<DeviceSessionsViewModel[]>) => {
+        res.sendStatus(501)
         const refreshToken = req.cookies.refreshToken
         const result = await jwtService.verifyToken(refreshToken) as JwtPayload
         
