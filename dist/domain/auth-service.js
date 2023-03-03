@@ -47,7 +47,7 @@ exports.authService = {
             return true;
         });
     },
-    createUserWithBasicAuth(login, password, email, ip = 'superAdmin') {
+    createUserWithBasicAuth(login, password, email) {
         return __awaiter(this, void 0, void 0, function* () {
             const passwordHash = yield bcryptAdapter_1.bcryptAdapter.generatePasswordHash(password, 10);
             const newUser = yield getUserDto(login, email, true, passwordHash);

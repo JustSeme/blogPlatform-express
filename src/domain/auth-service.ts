@@ -40,7 +40,7 @@ export const authService = {
         return true
     },
 
-    async createUserWithBasicAuth(login: string, password: string, email: string, ip: string = 'superAdmin'): Promise<UserViewModel | null> {
+    async createUserWithBasicAuth(login: string, password: string, email: string): Promise<UserViewModel | null> {
         const passwordHash = await bcryptAdapter.generatePasswordHash(password, 10)
 
         const newUser = await getUserDto(login, email, true, passwordHash)
