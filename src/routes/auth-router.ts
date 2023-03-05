@@ -79,6 +79,7 @@ authRouter.post('/logout',
         const isLogout = jwtService.logout(refreshToken)
         if(!isLogout) {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
+            return
         }
 
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
@@ -138,8 +139,28 @@ authRouter.post('/passwword-recovery',
     emailValidation,
     inputValidationMiddleware,
     async (req: RequestWithBody<{email: string}>, res: Response) => {
-        const isRecovering = await authService.passwordRecovery(req.body.email)
+        const isRecovering = await authService.sendPasswordRecoveryCode(req.body.email)
         if(!isRecovering) {
+            res.sendStatus(HTTP_STATUSES.NOT_IMPLEMENTED_501)
+            return
+        }
+
+        res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
+})
+
+authRouter.post('/new-password',
+    rateLimitMiddleware,
+    passwordValidation,
+    inputValidationMiddleware,
+    async (req: RequestWithBody<{newPassword: string, recoveryCode: string}>, res: Response) => {
+        const user = await usersQueryRepository.findUserByRecoveryPasswordCode(req.body.recoveryCode)
+        if(!user || user.passwordRecovery.expirationDate < new Date()) {
+            res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
+            return
+        }
+
+        const isConfirmed = await authService.confirmRecoveryPassword(user.id, req.body.newPassword)
+        if(!isConfirmed) {
             res.sendStatus(HTTP_STATUSES.NOT_IMPLEMENTED_501)
             return
         }

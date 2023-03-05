@@ -47,6 +47,27 @@ exports.usersRepository = {
                 } });
             return result.modifiedCount === 1;
         });
+    },
+    updatePasswordConfirmationInfo(id, code) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield db_1.usersCollection.updateOne({ id: id }, { $set: {
+                    'passwordRecovery.confirmationCode': code,
+                    'passwordRecovery.expirationDate': (0, date_fns_1.add)(new Date(), {
+                        hours: 1,
+                        minutes: 3
+                    })
+                } });
+            return result.modifiedCount === 1;
+        });
+    },
+    updateUserPassword(id, newPasswordHash) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield db_1.usersCollection.updateOne({ id: id }, { $set: {
+                    'passwordHash': newPasswordHash,
+                    'passwordRecovery.confirmationCode': null
+                } });
+            return result.modifiedCount === 1;
+        });
     }
 };
 //# sourceMappingURL=users-db-repository.js.map

@@ -34,6 +34,10 @@ const getUserDto = (login, email, isConfirmed, passwordHash) => {
             }),
             isConfirmed: isConfirmed
         },
+        passwordRecovery: {
+            confirmationCode: null,
+            expirationDate: new Date()
+        }
     };
     return newUser;
 };
@@ -103,6 +107,27 @@ exports.authService = {
             if (isConfirmed) {
                 return user;
             }
+        });
+    },
+    sendPasswordRecoveryCode(email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield users_query_repository_1.usersQueryRepository.findUserByEmail(email);
+            if (!user) {
+                return true;
+            }
+            const passwordRecoveryCode = (0, uuid_1.v4)();
+            emailManager_1.emailManager.sendPasswordRecoveryCode(user.email, user.login, passwordRecoveryCode);
+            const isUpdated = yield users_db_repository_1.usersRepository.updatePasswordConfirmationInfo(user.id, passwordRecoveryCode);
+            if (!isUpdated) {
+                return false;
+            }
+            return true;
+        });
+    },
+    confirmRecoveryPassword(userId, newPassword) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const newPasswordHash = yield bcryptAdapter_1.bcryptAdapter.generatePasswordHash(newPassword, 10);
+            return users_db_repository_1.usersRepository.updateUserPassword(userId, newPasswordHash);
         });
     },
     deleteUsers(userId) {

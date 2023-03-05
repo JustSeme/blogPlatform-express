@@ -29,7 +29,6 @@ exports.usersQueryRepository = {
             let usersCursor = yield db_1.usersCollection.find(filterObject, { projection: { _id: 0 } }).skip(skipCount).limit(+pageSize);
             const sortDirectionNumber = sortDirection === 'asc' ? 1 : -1;
             const resultedUsers = yield usersCursor.sort({ [sortBy]: sortDirectionNumber }).toArray();
-            console.log(resultedUsers);
             const displayedUsers = resultedUsers.map(u => ({
                 id: u.id,
                 login: u.login,
@@ -69,6 +68,11 @@ exports.usersQueryRepository = {
         return __awaiter(this, void 0, void 0, function* () {
             return yield db_1.usersCollection.findOne({ 'emailConfirmation.confirmationCode': code });
         });
-    }
+    },
+    findUserByRecoveryPasswordCode(code) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield db_1.usersCollection.findOne({ 'passwordRecovery.confirmationCode': code });
+        });
+    },
 };
 //# sourceMappingURL=users-query-repository.js.map

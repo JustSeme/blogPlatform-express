@@ -26,8 +26,6 @@ export const usersQueryRepository = {
 
         const sortDirectionNumber = sortDirection === 'asc' ? 1 : -1
         const resultedUsers = await usersCursor.sort({[sortBy]: sortDirectionNumber}).toArray()
-
-        console.log(resultedUsers);
         
         const displayedUsers: UserViewModel[] = resultedUsers.map(u => ({
             id: u.id,
@@ -63,5 +61,9 @@ export const usersQueryRepository = {
 
     async findUserByConfirmationCode(code: string) {
         return await usersCollection.findOne({'emailConfirmation.confirmationCode': code})
-    }
+    },
+
+    async findUserByRecoveryPasswordCode(code: string) {
+        return await usersCollection.findOne({'passwordRecovery.confirmationCode': code})
+    },
 }

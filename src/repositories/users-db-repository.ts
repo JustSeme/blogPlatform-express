@@ -33,7 +33,7 @@ export const usersRepository = {
         return result.modifiedCount === 1
     },
 
-    async updatePasswordConfirmationInfo(id: string, code: string) {
+    async updatePasswordConfirmationInfo(id: string, code: string | null) {
         const result = await usersCollection.updateOne({id: id}, {$set: {
             'passwordRecovery.confirmationCode': code,
             'passwordRecovery.expirationDate': add(new Date(), {
@@ -41,6 +41,15 @@ export const usersRepository = {
                 minutes: 3
             })
         }})
+        return result.modifiedCount === 1
+    },
+
+    async updateUserPassword(id: string, newPasswordHash: string) {
+        const result = await usersCollection.updateOne({id: id}, {$set: {
+            'passwordHash': newPasswordHash,
+            'passwordRecovery.confirmationCode': null
+        }})
+
         return result.modifiedCount === 1
     }
 }

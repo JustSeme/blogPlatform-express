@@ -97,7 +97,7 @@ export const authService = {
         }
     },
 
-    async passwordRecovery(email: string) {
+    async sendPasswordRecoveryCode(email: string) {
         const user = await usersQueryRepository.findUserByEmail(email)
         if(!user) {
             return true
@@ -111,6 +111,12 @@ export const authService = {
             return false
         }
         return true
+    },
+
+    async confirmRecoveryPassword(userId: string, newPassword: string) {
+        const newPasswordHash = await bcryptAdapter.generatePasswordHash(newPassword, 10)
+
+        return usersRepository.updateUserPassword(userId, newPasswordHash)
     },
 
     async deleteUsers(userId: string | null) {
