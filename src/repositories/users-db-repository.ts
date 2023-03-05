@@ -31,5 +31,16 @@ export const usersRepository = {
             })
         }})
         return result.modifiedCount === 1
+    },
+
+    async updatePasswordConfirmationInfo(id: string, code: string) {
+        const result = await usersCollection.updateOne({id: id}, {$set: {
+            'passwordRecovery.confirmationCode': code,
+            'passwordRecovery.expirationDate': add(new Date(), {
+                hours: 1,
+                minutes: 3
+            })
+        }})
+        return result.modifiedCount === 1
     }
 }

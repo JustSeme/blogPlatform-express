@@ -11,6 +11,7 @@ import { MeOutputModel } from "../models/auth/MeOutputModel";
 import { ErrorMessagesOutputModel } from "../models/ErrorMessagesOutputModel";
 import { UserDBModel } from "../models/users/UserDBModel";
 import { UserInputModel } from "../models/users/UserInputModel";
+import { usersQueryRepository } from "../repositories/query/users-query-repository";
 import { RequestWithBody } from "../types/types";
 import { emailValidationWithCustomSearch, loginValidation, passwordValidation } from "./users-router";
 
@@ -90,11 +91,11 @@ authRouter.post('/registration',
     emailValidationWithCustomSearch,
     inputValidationMiddleware,
     async (req: RequestWithBody<UserInputModel>, res: Response<ErrorMessagesOutputModel>) => {
-        const isCreated = /* await */ authService.createUser(req.body.login, req.body.password, req.body.email)
-        /* if(!isCreated) {
+        const isCreated = await authService.createUser(req.body.login, req.body.password, req.body.email)
+        if(!isCreated) {
             res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
             return
-        } */
+        }
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
     })
 
@@ -131,6 +132,20 @@ authRouter.post('/registration-email-resending',
         }
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
     })
+
+authRouter.post('/passwword-recovery',
+    rateLimitMiddleware,
+    emailValidation,
+    inputValidationMiddleware,
+    async (req: RequestWithBody<{email: string}>, res: Response) => {
+        const isRecovering = await authService.passwordRecovery(req.body.email)
+        if(!isRecovering) {
+            res.sendStatus(HTTP_STATUSES.NOT_IMPLEMENTED_501)
+            return
+        }
+
+        res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
+})
 
 authRouter.get('/me', 
     authMiddleware,

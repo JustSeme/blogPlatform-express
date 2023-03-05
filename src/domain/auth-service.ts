@@ -22,6 +22,10 @@ const getUserDto = (login: string, email: string, isConfirmed: boolean, password
             }),
             isConfirmed: isConfirmed
         },
+        passwordRecovery: {
+            confirmationCode: null,
+            expirationDate: new Date()
+        }
     }
 
     return newUser
@@ -91,6 +95,22 @@ export const authService = {
         if(isConfirmed) {
             return user
         }
+    },
+
+    async passwordRecovery(email: string) {
+        const user = await usersQueryRepository.findUserByEmail(email)
+        if(!user) {
+            return true
+        }
+        const passwordRecoveryCode = uuidv4()
+
+        emailManager.sendPasswordRecoveryCode(user.email, user.login, passwordRecoveryCode)
+
+        const isUpdated = await usersRepository.updatePasswordConfirmationInfo(user.id, passwordRecoveryCode)
+        if(!isUpdated) {
+            return false
+        }
+        return true
     },
 
     async deleteUsers(userId: string | null) {
