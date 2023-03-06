@@ -26,7 +26,6 @@ function runDB() {
         try {
             yield client.connect();
             yield client.db("blog_platform").command({ ping: 1 });
-            console.log("Connected successfully to MongoDB server");
         }
         catch (err) {
             yield client.close();

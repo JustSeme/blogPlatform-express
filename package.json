@@ -7,7 +7,7 @@
   "scripts": {
     "watch": "tsc -w",
     "dev": "nodemon --inspect ./dist/app.js",
-    "test": "jest"
+    "test": "jest --detectOpenHandles"
   },
   "dependencies": {
     "@types/bcrypt": "^5.0.0",
@@ -28,7 +28,7 @@
     "mongodb": "^4.13.0",
     "nodemailer": "^6.9.1",
     "supertest": "^6.3.3",
-    "ts-jest": "^29.0.3",
+    "ts-jest": "^29.0.5",
     "uuid": "^9.0.0"
   },
   "devDependencies": {

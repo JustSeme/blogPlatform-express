@@ -28,7 +28,7 @@ exports.loginValidation = (0, express_validator_1.body)('login')
     .custom((login) => __awaiter(void 0, void 0, void 0, function* () {
     return users_query_repository_1.usersQueryRepository.findUserByLogin(login).then(user => {
         if (user) {
-            return Promise.reject('Login already in use');
+            throw new Error('Login already in use');
         }
     });
 }));
@@ -47,7 +47,7 @@ exports.emailValidationWithCustomSearch = (0, express_validator_1.body)('email')
     .custom((email) => __awaiter(void 0, void 0, void 0, function* () {
     return users_query_repository_1.usersQueryRepository.findUserByEmail(email).then(user => {
         if (user) {
-            return Promise.reject('Email already in use');
+            throw new Error('Email already in use');
         }
     });
 }));

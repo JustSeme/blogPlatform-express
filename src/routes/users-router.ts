@@ -14,42 +14,42 @@ import { RequestWithBody, RequestWithParams, RequestWithQuery } from "../types/t
 export const usersRouter = Router({})
 
 export const loginValidation = body('login')
-.exists()
-.trim()
-.notEmpty()
-.isString()
-.isLength({ min: 3, max: 10 })
-.matches(/^[a-zA-Z0-9_-]*$/, 'i')
-.custom(async login => {
-    return usersQueryRepository.findUserByLogin(login).then(user => {
-        if(user) {
-            return Promise.reject('Login already in use')
-        }
+    .exists()
+    .trim()
+    .notEmpty()
+    .isString()
+    .isLength({ min: 3, max: 10 })
+    .matches(/^[a-zA-Z0-9_-]*$/, 'i')
+    .custom(async login => {
+        return usersQueryRepository.findUserByLogin(login).then(user => {
+            if (user) {
+                throw new Error('Login already in use')
+            }
+        })
     })
-})
 
 export const passwordValidation = body('password')
-.exists()
-.trim()
-.notEmpty()
-.isString()
-.isLength({ min: 6, max: 20 })
+    .exists()
+    .trim()
+    .notEmpty()
+    .isString()
+    .isLength({ min: 6, max: 20 })
 
 export const emailValidationWithCustomSearch = body('email')
-.exists()
-.trim()
-.notEmpty()
-.isString()
-.matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
-.custom(async email => {
-    return usersQueryRepository.findUserByEmail(email).then(user => {
-        if(user) {
-            return Promise.reject('Email already in use')
-        }
+    .exists()
+    .trim()
+    .notEmpty()
+    .isString()
+    .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
+    .custom(async email => {
+        return usersQueryRepository.findUserByEmail(email).then(user => {
+            if (user) {
+                throw new Error('Email already in use')
+            }
+        })
     })
-})
 
-usersRouter.post('/', 
+usersRouter.post('/',
     basicAuthorizationMiddleware,
     loginValidation,
     passwordValidation,
@@ -57,18 +57,19 @@ usersRouter.post('/',
     inputValidationMiddleware,
     async (req: RequestWithBody<UserInputModel>, res: Response<UserViewModel | ErrorMessagesOutputModel>) => {
         const createdUser = await authService.createUserWithBasicAuth(req.body.login, req.body.password, req.body.email)
-        if(!createdUser) {
+        if (!createdUser) {
             res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
             return
         }
-        res.status(HTTP_STATUSES.CREATED_201).json(createdUser)
-})
+
+        res.status(HTTP_STATUSES.CREATED_201).json(createdUser!)
+    })
 
 usersRouter.delete('/:id',
     basicAuthorizationMiddleware,
-    async (req: RequestWithParams<{id: string}>, res: Response) => {
+    async (req: RequestWithParams<{ id: string }>, res: Response) => {
         const isDeleted = await authService.deleteUsers(req.params.id)
-        if(!isDeleted) {
+        if (!isDeleted) {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
             return
         }

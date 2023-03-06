@@ -9,7 +9,7 @@ const baseURL = '/homework01/'
 describe('/videos', () => {
     beforeAll(async () => {
         await request(app)
-        .delete(`${baseURL}testing/all-data`)
+            .delete(`${baseURL}testing/all-data`)
     })
 
     it('should\'nt create video with incorrect title', async () => {
@@ -122,7 +122,7 @@ describe('/videos', () => {
             .get(`${baseURL}videos`)
             .expect(HTTP_STATUSES.OK_200, [])
     })
-    
+
     let createdVideo: VideoViewModel
     it('should be create video with correct input data', async () => {
         const data: CreateVideoInputModel = {

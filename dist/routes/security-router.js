@@ -24,7 +24,6 @@ exports.securityRouter.get('/devices', (req, res) => __awaiter(void 0, void 0, v
     }
     const refreshToken = (_a = req.cookies) === null || _a === void 0 ? void 0 : _a.refreshToken;
     const result = yield jwtService_1.jwtService.verifyToken(refreshToken);
-    console.log('route', req.cookies);
     if (!result) {
         res.sendStatus(app_1.HTTP_STATUSES.UNAUTHORIZED_401);
         return;
