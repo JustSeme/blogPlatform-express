@@ -1,7 +1,7 @@
 import { ReadUsersQuery } from "../../models/users/ReadUsersQuery";
 import { UserDBModel } from "../../models/users/UserDBModel";
 import { UsersWithQueryOutputModel, UserViewModel } from "../../models/users/UsersViewModel";
-import { usersCollection } from "../db";
+import { usersModel } from "../db";
 
 export const usersQueryRepository = {
     async findUsers(queryParams: ReadUsersQuery): Promise<UsersWithQueryOutputModel> {
@@ -17,14 +17,12 @@ export const usersQueryRepository = {
 
         const filterObject = filterArray.length ? { $or: filterArray } : {}
 
-        const totalCount = await usersCollection.count(filterObject)
+        const totalCount = await usersModel.count(filterObject)
         const pagesCount = Math.ceil(totalCount / +pageSize)
 
         const skipCount = (+pageNumber - 1) * +pageSize
-        let usersCursor = await usersCollection.find(filterObject, { projection: { _id: 0 } }).skip(skipCount).limit(+pageSize)
-
         const sortDirectionNumber = sortDirection === 'asc' ? 1 : -1
-        const resultedUsers = await usersCursor.sort({ [sortBy]: sortDirectionNumber }).toArray()
+        let resultedUsers = await usersModel.find(filterObject, { projection: { _id: 0 } }).skip(skipCount).limit(+pageSize).sort({ [sortBy]: sortDirectionNumber })
 
         const displayedUsers: UserViewModel[] = resultedUsers.map(u => ({
             id: u.id,
@@ -43,26 +41,26 @@ export const usersQueryRepository = {
     },
 
     async findUserById(userId: string) {
-        return await usersCollection.findOne({ id: userId }, { projection: { _id: 0 } })
+        return await usersModel.findOne({ id: userId }, { _id: 0, __v: 0 })
     },
 
     async findUserByEmail(email: string) {
-        return await usersCollection.findOne({ email: email })
+        return await usersModel.findOne({ email: email })
     },
 
     async findUserByLogin(login: string) {
-        return await usersCollection.findOne({ login: login })
+        return await usersModel.findOne({ login: login })
     },
 
     async findUserByLoginOrEmail(loginOrEmail: string): Promise<UserDBModel | null> {
-        return await usersCollection.findOne({ $or: [{ login: loginOrEmail }, { email: loginOrEmail }] })
+        return await usersModel.findOne({ $or: [{ login: loginOrEmail }, { email: loginOrEmail }] })
     },
 
     async findUserByConfirmationCode(code: string) {
-        return await usersCollection.findOne({ 'emailConfirmation.confirmationCode': code })
+        return await usersModel.findOne({ 'emailConfirmation.confirmationCode': code })
     },
 
     async findUserByRecoveryPasswordCode(code: string) {
-        return await usersCollection.findOne({ 'passwordRecovery.confirmationCode': code })
+        return await usersModel.findOne({ 'passwordRecovery.confirmationCode': code })
     },
 }

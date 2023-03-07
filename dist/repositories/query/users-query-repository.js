@@ -23,12 +23,11 @@ exports.usersQueryRepository = {
                 filterArray.push({ login: { $regex: searchLoginTerm, $options: 'i' } });
             }
             const filterObject = filterArray.length ? { $or: filterArray } : {};
-            const totalCount = yield db_1.usersCollection.count(filterObject);
+            const totalCount = yield db_1.usersModel.count(filterObject);
             const pagesCount = Math.ceil(totalCount / +pageSize);
             const skipCount = (+pageNumber - 1) * +pageSize;
-            let usersCursor = yield db_1.usersCollection.find(filterObject, { projection: { _id: 0 } }).skip(skipCount).limit(+pageSize);
             const sortDirectionNumber = sortDirection === 'asc' ? 1 : -1;
-            const resultedUsers = yield usersCursor.sort({ [sortBy]: sortDirectionNumber }).toArray();
+            let resultedUsers = yield db_1.usersModel.find(filterObject, { projection: { _id: 0 } }).skip(skipCount).limit(+pageSize).sort({ [sortBy]: sortDirectionNumber });
             const displayedUsers = resultedUsers.map(u => ({
                 id: u.id,
                 login: u.login,
@@ -46,32 +45,32 @@ exports.usersQueryRepository = {
     },
     findUserById(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield db_1.usersCollection.findOne({ id: userId }, { projection: { _id: 0 } });
+            return yield db_1.usersModel.findOne({ id: userId }, { _id: 0, __v: 0 });
         });
     },
     findUserByEmail(email) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield db_1.usersCollection.findOne({ email: email });
+            return yield db_1.usersModel.findOne({ email: email });
         });
     },
     findUserByLogin(login) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield db_1.usersCollection.findOne({ login: login });
+            return yield db_1.usersModel.findOne({ login: login });
         });
     },
     findUserByLoginOrEmail(loginOrEmail) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield db_1.usersCollection.findOne({ $or: [{ login: loginOrEmail }, { email: loginOrEmail }] });
+            return yield db_1.usersModel.findOne({ $or: [{ login: loginOrEmail }, { email: loginOrEmail }] });
         });
     },
     findUserByConfirmationCode(code) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield db_1.usersCollection.findOne({ 'emailConfirmation.confirmationCode': code });
+            return yield db_1.usersModel.findOne({ 'emailConfirmation.confirmationCode': code });
         });
     },
     findUserByRecoveryPasswordCode(code) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield db_1.usersCollection.findOne({ 'passwordRecovery.confirmationCode': code });
+            return yield db_1.usersModel.findOne({ 'passwordRecovery.confirmationCode': code });
         });
     },
 };

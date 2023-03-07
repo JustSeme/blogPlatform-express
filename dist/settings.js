@@ -30,8 +30,9 @@ const attempts_db_repository_1 = require("./repositories/attempts-db-repository"
 const app_1 = require("./app");
 const username = "justSeme";
 const password = "RMMXpX1hUlXqbKED";
+let mongoDBname = 'blog_platform';
 exports.settings = {
-    mongoURI: process.env.mongoURI || `mongodb+srv://${username}:${password}@cluster86890.fgczccf.mongodb.net/?retryWrites=true&w=majority`,
+    mongoURI: process.env.mongoURI || `mongodb+srv://${username}:${password}@cluster86890.fgczccf.mongodb.net/${mongoDBname}?retryWrites=true&w=majority`,
     JWT_SECRET: process.env.JWT_SECRET || 'super_secret',
     PORT: process.env.PORT || 3000,
     GMAIL_LOGIN: process.env.GMAIL_LOGIN || 'kepxep69@gmail.com',
