@@ -14,7 +14,7 @@ const db_1 = require("./db");
 exports.deviceRepository = {
     addSession(issuedAt, expireAt, userId, userIp, deviceId, deviceName) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.deviceAuthSessionsModel.create({
+            const result = yield db_1.DeviceAuthSessionsModel.create({
                 issuedAt: issuedAt,
                 expireDate: expireAt,
                 userInfo: {
@@ -31,19 +31,19 @@ exports.deviceRepository = {
     },
     removeSession(deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.deviceAuthSessionsModel.deleteOne({ 'deviceInfo.deviceId': deviceId });
+            const result = yield db_1.DeviceAuthSessionsModel.deleteOne({ 'deviceInfo.deviceId': deviceId });
             return result.deletedCount === 1;
         });
     },
     deleteAllSessions(userId, deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.deviceAuthSessionsModel.deleteMany({ $and: [{ 'userInfo.userId': userId }, { 'deviceInfo.deviceId': { $ne: deviceId } }] });
+            const result = yield db_1.DeviceAuthSessionsModel.deleteMany({ $and: [{ 'userInfo.userId': userId }, { 'deviceInfo.deviceId': { $ne: deviceId } }] });
             return result.deletedCount > 0;
         });
     },
     updateSession(deviceId, issuedAt, expireDate) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.deviceAuthSessionsModel.updateOne({ "deviceInfo.deviceId": deviceId }, { issuedAt, expireDate });
+            const result = yield db_1.DeviceAuthSessionsModel.updateOne({ "deviceInfo.deviceId": deviceId }, { issuedAt, expireDate });
             return result.matchedCount === 1;
         });
     },

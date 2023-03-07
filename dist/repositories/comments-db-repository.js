@@ -14,18 +14,18 @@ const db_1 = require("./db");
 exports.commentsRepository = {
     createComment(createdComment) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield db_1.commentsModel.create(createdComment);
+            yield db_1.CommentsModel.create(createdComment);
         });
     },
     deleteComment(commentId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.commentsModel.deleteOne({ id: commentId });
+            const result = yield db_1.CommentsModel.deleteOne({ id: commentId });
             return result.deletedCount === 1;
         });
     },
     updateComment(commentId, content) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.commentsModel.updateOne({ id: commentId }, { content: content });
+            const result = yield db_1.CommentsModel.updateOne({ id: commentId }, { content: content });
             return result.matchedCount === 1;
         });
     }

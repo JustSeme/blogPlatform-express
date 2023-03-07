@@ -14,7 +14,7 @@ const db_1 = require("./db");
 exports.attemptsRepository = {
     getAttemptsCount(clientIp, requestedUrl, lastAttemptDate) {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.attemptsModel.countDocuments({
+            return db_1.AttemptsModel.countDocuments({
                 clientIp,
                 requestedUrl,
                 requestDate: {
@@ -25,19 +25,19 @@ exports.attemptsRepository = {
     },
     insertAttempt(clientIp, requestedUrl, requestDate) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.attemptsModel.create({ clientIp, requestedUrl, requestDate });
+            const result = yield db_1.AttemptsModel.create({ clientIp, requestedUrl, requestDate });
             return result ? true : false;
         });
     },
     removeAttempts(clientIp, requestedUrl) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.attemptsModel.deleteMany({ clientIp, requestedUrl });
+            const result = yield db_1.AttemptsModel.deleteMany({ clientIp, requestedUrl });
             return result.deletedCount > 0;
         });
     },
     clearAllAttempts() {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.attemptsModel.deleteMany({});
+            return db_1.AttemptsModel.deleteMany({});
         });
     }
 };

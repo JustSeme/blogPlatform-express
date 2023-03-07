@@ -19,11 +19,11 @@ exports.blogsQueryRepository = {
             if (searchNameTerm) {
                 filter.name = { $regex: searchNameTerm, $options: 'i' };
             }
-            const totalCount = yield db_1.blogsModel.count(filter);
+            const totalCount = yield db_1.BlogsModel.count(filter);
             const pagesCount = Math.ceil(totalCount / +pageSize);
             const skipCount = (+pageNumber - 1) * +pageSize;
             const sortDirectionNumber = sortDirection === 'asc' ? 1 : -1;
-            const resultedBlogs = yield db_1.blogsModel.find(filter, { _id: 0, __v: 0 }).skip(skipCount).limit(+pageSize).sort({ [sortBy]: sortDirectionNumber });
+            const resultedBlogs = yield db_1.BlogsModel.find(filter, { _id: 0, __v: 0 }).skip(skipCount).limit(+pageSize).sort({ [sortBy]: sortDirectionNumber });
             return {
                 pagesCount: pagesCount,
                 page: +pageNumber,
@@ -35,7 +35,7 @@ exports.blogsQueryRepository = {
     },
     findBlogById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield db_1.blogsModel.findOne({ id: id }, { _id: 0, __v: 0 });
+            return yield db_1.BlogsModel.findOne({ id: id }, { _id: 0, __v: 0 });
         });
     }
 };

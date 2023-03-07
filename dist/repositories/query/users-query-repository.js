@@ -23,11 +23,11 @@ exports.usersQueryRepository = {
                 filterArray.push({ login: { $regex: searchLoginTerm, $options: 'i' } });
             }
             const filterObject = filterArray.length ? { $or: filterArray } : {};
-            const totalCount = yield db_1.usersModel.count(filterObject);
+            const totalCount = yield db_1.UsersModel.count(filterObject);
             const pagesCount = Math.ceil(totalCount / +pageSize);
             const skipCount = (+pageNumber - 1) * +pageSize;
             const sortDirectionNumber = sortDirection === 'asc' ? 1 : -1;
-            let resultedUsers = yield db_1.usersModel.find(filterObject).skip(skipCount).limit(+pageSize).sort({ [sortBy]: sortDirectionNumber });
+            let resultedUsers = yield db_1.UsersModel.find(filterObject).skip(skipCount).limit(+pageSize).sort({ [sortBy]: sortDirectionNumber });
             const displayedUsers = resultedUsers.map(u => ({
                 id: u.id,
                 login: u.login,
@@ -45,32 +45,32 @@ exports.usersQueryRepository = {
     },
     findUserById(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield db_1.usersModel.findOne({ id: userId }, { _id: 0, __v: 0 });
+            return db_1.UsersModel.findOne({ id: userId }, { _id: 0, __v: 0 });
         });
     },
     findUserByEmail(email) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield db_1.usersModel.findOne({ email: email });
+            return db_1.UsersModel.findOne({ email: email });
         });
     },
     findUserByLogin(login) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield db_1.usersModel.findOne({ login: login });
+            return db_1.UsersModel.findOne({ login: login });
         });
     },
     findUserByLoginOrEmail(loginOrEmail) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield db_1.usersModel.findOne({ $or: [{ login: loginOrEmail }, { email: loginOrEmail }] });
+            return db_1.UsersModel.findOne({ $or: [{ login: loginOrEmail }, { email: loginOrEmail }] });
         });
     },
     findUserByConfirmationCode(code) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield db_1.usersModel.findOne({ 'emailConfirmation.confirmationCode': code });
+            return db_1.UsersModel.findOne({ 'emailConfirmation.confirmationCode': code });
         });
     },
     findUserByRecoveryPasswordCode(code) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield db_1.usersModel.findOne({ 'passwordRecovery.confirmationCode': code });
+            return db_1.UsersModel.findOne({ 'passwordRecovery.confirmationCode': code });
         });
     },
 };

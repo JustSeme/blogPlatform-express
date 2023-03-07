@@ -1,4 +1,4 @@
-export type DeviceAuthSessionsModel = {
+export type DeviceAuthSessionsModelType = {
     issuedAt: number
     expireDate: number
     userInfo: UserInfoType

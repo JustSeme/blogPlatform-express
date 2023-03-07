@@ -1,5 +1,4 @@
-import { MongoClient } from 'mongodb'
-import { DeviceAuthSessionsModel } from '../models/devices/DeviceSessionsDBModel';
+import { DeviceAuthSessionsModelType } from '../models/devices/DeviceSessionsDBModel';
 import { BlogViewModel } from '../models/blogs/BlogViewModel';
 import { CommentDBModel } from '../models/comments/CommentDBModel';
 import { PostViewModel } from '../models/posts/PostViewModel';
@@ -16,28 +15,18 @@ import { attemptsSchema } from './schemas/attemptsSchema';
 
 let mongoURI = settings.mongoURI
 
-const client = new MongoClient(mongoURI)
-
-const blogPlatformDB = client.db('blog_platform')
-
-export const postsModel = mongoose.model<PostViewModel>('posts', postsSchema)
-export const blogsModel = mongoose.model<BlogViewModel>('blogs', blogsSchema)
-export const usersModel = mongoose.model<UserDBModel>('users', usersSchema)
-export const commentsModel = mongoose.model<CommentDBModel>('comments', commentsSchema)
-export const deviceAuthSessionsModel = mongoose.model<DeviceAuthSessionsModel>('deviceAuthSessions', deviceAuthSessionsSchema)
-export const attemptsModel = mongoose.model<AttemptsDBModel>('attempts', attemptsSchema)
+export const PostsModel = mongoose.model<PostViewModel>('posts', postsSchema)
+export const BlogsModel = mongoose.model<BlogViewModel>('blogs', blogsSchema)
+export const UsersModel = mongoose.model<UserDBModel>('users', usersSchema)
+export const CommentsModel = mongoose.model<CommentDBModel>('comments', commentsSchema)
+export const DeviceAuthSessionsModel = mongoose.model<DeviceAuthSessionsModelType>('deviceAuthSessions', deviceAuthSessionsSchema)
+export const AttemptsModel = mongoose.model<AttemptsDBModel>('attempts', attemptsSchema)
 
 export async function runDB() {
     try {
         await mongoose.connect(mongoURI);
-
-        await client.connect();
-        await client.db("blog_platform").command({ ping: 1 });
     } catch (err) {
         await mongoose.disconnect()
-
-        await client.close();
-        console.log(`can't connect to db`);
     }
 }
 runDB()

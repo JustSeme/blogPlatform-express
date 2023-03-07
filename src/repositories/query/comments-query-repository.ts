@@ -1,6 +1,6 @@
 import { CommentsWithQueryOutputModel, CommentViewModel } from "../../models/comments/CommentViewModel"
 import { ReadCommentsQueryParams } from "../../models/comments/ReadCommentsQuery"
-import { commentsModel } from "../db"
+import { CommentsModel } from "../db"
 
 export const commentsQueryRepository = {
     async findComments(queryParams: ReadCommentsQueryParams, postId: string): Promise<CommentsWithQueryOutputModel> {
@@ -10,13 +10,13 @@ export const commentsQueryRepository = {
             postId: postId
         }
 
-        const totalCount = await commentsModel.count(filter)
+        const totalCount = await CommentsModel.count(filter)
         const pagesCount = Math.ceil(totalCount / +pageSize)
 
         const skipCount = (+pageNumber - 1) * +pageSize
 
         const sortDirectionNumber = sortDirection === 'asc' ? 1 : -1
-        let resultedComments = await commentsModel.find(filter, { _id: 0, postId: 0, __v: 0 }).skip(skipCount).limit(+pageSize).sort({ [sortBy]: sortDirectionNumber })
+        let resultedComments = await CommentsModel.find(filter, { _id: 0, postId: 0, __v: 0 }).skip(skipCount).limit(+pageSize).sort({ [sortBy]: sortDirectionNumber })
 
         return {
             pagesCount: pagesCount,
@@ -28,6 +28,6 @@ export const commentsQueryRepository = {
     },
 
     async findCommentById(commentId: string) {
-        return commentsModel.findOne({ id: commentId }, { _id: 0, postId: 0, __v: 0 })
+        return CommentsModel.findOne({ id: commentId }, { _id: 0, postId: 0, __v: 0 })
     }
 }

@@ -1,7 +1,7 @@
 import { BlogsWithQueryOutputModel } from "../../models/blogs/BlogViewModel";
 import { BlogViewModel } from "../../models/blogs/BlogViewModel";
 import { ReadBlogsQueryParams } from "../../models/blogs/ReadBlogsQuery";
-import { blogsModel } from "../db";
+import { BlogsModel } from "../db";
 
 export const blogsQueryRepository = {
     async findBlogs(queryParams: ReadBlogsQueryParams): Promise<BlogsWithQueryOutputModel> {
@@ -12,12 +12,12 @@ export const blogsQueryRepository = {
             filter.name = { $regex: searchNameTerm, $options: 'i' }
         }
 
-        const totalCount = await blogsModel.count(filter)
+        const totalCount = await BlogsModel.count(filter)
         const pagesCount = Math.ceil(totalCount / +pageSize)
 
         const skipCount = (+pageNumber - 1) * +pageSize
         const sortDirectionNumber = sortDirection === 'asc' ? 1 : -1
-        const resultedBlogs = await blogsModel.find(filter, { _id: 0, __v: 0 }).skip(skipCount).limit(+pageSize).sort({ [sortBy]: sortDirectionNumber })
+        const resultedBlogs = await BlogsModel.find(filter, { _id: 0, __v: 0 }).skip(skipCount).limit(+pageSize).sort({ [sortBy]: sortDirectionNumber })
 
         return {
             pagesCount: pagesCount,
@@ -29,6 +29,6 @@ export const blogsQueryRepository = {
     },
 
     async findBlogById(id: string): Promise<BlogViewModel | null> {
-        return await blogsModel.findOne({ id: id }, { _id: 0, __v: 0 })
+        return await BlogsModel.findOne({ id: id }, { _id: 0, __v: 0 })
     }
 }

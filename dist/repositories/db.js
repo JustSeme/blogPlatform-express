@@ -12,8 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.runDB = exports.attemptsModel = exports.deviceAuthSessionsModel = exports.commentsModel = exports.usersModel = exports.blogsModel = exports.postsModel = void 0;
-const mongodb_1 = require("mongodb");
+exports.runDB = exports.AttemptsModel = exports.DeviceAuthSessionsModel = exports.CommentsModel = exports.UsersModel = exports.BlogsModel = exports.PostsModel = void 0;
 const settings_1 = require("../settings");
 const mongoose_1 = __importDefault(require("mongoose"));
 const usersSchema_1 = require("./schemas/usersSchema");
@@ -23,25 +22,19 @@ const commentsSchema_1 = require("./schemas/commentsSchema");
 const deviceAuthSessionsSchema_1 = require("./schemas/deviceAuthSessionsSchema");
 const attemptsSchema_1 = require("./schemas/attemptsSchema");
 let mongoURI = settings_1.settings.mongoURI;
-const client = new mongodb_1.MongoClient(mongoURI);
-const blogPlatformDB = client.db('blog_platform');
-exports.postsModel = mongoose_1.default.model('posts', postsSchema_1.postsSchema);
-exports.blogsModel = mongoose_1.default.model('blogs', blogsSchema_1.blogsSchema);
-exports.usersModel = mongoose_1.default.model('users', usersSchema_1.usersSchema);
-exports.commentsModel = mongoose_1.default.model('comments', commentsSchema_1.commentsSchema);
-exports.deviceAuthSessionsModel = mongoose_1.default.model('deviceAuthSessions', deviceAuthSessionsSchema_1.deviceAuthSessionsSchema);
-exports.attemptsModel = mongoose_1.default.model('attempts', attemptsSchema_1.attemptsSchema);
+exports.PostsModel = mongoose_1.default.model('posts', postsSchema_1.postsSchema);
+exports.BlogsModel = mongoose_1.default.model('blogs', blogsSchema_1.blogsSchema);
+exports.UsersModel = mongoose_1.default.model('users', usersSchema_1.usersSchema);
+exports.CommentsModel = mongoose_1.default.model('comments', commentsSchema_1.commentsSchema);
+exports.DeviceAuthSessionsModel = mongoose_1.default.model('deviceAuthSessions', deviceAuthSessionsSchema_1.deviceAuthSessionsSchema);
+exports.AttemptsModel = mongoose_1.default.model('attempts', attemptsSchema_1.attemptsSchema);
 function runDB() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             yield mongoose_1.default.connect(mongoURI);
-            yield client.connect();
-            yield client.db("blog_platform").command({ ping: 1 });
         }
         catch (err) {
             yield mongoose_1.default.disconnect();
-            yield client.close();
-            console.log(`can't connect to db`);
         }
     });
 }
