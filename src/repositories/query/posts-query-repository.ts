@@ -1,4 +1,4 @@
-import { postsCollection } from "../db";
+import { postsModel } from "../db";
 import { PostsWithQueryOutputModel, PostViewModel } from "../../models/posts/PostViewModel";
 import { ReadPostsQueryParams } from "../../models/posts/ReadPostsQuery";
 
@@ -7,19 +7,17 @@ export const postsQueryRepository = {
         const { sortDirection = 'desc', sortBy = 'createdAt', pageNumber = 1, pageSize = 10 } = queryParams
 
         const filter: any = {}
-        if(blogId) {
+        if (blogId) {
             filter.blogId = blogId
         }
 
-        const totalCount = await postsCollection.count(filter)
+        const totalCount = await postsModel.count(filter)
         const pagesCount = Math.ceil(totalCount / +pageSize)
 
         const skipCount = (+pageNumber - 1) * +pageSize
-        let postsCursor = await postsCollection.find(filter, { projection: { _id: 0 }}).skip(skipCount).limit(+pageSize)
-
         const sortDirectionNumber = sortDirection === 'asc' ? 1 : -1
-        const resultedPosts = await postsCursor.sort({[sortBy]: sortDirectionNumber}).toArray()
-        
+        let resultedPosts = await postsModel.find(filter, { _id: 0, __v: 0 }).skip(skipCount).limit(+pageSize).sort({ [sortBy]: sortDirectionNumber })
+
         return {
             pagesCount: pagesCount,
             page: +pageNumber,
@@ -30,6 +28,6 @@ export const postsQueryRepository = {
     },
 
     async findPostById(id: string): Promise<PostViewModel | null> {
-        return await postsCollection.findOne({id: id}, { projection: { _id: 0 } })
+        return await postsModel.findOne({ id: id }, { _id: 0, __v: 0 })
     }
 }

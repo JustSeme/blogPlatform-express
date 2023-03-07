@@ -16,21 +16,21 @@ exports.blogsRepository = {
         return __awaiter(this, void 0, void 0, function* () {
             let result;
             if (id === null) {
-                result = yield db_1.blogsCollection.deleteMany({});
+                result = yield db_1.blogsModel.deleteMany({});
                 return result.deletedCount > 0;
             }
-            result = yield db_1.blogsCollection.deleteOne({ id: id });
+            result = yield db_1.blogsModel.deleteOne({ id: id });
             return result.deletedCount === 1;
         });
     },
     createBlog(createdBlog) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield db_1.blogsCollection.insertOne(createdBlog);
+            yield db_1.blogsModel.create(createdBlog);
         });
     },
     updateBlog(id, body) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.blogsCollection.updateOne({ id: id }, { $set: { name: body.name, description: body.description, websiteUrl: body.websiteUrl } });
+            const result = yield db_1.blogsModel.updateOne({ id: id }, { name: body.name, description: body.description, websiteUrl: body.websiteUrl });
             return result.matchedCount === 1;
         });
     }

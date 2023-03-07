@@ -80,7 +80,7 @@ describe('/users', () => {
             .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
             .expect(HTTP_STATUSES.OK_200)
 
-        expect(response.body.items.length === 1).toBe(true)
+        expect(response.body.totalCount === 1).toBe(true)
         expect(response.body.items[0]).toEqual(createdUser)
     })
 
@@ -151,7 +151,7 @@ describe('/users', () => {
             .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
             .expect(HTTP_STATUSES.OK_200)
 
-        expect(response.body.items.length === 4).toBe(true)
+        expect(response.body.totalCount === 4).toBe(true)
 
         expect(response.body.items[0].id).toEqual(id1)
         expect(response.body.items[1].id).toEqual(id2)
@@ -165,9 +165,35 @@ describe('/users', () => {
             .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
             .expect(HTTP_STATUSES.OK_200)
 
-        expect(response.body.items.length === 2).toBe(true)
+        expect(response.body.totalCount === 2).toBe(true)
 
         expect(response.body.items[0].id).toBe(id1)
         expect(response.body.items[1].id).toBe(id2)
+    })
+
+    it('should delete two users by id', async () => {
+        await request(app)
+            .delete(`${baseURL}/${id1}`)
+            .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
+            .expect(HTTP_STATUSES.NO_CONTENT_204)
+
+        await request(app)
+            .delete(`${baseURL}/${id2}`)
+            .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
+            .expect(HTTP_STATUSES.NO_CONTENT_204)
+
+        const response = await request(app)
+            .get(`${baseURL}`)
+            .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
+            .expect(HTTP_STATUSES.OK_200)
+
+        expect(response.body.totalCount === 2).toBe(true)
+    })
+
+    it('should return a error if user is already deleted', async () => {
+        await request(app)
+            .delete(`${baseURL}/${id1}`)
+            .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
+            .expect(HTTP_STATUSES.NOT_FOUND_404)
     })
 })

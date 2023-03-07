@@ -27,7 +27,7 @@ exports.usersQueryRepository = {
             const pagesCount = Math.ceil(totalCount / +pageSize);
             const skipCount = (+pageNumber - 1) * +pageSize;
             const sortDirectionNumber = sortDirection === 'asc' ? 1 : -1;
-            let resultedUsers = yield db_1.usersModel.find(filterObject, { projection: { _id: 0 } }).skip(skipCount).limit(+pageSize).sort({ [sortBy]: sortDirectionNumber });
+            let resultedUsers = yield db_1.usersModel.find(filterObject).skip(skipCount).limit(+pageSize).sort({ [sortBy]: sortDirectionNumber });
             const displayedUsers = resultedUsers.map(u => ({
                 id: u.id,
                 login: u.login,

@@ -19,12 +19,11 @@ exports.postsQueryRepository = {
             if (blogId) {
                 filter.blogId = blogId;
             }
-            const totalCount = yield db_1.postsCollection.count(filter);
+            const totalCount = yield db_1.postsModel.count(filter);
             const pagesCount = Math.ceil(totalCount / +pageSize);
             const skipCount = (+pageNumber - 1) * +pageSize;
-            let postsCursor = yield db_1.postsCollection.find(filter, { projection: { _id: 0 } }).skip(skipCount).limit(+pageSize);
             const sortDirectionNumber = sortDirection === 'asc' ? 1 : -1;
-            const resultedPosts = yield postsCursor.sort({ [sortBy]: sortDirectionNumber }).toArray();
+            let resultedPosts = yield db_1.postsModel.find(filter, { _id: 0, __v: 0 }).skip(skipCount).limit(+pageSize).sort({ [sortBy]: sortDirectionNumber });
             return {
                 pagesCount: pagesCount,
                 page: +pageNumber,
@@ -36,7 +35,7 @@ exports.postsQueryRepository = {
     },
     findPostById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield db_1.postsCollection.findOne({ id: id }, { projection: { _id: 0 } });
+            return yield db_1.postsModel.findOne({ id: id }, { _id: 0, __v: 0 });
         });
     }
 };

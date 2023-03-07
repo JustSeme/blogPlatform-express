@@ -22,7 +22,7 @@ export const usersQueryRepository = {
 
         const skipCount = (+pageNumber - 1) * +pageSize
         const sortDirectionNumber = sortDirection === 'asc' ? 1 : -1
-        let resultedUsers = await usersModel.find(filterObject, { projection: { _id: 0 } }).skip(skipCount).limit(+pageSize).sort({ [sortBy]: sortDirectionNumber })
+        let resultedUsers = await usersModel.find(filterObject).skip(skipCount).limit(+pageSize).sort({ [sortBy]: sortDirectionNumber })
 
         const displayedUsers: UserViewModel[] = resultedUsers.map(u => ({
             id: u.id,
