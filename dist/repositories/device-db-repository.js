@@ -14,7 +14,7 @@ const db_1 = require("./db");
 exports.deviceRepository = {
     addSession(issuedAt, expireAt, userId, userIp, deviceId, deviceName) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.deviceAuthSessions.insertOne({
+            const result = yield db_1.deviceAuthSessionsModel.create({
                 issuedAt: issuedAt,
                 expireDate: expireAt,
                 userInfo: {
@@ -26,25 +26,25 @@ exports.deviceRepository = {
                     deviceName
                 }
             });
-            return result.acknowledged;
+            return result ? true : false;
         });
     },
     removeSession(deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.deviceAuthSessions.deleteOne({ 'deviceInfo.deviceId': deviceId });
-            return result.acknowledged;
+            const result = yield db_1.deviceAuthSessionsModel.deleteOne({ 'deviceInfo.deviceId': deviceId });
+            return result.deletedCount === 1;
         });
     },
     deleteAllSessions(userId, deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.deviceAuthSessions.deleteMany({ $and: [{ 'userInfo.userId': userId }, { 'deviceInfo.deviceId': { $ne: deviceId } }] });
-            return result.acknowledged;
+            const result = yield db_1.deviceAuthSessionsModel.deleteMany({ $and: [{ 'userInfo.userId': userId }, { 'deviceInfo.deviceId': { $ne: deviceId } }] });
+            return result.deletedCount > 0;
         });
     },
     updateSession(deviceId, issuedAt, expireDate) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.deviceAuthSessions.updateOne({ "deviceInfo.deviceId": deviceId }, { $set: { issuedAt, expireDate } });
-            return result.acknowledged;
+            const result = yield db_1.deviceAuthSessionsModel.updateOne({ "deviceInfo.deviceId": deviceId }, { issuedAt, expireDate });
+            return result.matchedCount === 1;
         });
     },
 };

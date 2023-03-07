@@ -1,8 +1,8 @@
-import { deviceAuthSessions } from "./db"
+import { deviceAuthSessionsModel } from "./db"
 
 export const deviceRepository = {
     async addSession(issuedAt: number, expireAt: number, userId: string, userIp: string, deviceId: string, deviceName: string) {
-        const result = await deviceAuthSessions.insertOne({
+        const result = await deviceAuthSessionsModel.create({
             issuedAt: issuedAt,
             expireDate: expireAt,
             userInfo: {
@@ -15,21 +15,21 @@ export const deviceRepository = {
             }
         })
 
-        return result.acknowledged
+        return result ? true : false
     },
 
     async removeSession(deviceId: string) {
-        const result = await deviceAuthSessions.deleteOne({'deviceInfo.deviceId': deviceId})
-        return result.acknowledged
+        const result = await deviceAuthSessionsModel.deleteOne({ 'deviceInfo.deviceId': deviceId })
+        return result.deletedCount === 1
     },
 
     async deleteAllSessions(userId: string, deviceId: string) { // exclude current session
-        const result = await deviceAuthSessions.deleteMany({$and: [{'userInfo.userId': userId}, {'deviceInfo.deviceId': {$ne: deviceId}}]})
-        return result.acknowledged
+        const result = await deviceAuthSessionsModel.deleteMany({ $and: [{ 'userInfo.userId': userId }, { 'deviceInfo.deviceId': { $ne: deviceId } }] })
+        return result.deletedCount > 0
     },
 
     async updateSession(deviceId: string, issuedAt: number, expireDate: number) {
-        const result = await deviceAuthSessions.updateOne({"deviceInfo.deviceId": deviceId}, {$set: {issuedAt, expireDate}})
-        return result.acknowledged
+        const result = await deviceAuthSessionsModel.updateOne({ "deviceInfo.deviceId": deviceId }, { issuedAt, expireDate })
+        return result.matchedCount === 1
     },
 }

@@ -1,17 +1,16 @@
-import { deviceAuthSessions } from "../db"
+import { deviceAuthSessionsModel } from "../db"
 
 export const deviceQueryRepository = {
     async getCurrentIssuedAt(deviceId: string) {
-        const result = await deviceAuthSessions.findOne({'deviceInfo.deviceId': deviceId})
+        const result = await deviceAuthSessionsModel.findOne({ 'deviceInfo.deviceId': deviceId })
         return result!.issuedAt
     },
 
     async getDevicesForUser(userId: string) {
-        const result = await deviceAuthSessions.find({"userInfo.userId": userId}).toArray()
-        return result
+        return deviceAuthSessionsModel.find({ "userInfo.userId": userId }).lean()
     },
 
     async getDeviceByDeviceId(deviceId: string) {
-        return await deviceAuthSessions.findOne({"deviceInfo.deviceId": deviceId})
+        return deviceAuthSessionsModel.findOne({ "deviceInfo.deviceId": deviceId })
     },
 }

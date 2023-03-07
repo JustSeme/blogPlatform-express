@@ -10,6 +10,9 @@ import mongoose from 'mongoose';
 import { usersSchema } from './schemas/usersSchema';
 import { postsSchema } from './schemas/postsSchema';
 import { blogsSchema } from './schemas/blogsSchema';
+import { commentsSchema } from './schemas/commentsSchema';
+import { deviceAuthSessionsSchema } from './schemas/deviceAuthSessionsSchema';
+import { attemptsSchema } from './schemas/attemptsSchema';
 
 let mongoURI = settings.mongoURI
 
@@ -17,13 +20,12 @@ const client = new MongoClient(mongoURI)
 
 const blogPlatformDB = client.db('blog_platform')
 
-export const commentsCollection = blogPlatformDB.collection<CommentDBModel>('comments')
-export const deviceAuthSessions = blogPlatformDB.collection<DeviceAuthSessionsModel>('deviceAuthSessions')
-export const attemptsCollection = blogPlatformDB.collection<AttemptsDBModel>('attempts')
-
 export const postsModel = mongoose.model<PostViewModel>('posts', postsSchema)
 export const blogsModel = mongoose.model<BlogViewModel>('blogs', blogsSchema)
 export const usersModel = mongoose.model<UserDBModel>('users', usersSchema)
+export const commentsModel = mongoose.model<CommentDBModel>('comments', commentsSchema)
+export const deviceAuthSessionsModel = mongoose.model<DeviceAuthSessionsModel>('deviceAuthSessions', deviceAuthSessionsSchema)
+export const attemptsModel = mongoose.model<AttemptsDBModel>('attempts', attemptsSchema)
 
 export async function runDB() {
     try {

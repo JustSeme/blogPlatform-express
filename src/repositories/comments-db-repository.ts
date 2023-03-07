@@ -1,18 +1,18 @@
 import { CommentDBModel } from "../models/comments/CommentDBModel";
-import { commentsCollection } from "./db";
+import { commentsModel } from "./db";
 
 export const commentsRepository = {
     async createComment(createdComment: CommentDBModel) {
-        await commentsCollection.insertOne(createdComment)
+        await commentsModel.create(createdComment)
     },
 
     async deleteComment(commentId: string) {
-        const result = await commentsCollection.deleteOne({id: commentId})
+        const result = await commentsModel.deleteOne({ id: commentId })
         return result.deletedCount === 1
     },
 
     async updateComment(commentId: string, content: string) {
-        const result = await commentsCollection.updateOne({id: commentId}, {$set: {content: content}})
-        return result.matchedCount
+        const result = await commentsModel.updateOne({ id: commentId }, { content: content })
+        return result.matchedCount === 1
     }
 }

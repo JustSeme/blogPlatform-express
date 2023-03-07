@@ -1,9 +1,9 @@
-import { attemptsCollection } from "./db"
+import { attemptsModel } from "./db"
 
 export const attemptsRepository = {
     async getAttemptsCount(clientIp: string, requestedUrl: string, lastAttemptDate: Date) {
-        return await attemptsCollection.countDocuments({
-            clientIp, 
+        return attemptsModel.countDocuments({
+            clientIp,
             requestedUrl,
             requestDate: {
                 $gt: lastAttemptDate
@@ -12,16 +12,16 @@ export const attemptsRepository = {
     },
 
     async insertAttempt(clientIp: string, requestedUrl: string, requestDate: Date) {
-        const result = await attemptsCollection.insertOne({clientIp, requestedUrl, requestDate})
-        return result.acknowledged
+        const result = await attemptsModel.create({ clientIp, requestedUrl, requestDate })
+        return result ? true : false
     },
-    
+
     async removeAttempts(clientIp: string, requestedUrl: string) {
-        const result = await attemptsCollection.deleteMany({clientIp, requestedUrl})
-        return result.acknowledged
+        const result = await attemptsModel.deleteMany({ clientIp, requestedUrl })
+        return result.deletedCount > 0
     },
 
     async clearAllAttempts() {
-        return await attemptsCollection.deleteMany({})
+        return attemptsModel.deleteMany({})
     }
 }

@@ -14,19 +14,18 @@ const db_1 = require("../db");
 exports.deviceQueryRepository = {
     getCurrentIssuedAt(deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.deviceAuthSessions.findOne({ 'deviceInfo.deviceId': deviceId });
+            const result = yield db_1.deviceAuthSessionsModel.findOne({ 'deviceInfo.deviceId': deviceId });
             return result.issuedAt;
         });
     },
     getDevicesForUser(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.deviceAuthSessions.find({ "userInfo.userId": userId }).toArray();
-            return result;
+            return db_1.deviceAuthSessionsModel.find({ "userInfo.userId": userId }).lean();
         });
     },
     getDeviceByDeviceId(deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield db_1.deviceAuthSessions.findOne({ "deviceInfo.deviceId": deviceId });
+            return db_1.deviceAuthSessionsModel.findOne({ "deviceInfo.deviceId": deviceId });
         });
     },
 };
