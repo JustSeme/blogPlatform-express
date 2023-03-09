@@ -24,43 +24,43 @@ import { commentContentValidation } from "./comments-router";
 export const postsRouter = Router({})
 
 export const titleValidation = body('title')
-.exists()
-.trim()
-.notEmpty()
-.isString()
-.isLength({ min: 1, max: 30})
+    .exists()
+    .trim()
+    .notEmpty()
+    .isString()
+    .isLength({ min: 1, max: 30 })
 
 export const shortDescriptionValidation = body('shortDescription')
-.exists()
-.trim()
-.notEmpty()
-.isLength({ min: 1, max: 100 })
+    .exists()
+    .trim()
+    .notEmpty()
+    .isLength({ min: 1, max: 100 })
 
 export const postContentValidation = body('content')
-.exists()
-.trim()
-.notEmpty()
-.isString()
-.isLength({ min: 1, max: 1000 })
+    .exists()
+    .trim()
+    .notEmpty()
+    .isString()
+    .isLength({ min: 1, max: 1000 })
 
 const blogIdValidation = body('blogId')
-.exists()
-.trim()
-.notEmpty()
-.isString()
-.custom(async (value) => {
-    const findedBlog = await blogsQueryRepository.findBlogById(value)
-    if(!findedBlog) {
-        return Promise.reject('blog by blogId not found')
-    }
-    return true
-})
-.isLength({ min: 1, max: 100 })
+    .exists()
+    .trim()
+    .notEmpty()
+    .isString()
+    .custom(async (value) => {
+        const findedBlog = await blogsQueryRepository.findBlogById(value)
+        if (!findedBlog) {
+            return Promise.reject('blog by blogId not found')
+        }
+        return true
+    })
+    .isLength({ min: 1, max: 100 })
 
 postsRouter.get('/', async (req: RequestWithQuery<ReadPostsQueryParams>, res: Response<PostsWithQueryOutputModel>) => {
     const findedPosts = await postsQueryRepository.findPosts(req.query, null)
 
-    if(!findedPosts.items.length) {
+    if (!findedPosts.items.length) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
         return
     }
@@ -70,7 +70,7 @@ postsRouter.get('/', async (req: RequestWithQuery<ReadPostsQueryParams>, res: Re
 postsRouter.get('/:id', async (req: RequestWithParams<{ id: string }>, res: Response<PostViewModel>) => {
     const findedPosts = await postsQueryRepository.findPostById(req.params.id)
 
-    if(!findedPosts) {
+    if (!findedPosts) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
         return
     }
@@ -79,7 +79,7 @@ postsRouter.get('/:id', async (req: RequestWithParams<{ id: string }>, res: Resp
 
 postsRouter.get('/:postId/comments',
     postIdValidationMiddleware,
-    async (req: RequestWithParamsAndQuery<{postId: string}, ReadCommentsQueryParams>, res: Response<CommentsWithQueryOutputModel>) => {
+    async (req: RequestWithParamsAndQuery<{ postId: string }, ReadCommentsQueryParams>, res: Response<CommentsWithQueryOutputModel>) => {
         const findedComments = await commentsQueryRepository.findComments(req.query, req.params.postId)
         res.send(findedComments)
     })
@@ -97,20 +97,20 @@ postsRouter.post('/',
         res
             .status(HTTP_STATUSES.CREATED_201)
             .send(createdPost)
-})
+    })
 
-postsRouter.post('/:postId/comments', 
+postsRouter.post('/:postId/comments',
     authMiddleware,
     postIdValidationMiddleware,
     commentContentValidation,
     inputValidationMiddleware,
-    async (req: RequestWithParamsAndBody<{postId: string}, CommentInputModel>, res: Response<CommentViewModel | ErrorMessagesOutputModel>) => {
+    async (req: RequestWithParamsAndBody<{ postId: string }, CommentInputModel>, res: Response<CommentViewModel | ErrorMessagesOutputModel>) => {
         const createdComment = await commentsService.createComment(req.body.content, req.user, req.params.postId)
-        if(!createdComment) {
+        if (!createdComment) {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
             return
         }
-        
+
         res
             .status(HTTP_STATUSES.CREATED_201)
             .send(createdComment)
@@ -125,22 +125,22 @@ postsRouter.put('/:id',
     inputValidationMiddleware,
     async (req: RequestWithParamsAndBody<{ id: string }, PostInputModel>, res: Response<PostViewModel | ErrorMessagesOutputModel>) => {
         const isUpdated = await postsService.updatePost(req.params.id, req.body)
-        if(!isUpdated) {
+        if (!isUpdated) {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
             return
         }
 
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
-})
+    })
 
-postsRouter.delete('/:id', 
+postsRouter.delete('/:id',
     basicAuthorizationMiddleware,
     async (req: RequestWithParams<{ id: string }>, res: Response<ErrorMessagesOutputModel>) => {
-    const isDeleted = await postsService.deletePosts(req.params.id)
-    if(isDeleted) {
-        res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
-        return
-    }
+        const isDeleted = await postsService.deletePosts(req.params.id)
+        if (isDeleted) {
+            res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
+            return
+        }
 
-    res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
-})
+        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+    })

@@ -6,11 +6,11 @@ import { deviceQueryRepository } from '../repositories/query/device-query-reposi
 
 export const jwtService = {
     async createAccessToken(expiresTime: string, userId: string) {
-        return jwt.sign({userId}, settings.JWT_SECRET, {expiresIn: expiresTime})
+        return jwt.sign({ userId }, settings.JWT_SECRET, { expiresIn: expiresTime })
     },
 
     async createRefreshToken(expiresTime: string, deviceId: string, userId: string) {
-        return jwt.sign({deviceId, userId}, settings.JWT_SECRET, {expiresIn: expiresTime})
+        return jwt.sign({ deviceId, userId }, settings.JWT_SECRET, { expiresIn: expiresTime })
     },
 
     async getUserIdByToken(token: string) {
@@ -26,7 +26,7 @@ export const jwtService = {
         try {
             const result = await jwt.verify(verifiedToken, settings.JWT_SECRET) as JwtPayload
             const issuedAtForDeviceId = await deviceQueryRepository.getCurrentIssuedAt(result.deviceId)
-            if(issuedAtForDeviceId > result.iat!) {
+            if (issuedAtForDeviceId > result.iat!) {
                 return null
             }
 
@@ -38,17 +38,17 @@ export const jwtService = {
 
     async refreshTokens(verifiedToken: string) {
         const result = await this.verifyToken(verifiedToken)
-        if(!result) {
+        if (!result) {
             return null
         }
-        
+
         const newRefreshToken = await this.createRefreshToken('20s', result.deviceId, result.userId)
         const newAccessToken = await this.createAccessToken('10s', result.userId)
         const resultOfCreatedToken = jwt.decode(newRefreshToken) as JwtPayload
 
         const isUpdated = deviceRepository.updateSession(result.deviceId, resultOfCreatedToken.iat!, resultOfCreatedToken.exp!)
-        
-        if(!isUpdated) {
+
+        if (!isUpdated) {
             return null
         }
 
@@ -64,9 +64,9 @@ export const jwtService = {
         const accessToken = await this.createAccessToken('10s', userId)
         const refreshToken = await this.createRefreshToken('20s', deviceId, userId)
         const result = jwt.decode(refreshToken) as JwtPayload
-        
+
         const isAdded = await deviceRepository.addSession(result.iat!, result.exp!, userId, userIp, deviceId, deviceName)
-        if(!isAdded) {
+        if (!isAdded) {
             return null
         }
 
@@ -78,13 +78,13 @@ export const jwtService = {
 
     async logout(usedToken: string) {
         const result = await this.verifyToken(usedToken)
-        if(!result) {
+        if (!result) {
             return false
         }
 
         const isDeleted = deviceRepository.removeSession(result.deviceId)
 
-        if(!isDeleted) {
+        if (!isDeleted) {
             return false
         }
         return true

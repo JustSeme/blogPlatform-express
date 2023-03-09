@@ -23,7 +23,7 @@ exports.usersQueryRepository = {
                 filterArray.push({ login: { $regex: searchLoginTerm, $options: 'i' } });
             }
             const filterObject = filterArray.length ? { $or: filterArray } : {};
-            const totalCount = yield db_1.UsersModel.count(filterObject);
+            const totalCount = yield db_1.UsersModel.countDocuments(filterObject);
             const pagesCount = Math.ceil(totalCount / +pageSize);
             const skipCount = (+pageNumber - 1) * +pageSize;
             const sortDirectionNumber = sortDirection === 'asc' ? 1 : -1;
@@ -45,7 +45,7 @@ exports.usersQueryRepository = {
     },
     findUserById(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.UsersModel.findOne({ id: userId }, { _id: 0, __v: 0 });
+            return db_1.UsersViewModel.findOne({ id: userId }, { _id: 0, __v: 0 });
         });
     },
     findUserByEmail(email) {

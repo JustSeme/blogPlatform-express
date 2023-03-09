@@ -1,5 +1,5 @@
 import { UserDBModel } from '../models/users/UserDBModel'
-import { UserViewModel } from '../models/users/UsersViewModel'
+import { UserViewModelType } from '../models/users/UsersViewModel'
 import { usersRepository } from '../repositories/users-db-repository'
 import { v4 as uuidv4 } from 'uuid'
 import add from 'date-fns/add'
@@ -38,19 +38,19 @@ export const authService = {
         const newUser = getUserDto(login, email, false, passwordHash)
 
         usersRepository.createUser(newUser)
-        
+
         emailManager.sendConfirmationCode(email, login, newUser.emailConfirmation.confirmationCode)
 
         return true
     },
 
-    async createUserWithBasicAuth(login: string, password: string, email: string): Promise<UserViewModel | null> {
+    async createUserWithBasicAuth(login: string, password: string, email: string): Promise<UserViewModelType | null> {
         const passwordHash = await bcryptAdapter.generatePasswordHash(password, 10)
 
         const newUser = await getUserDto(login, email, true, passwordHash)
 
         await usersRepository.createUser(newUser)
-        const displayedUser: UserViewModel = {
+        const displayedUser: UserViewModelType = {
             id: newUser.id,
             login: newUser.login,
             email: newUser.email,
@@ -62,17 +62,17 @@ export const authService = {
 
     async confirmEmail(code: string) {
         const user = await usersQueryRepository.findUserByConfirmationCode(code)
-        if(!user) return false
-        if(user.emailConfirmation.isConfirmed) return false
-        if(user.emailConfirmation.confirmationCode !== code) return false
-        if(user.emailConfirmation.expirationDate < new Date()) return false
-        
+        if (!user) return false
+        if (user.emailConfirmation.isConfirmed) return false
+        if (user.emailConfirmation.confirmationCode !== code) return false
+        if (user.emailConfirmation.expirationDate < new Date()) return false
+
         return await usersRepository.updateIsConfirmed(user.id)
     },
 
     async resendConfirmationCode(email: string) {
         const user = await usersQueryRepository.findUserByEmail(email)
-        if(!user || user.emailConfirmation.isConfirmed) return false
+        if (!user || user.emailConfirmation.isConfirmed) return false
 
         const newConfirmationCode = uuidv4()
         await usersRepository.updateEmailConfirmationInfo(user.id, newConfirmationCode)
@@ -88,18 +88,18 @@ export const authService = {
 
     async checkCredentials(loginOrEmail: string, password: string) {
         const user = await usersQueryRepository.findUserByLoginOrEmail(loginOrEmail)
-        if(!user) return false
-        if(!user.emailConfirmation.isConfirmed) return false
+        if (!user) return false
+        if (!user.emailConfirmation.isConfirmed) return false
 
         const isConfirmed = await bcryptAdapter.comparePassword(password, user.passwordHash)
-        if(isConfirmed) {
+        if (isConfirmed) {
             return user
         }
     },
 
     async sendPasswordRecoveryCode(email: string) {
         const user = await usersQueryRepository.findUserByEmail(email)
-        if(!user) {
+        if (!user) {
             return true
         }
         const passwordRecoveryCode = uuidv4()
@@ -107,7 +107,7 @@ export const authService = {
         emailManager.sendPasswordRecoveryCode(user.email, user.login, passwordRecoveryCode)
 
         const isUpdated = await usersRepository.updatePasswordConfirmationInfo(user.id, passwordRecoveryCode)
-        if(!isUpdated) {
+        if (!isUpdated) {
             return false
         }
         return true
@@ -120,7 +120,7 @@ export const authService = {
     },
 
     async deleteUsers(userId: string | null) {
-        if(userId) {
+        if (userId) {
             return await usersRepository.deleteUser(userId)
         }
         return await usersRepository.deleteUsers()

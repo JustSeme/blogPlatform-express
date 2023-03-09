@@ -1,4 +1,4 @@
-export type UserViewModel = {
+export type UserViewModelType = {
     id: string
     login: string
     email: string
@@ -10,5 +10,5 @@ export type UsersWithQueryOutputModel = {
     page: number
     pageSize: number
     totalCount: number
-    items: UserViewModel[]
+    items: UserViewModelType[]
 }

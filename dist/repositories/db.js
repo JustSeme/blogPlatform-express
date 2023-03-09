@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.runDB = exports.AttemptsModel = exports.DeviceAuthSessionsModel = exports.CommentsModel = exports.UsersModel = exports.BlogsModel = exports.PostsModel = void 0;
+exports.runDB = exports.UsersViewModel = exports.AttemptsModel = exports.DeviceAuthSessionsModel = exports.CommentsModel = exports.UsersModel = exports.BlogsModel = exports.PostsModel = void 0;
 const settings_1 = require("../settings");
 const mongoose_1 = __importDefault(require("mongoose"));
 const usersSchema_1 = require("./schemas/usersSchema");
@@ -28,6 +28,19 @@ exports.UsersModel = mongoose_1.default.model('users', usersSchema_1.usersSchema
 exports.CommentsModel = mongoose_1.default.model('comments', commentsSchema_1.commentsSchema);
 exports.DeviceAuthSessionsModel = mongoose_1.default.model('deviceAuthSessions', deviceAuthSessionsSchema_1.deviceAuthSessionsSchema);
 exports.AttemptsModel = mongoose_1.default.model('attempts', attemptsSchema_1.attemptsSchema);
+exports.UsersViewModel = mongoose_1.default.model('usersView', usersSchema_1.usersSchema);
+//View Models 
+exports.UsersModel.createCollection();
+exports.UsersViewModel.createCollection({
+    viewOn: 'users',
+    pipeline: [
+        {
+            $set: {
+                login: 'hello world'
+            }
+        }
+    ]
+});
 function runDB() {
     return __awaiter(this, void 0, void 0, function* () {
         try {

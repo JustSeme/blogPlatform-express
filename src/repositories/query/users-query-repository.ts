@@ -1,7 +1,7 @@
 import { ReadUsersQuery } from "../../models/users/ReadUsersQuery";
 import { UserDBModel } from "../../models/users/UserDBModel";
-import { UsersWithQueryOutputModel, UserViewModel } from "../../models/users/UsersViewModel";
-import { UsersModel } from "../db";
+import { UsersWithQueryOutputModel, UserViewModelType } from "../../models/users/UsersViewModel";
+import { UsersModel, UsersViewModel } from "../db";
 
 export const usersQueryRepository = {
     async findUsers(queryParams: ReadUsersQuery): Promise<UsersWithQueryOutputModel> {
@@ -17,14 +17,15 @@ export const usersQueryRepository = {
 
         const filterObject = filterArray.length ? { $or: filterArray } : {}
 
-        const totalCount = await UsersModel.count(filterObject)
+        const totalCount = await UsersModel.countDocuments(filterObject)
         const pagesCount = Math.ceil(totalCount / +pageSize)
 
         const skipCount = (+pageNumber - 1) * +pageSize
         const sortDirectionNumber = sortDirection === 'asc' ? 1 : -1
+
         let resultedUsers = await UsersModel.find(filterObject).skip(skipCount).limit(+pageSize).sort({ [sortBy]: sortDirectionNumber })
 
-        const displayedUsers: UserViewModel[] = resultedUsers.map(u => ({
+        const displayedUsers: UserViewModelType[] = resultedUsers.map(u => ({
             id: u.id,
             login: u.login,
             email: u.email,
@@ -42,7 +43,7 @@ export const usersQueryRepository = {
     },
 
     async findUserById(userId: string) {
-        return UsersModel.findOne({ id: userId }, { _id: 0, __v: 0 })
+        return UsersViewModel.findOne({ id: userId }, { _id: 0, __v: 0 })
     },
 
     async findUserByEmail(email: string) {

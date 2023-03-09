@@ -20,5 +20,5 @@ exports.usersSchema = new mongoose_1.default.Schema({
         confirmationCode: String,
         expirationDate: Date
     }
-});
+}, { autoCreate: false, autoIndex: false });
 //# sourceMappingURL=usersSchema.js.map

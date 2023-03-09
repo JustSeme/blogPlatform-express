@@ -7,7 +7,7 @@ import { inputValidationMiddleware } from "../middlewares/validations/input-vali
 import { ErrorMessagesOutputModel } from "../models/ErrorMessagesOutputModel";
 import { ReadUsersQuery } from "../models/users/ReadUsersQuery";
 import { UserInputModel } from "../models/users/UserInputModel";
-import { UsersWithQueryOutputModel, UserViewModel } from "../models/users/UsersViewModel";
+import { UsersWithQueryOutputModel, UserViewModelType } from "../models/users/UsersViewModel";
 import { usersQueryRepository } from "../repositories/query/users-query-repository";
 import { RequestWithBody, RequestWithParams, RequestWithQuery } from "../types/types";
 
@@ -55,7 +55,7 @@ usersRouter.post('/',
     passwordValidation,
     emailValidationWithCustomSearch,
     inputValidationMiddleware,
-    async (req: RequestWithBody<UserInputModel>, res: Response<UserViewModel | ErrorMessagesOutputModel>) => {
+    async (req: RequestWithBody<UserInputModel>, res: Response<UserViewModelType | ErrorMessagesOutputModel>) => {
         const createdUser = await authService.createUserWithBasicAuth(req.body.login, req.body.password, req.body.email)
         if (!createdUser) {
             res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)

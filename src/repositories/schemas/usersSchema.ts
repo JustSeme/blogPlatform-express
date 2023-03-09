@@ -16,5 +16,5 @@ export const usersSchema = new mongoose.Schema<UserDBModel>({
         confirmationCode: String,
         expirationDate: Date
     }
-})
+}, { autoCreate: false, autoIndex: false })
 
