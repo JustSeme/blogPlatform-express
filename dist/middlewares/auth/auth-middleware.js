@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.authMiddleware = void 0;
 const app_1 = require("../../app");
 const jwtService_1 = require("../../application/jwtService");
-const users_query_repository_1 = require("../../repositories/query/users-query-repository");
 const authMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.headers.authorization) {
         res.sendStatus(app_1.HTTP_STATUSES.UNAUTHORIZED_401);
@@ -24,7 +23,6 @@ const authMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
         res.sendStatus(app_1.HTTP_STATUSES.UNAUTHORIZED_401);
         return;
     }
-    req.user = yield users_query_repository_1.usersQueryRepository.findUserById(userId);
     next();
 });
 exports.authMiddleware = authMiddleware;

@@ -23,23 +23,17 @@ exports.usersQueryRepository = {
                 filterArray.push({ login: { $regex: searchLoginTerm, $options: 'i' } });
             }
             const filterObject = filterArray.length ? { $or: filterArray } : {};
-            const totalCount = yield db_1.UsersModel.countDocuments(filterObject);
+            const totalCount = yield db_1.UsersViewModel.countDocuments(filterObject);
             const pagesCount = Math.ceil(totalCount / +pageSize);
             const skipCount = (+pageNumber - 1) * +pageSize;
             const sortDirectionNumber = sortDirection === 'asc' ? 1 : -1;
-            let resultedUsers = yield db_1.UsersModel.find(filterObject).skip(skipCount).limit(+pageSize).sort({ [sortBy]: sortDirectionNumber });
-            const displayedUsers = resultedUsers.map(u => ({
-                id: u.id,
-                login: u.login,
-                email: u.email,
-                createdAt: u.createdAt
-            }));
+            let resultedUsers = yield db_1.UsersViewModel.find(filterObject).skip(skipCount).limit(+pageSize).sort({ [sortBy]: sortDirectionNumber });
             return {
                 pagesCount: pagesCount,
                 page: +pageNumber,
                 pageSize: +pageSize,
                 totalCount: totalCount,
-                items: displayedUsers
+                items: resultedUsers
             };
         });
     },

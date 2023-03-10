@@ -18,17 +18,17 @@ import { emailValidationWithCustomSearch, loginValidation, passwordValidation } 
 export const authRouter = Router({})
 
 const loginOrEmailValidation = body('loginOrEmail')
-.exists()
-.trim()
-.notEmpty()
-.isString()
+    .exists()
+    .trim()
+    .notEmpty()
+    .isString()
 
 const emailValidation = body('email')
-.exists()
-.trim()
-.notEmpty()
-.isString()
-.matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
+    .exists()
+    .trim()
+    .notEmpty()
+    .isString()
+    .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
 
 /* Напиши тесты */
 
@@ -37,47 +37,47 @@ authRouter.post('/login',
     loginOrEmailValidation,
     passwordValidation,
     inputValidationMiddleware,
-    async (req: RequestWithBody<LoginInputModel>, res: Response<ErrorMessagesOutputModel | {accessToken: string}>) => {
+    async (req: RequestWithBody<LoginInputModel>, res: Response<ErrorMessagesOutputModel | { accessToken: string }>) => {
         const user = await authService.checkCredentials(req.body.loginOrEmail, req.body.password)
-        if(!user) {
+        if (!user) {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
             return
         }
-        
+
         const deviceName = req.headers["user-agent"] || 'undefined'
         const pairOfTokens = await jwtService.login(user.id, req.ip, deviceName)
-        if(!pairOfTokens) {
+        if (!pairOfTokens) {
             res.sendStatus(HTTP_STATUSES.NOT_IMPLEMENTED_501)
             return
         }
-        
+
         res.cookie('refreshToken', pairOfTokens.refreshToken, { httpOnly: true, secure: true });
         res.send({
             accessToken: pairOfTokens.accessToken
         })
-})
+    })
 
 authRouter.post('/refresh-token',
     async (req: Request, res: Response<{ accessToken: string }>) => {
         const refreshToken = req.cookies.refreshToken
-        
+
         const newTokens = await jwtService.refreshTokens(refreshToken)
-        if(!newTokens) {
+        if (!newTokens) {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
             return
         }
 
-        res.cookie('refreshToken', newTokens.newRefreshToken, {httpOnly: true, secure: true})
+        res.cookie('refreshToken', newTokens.newRefreshToken, { httpOnly: true, secure: true })
         res.send({
             accessToken: newTokens.newAccessToken
         })
-})
+    })
 
 authRouter.post('/logout',
     (req: Request, res: Response) => {
         const refreshToken = req.cookies.refreshToken
         const isLogout = jwtService.logout(refreshToken)
-        if(!isLogout) {
+        if (!isLogout) {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
             return
         }
@@ -93,7 +93,7 @@ authRouter.post('/registration',
     inputValidationMiddleware,
     async (req: RequestWithBody<UserInputModel>, res: Response<ErrorMessagesOutputModel>) => {
         const isCreated = await authService.createUser(req.body.login, req.body.password, req.body.email)
-        if(!isCreated) {
+        if (!isCreated) {
             res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
             return
         }
@@ -102,15 +102,17 @@ authRouter.post('/registration',
 
 authRouter.post('/registration-confirmation',
     rateLimitMiddleware,
-    async (req: RequestWithBody<{code: string}>, res: Response<ErrorMessagesOutputModel>) => {
+    async (req: RequestWithBody<{ code: string }>, res: Response<ErrorMessagesOutputModel>) => {
         const isConfirmed = await authService.confirmEmail(req.body.code)
-        if(!isConfirmed) {
+        if (!isConfirmed) {
             res
                 .status(HTTP_STATUSES.BAD_REQUEST_400)
-                .send({errorsMessages: [{
-                    message: 'The confirmation code is incorrect, expired or already been applied',
-                    field: 'code'
-                }]})
+                .send({
+                    errorsMessages: [{
+                        message: 'The confirmation code is incorrect, expired or already been applied',
+                        field: 'code'
+                    }]
+                })
             return
         }
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
@@ -120,15 +122,17 @@ authRouter.post('/registration-email-resending',
     rateLimitMiddleware,
     emailValidation,
     inputValidationMiddleware,
-    async (req: RequestWithBody<{email: string}>, res: Response<ErrorMessagesOutputModel>) => {
+    async (req: RequestWithBody<{ email: string }>, res: Response<ErrorMessagesOutputModel>) => {
         const result = await authService.resendConfirmationCode(req.body.email)
-        if(!result) {
+        if (!result) {
             res
                 .status(HTTP_STATUSES.BAD_REQUEST_400)
-                .send({errorsMessages: [{
-                    message: 'Your email is already confirmed or doesnt exist',
-                    field: 'email'
-                }]})
+                .send({
+                    errorsMessages: [{
+                        message: 'Your email is already confirmed or doesnt exist',
+                        field: 'email'
+                    }]
+                })
             return
         }
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
@@ -138,43 +142,45 @@ authRouter.post('/passwword-recovery',
     rateLimitMiddleware,
     emailValidation,
     inputValidationMiddleware,
-    async (req: RequestWithBody<{email: string}>, res: Response) => {
+    async (req: RequestWithBody<{ email: string }>, res: Response) => {
         const isRecovering = await authService.sendPasswordRecoveryCode(req.body.email)
-        if(!isRecovering) {
+        if (!isRecovering) {
             res.sendStatus(HTTP_STATUSES.NOT_IMPLEMENTED_501)
             return
         }
 
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
-})
+    })
 
 authRouter.post('/new-password',
     rateLimitMiddleware,
     passwordValidation,
     inputValidationMiddleware,
-    async (req: RequestWithBody<{newPassword: string, recoveryCode: string}>, res: Response) => {
+    async (req: RequestWithBody<{ newPassword: string, recoveryCode: string }>, res: Response) => {
         const user = await usersQueryRepository.findUserByRecoveryPasswordCode(req.body.recoveryCode)
-        if(!user || user.passwordRecovery.expirationDate < new Date()) {
+        if (!user || user.passwordRecovery.expirationDate < new Date()) {
             res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
             return
         }
 
         const isConfirmed = await authService.confirmRecoveryPassword(user.id, req.body.newPassword)
-        if(!isConfirmed) {
+        if (!isConfirmed) {
             res.sendStatus(HTTP_STATUSES.NOT_IMPLEMENTED_501)
             return
         }
 
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
-})
+    })
 
-authRouter.get('/me', 
+authRouter.get('/me',
     authMiddleware,
-    (req: Request, res: Response<MeOutputModel>) => {
-        const user: UserDBModel = req.user!
+    async (req: Request, res: Response<MeOutputModel>) => {
+        const accessToken = req.cookies('accessToken')
+        const userId = await jwtService.getUserIdByToken(accessToken)
+        const user = await usersQueryRepository.findUserById(userId)
         res.send({
-            email: user.email,
-            login: user.login,
-            userId: user.id
+            email: user!.email,
+            login: user!.login,
+            userId: user!.id
         })
-})
+    })

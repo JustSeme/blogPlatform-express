@@ -84,10 +84,12 @@ exports.authRouter.post('/registration-confirmation', rate_limit_middleware_1.ra
     if (!isConfirmed) {
         res
             .status(app_1.HTTP_STATUSES.BAD_REQUEST_400)
-            .send({ errorsMessages: [{
+            .send({
+            errorsMessages: [{
                     message: 'The confirmation code is incorrect, expired or already been applied',
                     field: 'code'
-                }] });
+                }]
+        });
         return;
     }
     res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
@@ -97,10 +99,12 @@ exports.authRouter.post('/registration-email-resending', rate_limit_middleware_1
     if (!result) {
         res
             .status(app_1.HTTP_STATUSES.BAD_REQUEST_400)
-            .send({ errorsMessages: [{
+            .send({
+            errorsMessages: [{
                     message: 'Your email is already confirmed or doesnt exist',
                     field: 'email'
-                }] });
+                }]
+        });
         return;
     }
     res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
@@ -126,12 +130,14 @@ exports.authRouter.post('/new-password', rate_limit_middleware_1.rateLimitMiddle
     }
     res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
 }));
-exports.authRouter.get('/me', auth_middleware_1.authMiddleware, (req, res) => {
-    const user = req.user;
+exports.authRouter.get('/me', auth_middleware_1.authMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const accessToken = req.cookies('accessToken');
+    const userId = yield jwtService_1.jwtService.getUserIdByToken(accessToken);
+    const user = yield users_query_repository_1.usersQueryRepository.findUserById(userId);
     res.send({
         email: user.email,
         login: user.login,
         userId: user.id
     });
-});
+}));
 //# sourceMappingURL=auth-router.js.map

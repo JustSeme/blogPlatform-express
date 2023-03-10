@@ -21,21 +21,6 @@ export const UsersModel = mongoose.model<UserDBModel>('users', usersSchema)
 export const CommentsModel = mongoose.model<CommentDBModel>('comments', commentsSchema)
 export const DeviceAuthSessionsModel = mongoose.model<DeviceAuthSessionsModelType>('deviceAuthSessions', deviceAuthSessionsSchema)
 export const AttemptsModel = mongoose.model<AttemptsDBModel>('attempts', attemptsSchema)
-export const UsersViewModel = mongoose.model('usersView', usersSchema)
-
-//View Models 
-
-UsersModel.createCollection()
-UsersViewModel.createCollection({
-    viewOn: 'users',
-    pipeline: [
-        {
-            $set: {
-                login: 'hello world'
-            }
-        }
-    ]
-})
 
 export async function runDB() {
     try {
