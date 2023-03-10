@@ -13,7 +13,7 @@ export const emailManager = {
     },
 
     async sendPasswordRecoveryCode(recipientEmail: string, recipientLogin: string, confirmationCode: string) {
-        console.log('manager');
+
         const messageBody = `
             <h1>${recipientLogin}, we revice notification, that you want to recover your password</h1>
             <div>

@@ -25,7 +25,6 @@ exports.emailManager = {
     },
     sendPasswordRecoveryCode(recipientEmail, recipientLogin, confirmationCode) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log('manager');
             const messageBody = `
             <h1>${recipientLogin}, we revice notification, that you want to recover your password</h1>
             <div>
