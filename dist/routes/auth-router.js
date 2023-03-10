@@ -126,7 +126,10 @@ exports.authRouter.post('/password-recovery', rate_limit_middleware_1.rateLimitM
 exports.authRouter.post('/new-password', rate_limit_middleware_1.rateLimitMiddleware, newPasswordValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield users_query_repository_1.usersQueryRepository.findUserByRecoveryPasswordCode(req.body.recoveryCode);
     if (!user || user.passwordRecovery.expirationDate < new Date()) {
-        res.sendStatus(app_1.HTTP_STATUSES.BAD_REQUEST_400);
+        res.status(app_1.HTTP_STATUSES.BAD_REQUEST_400)
+            .send({
+            errorsMessages: [{ message: 'recoveryCode is incorrect', field: 'recoveryCode' }]
+        });
         return;
     }
     const isConfirmed = yield auth_service_1.authService.confirmRecoveryPassword(user.id, req.body.newPassword);

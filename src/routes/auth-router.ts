@@ -165,7 +165,10 @@ authRouter.post('/new-password',
     async (req: RequestWithBody<{ newPassword: string, recoveryCode: string }>, res: Response) => {
         const user = await usersQueryRepository.findUserByRecoveryPasswordCode(req.body.recoveryCode)
         if (!user || user.passwordRecovery.expirationDate < new Date()) {
-            res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
+            res.status(HTTP_STATUSES.BAD_REQUEST_400)
+                .send({
+                    errorsMessages: [{ message: 'recoveryCode is incorrect', field: 'recoveryCode' }]
+                })
             return
         }
 
