@@ -32,6 +32,12 @@ const emailValidation = (0, express_validator_1.body)('email')
     .notEmpty()
     .isString()
     .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/);
+const newPasswordValidation = (0, express_validator_1.body)('newPassword')
+    .exists()
+    .trim()
+    .notEmpty()
+    .isString()
+    .isLength({ min: 6, max: 20 });
 /* Напиши тесты */
 exports.authRouter.post('/login', rate_limit_middleware_1.rateLimitMiddleware, loginOrEmailValidation, users_router_1.passwordValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield auth_service_1.authService.checkCredentials(req.body.loginOrEmail, req.body.password);
@@ -117,7 +123,7 @@ exports.authRouter.post('/password-recovery', rate_limit_middleware_1.rateLimitM
     }
     res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
 }));
-exports.authRouter.post('/new-password', rate_limit_middleware_1.rateLimitMiddleware, users_router_1.passwordValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.authRouter.post('/new-password', rate_limit_middleware_1.rateLimitMiddleware, newPasswordValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield users_query_repository_1.usersQueryRepository.findUserByRecoveryPasswordCode(req.body.recoveryCode);
     if (!user || user.passwordRecovery.expirationDate < new Date()) {
         res.sendStatus(app_1.HTTP_STATUSES.BAD_REQUEST_400);

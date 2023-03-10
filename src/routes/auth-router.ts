@@ -29,6 +29,13 @@ const emailValidation = body('email')
     .isString()
     .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
 
+const newPasswordValidation = body('newPassword')
+    .exists()
+    .trim()
+    .notEmpty()
+    .isString()
+    .isLength({ min: 6, max: 20 })
+
 /* Напиши тесты */
 
 authRouter.post('/login',
@@ -153,7 +160,7 @@ authRouter.post('/password-recovery',
 
 authRouter.post('/new-password',
     rateLimitMiddleware,
-    passwordValidation,
+    newPasswordValidation,
     inputValidationMiddleware,
     async (req: RequestWithBody<{ newPassword: string, recoveryCode: string }>, res: Response) => {
         const user = await usersQueryRepository.findUserByRecoveryPasswordCode(req.body.recoveryCode)
