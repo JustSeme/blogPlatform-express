@@ -109,7 +109,7 @@ exports.authRouter.post('/registration-email-resending', rate_limit_middleware_1
     }
     res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
 }));
-exports.authRouter.post('/passwword-recovery', rate_limit_middleware_1.rateLimitMiddleware, emailValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.authRouter.post('/password-recovery', rate_limit_middleware_1.rateLimitMiddleware, emailValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const isRecovering = yield auth_service_1.authService.sendPasswordRecoveryCode(req.body.email);
     if (!isRecovering) {
         res.sendStatus(app_1.HTTP_STATUSES.NOT_IMPLEMENTED_501);

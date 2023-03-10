@@ -138,7 +138,7 @@ authRouter.post('/registration-email-resending',
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
     })
 
-authRouter.post('/passwword-recovery',
+authRouter.post('/password-recovery',
     rateLimitMiddleware,
     emailValidation,
     inputValidationMiddleware,
