@@ -104,7 +104,7 @@ export const authService = {
         }
         const passwordRecoveryCode = uuidv4()
 
-        await emailManager.sendPasswordRecoveryCode(user.email, user.login, passwordRecoveryCode)
+        await emailManager.sendConfirmationCode(user.email, user.login, passwordRecoveryCode)
 
         const isUpdated = await usersRepository.updatePasswordConfirmationInfo(user.id, passwordRecoveryCode)
         if (!isUpdated) {
