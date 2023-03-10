@@ -17,7 +17,7 @@ exports.emailManager = {
             const messageBody = `
         <h1>Hello, dear ${recipientLogin}! Welcome to the Blog Platform!</h1>
         <div>
-        <p>To continue registration, </p><a href='https://some-front.com/confirm-registration?code=${confirmationCode}'>click here</a>
+            <p>To continue registration, </p><a href='https://some-front.com/confirm-registration?code=${confirmationCode}'>click here</a>
         </div>
         `;
             return emailAdapter_1.emailAdapter.sendEmail(recipientEmail, 'ConfirmationCode', messageBody);
@@ -27,11 +27,7 @@ exports.emailManager = {
         return __awaiter(this, void 0, void 0, function* () {
             console.log('manager');
             const messageBody = `
-            <h1>${recipientLogin}, we revice notification, that you want to recover your password</h1>
-            <div>
-                <b>If you haven't tried to recover your password, ignore this message!</b>
-                <p>To continue password recovering, </p><a href='https://somesite.com/password-recovery?recoveryCode=${confirmationCode}'>click here</a>
-            </div>
+            <p>To continue password recovering, </p><a href='https://somesite.com/password-recovery?recoveryCode=${confirmationCode}'>click here</a>
         `;
             return emailAdapter_1.emailAdapter.sendEmail(recipientEmail, 'Recovery Password', messageBody);
         });
