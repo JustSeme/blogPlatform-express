@@ -25,13 +25,13 @@ exports.emailAdapter = {
                     pass: settings_1.settings.GMAIL_APP_PASSWORD,
                 },
             });
-            transport.sendMail({
+            const info = yield transport.sendMail({
                 from: `"Blog Platform" <${settings_1.settings.GMAIL_LOGIN}>`,
                 to: email,
                 subject: subject,
                 html: messageBody,
             });
-            return;
+            return info.accepted.length > 0;
         });
     }
 };

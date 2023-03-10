@@ -9,7 +9,6 @@ import { inputValidationMiddleware } from "../middlewares/validations/input-vali
 import { LoginInputModel } from "../models/auth/LoginInputModel";
 import { MeOutputModel } from "../models/auth/MeOutputModel";
 import { ErrorMessagesOutputModel } from "../models/ErrorMessagesOutputModel";
-import { UserDBModel } from "../models/users/UserDBModel";
 import { UserInputModel } from "../models/users/UserInputModel";
 import { usersQueryRepository } from "../repositories/query/users-query-repository";
 import { RequestWithBody } from "../types/types";

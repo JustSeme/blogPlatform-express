@@ -12,13 +12,13 @@ export const emailAdapter = {
             },
         });
 
-        transport.sendMail({
+        const info = await transport.sendMail({
             from: `"Blog Platform" <${settings.GMAIL_LOGIN}>`,
             to: email,
             subject: subject,
             html: messageBody,
         });
 
-        return
+        return info.accepted.length > 0
     }
 }
