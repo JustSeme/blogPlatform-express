@@ -15,16 +15,17 @@ exports.emailManager = {
     sendConfirmationCode(recipientEmail, recipientLogin, confirmationCode) {
         return __awaiter(this, void 0, void 0, function* () {
             const messageBody = `
-            <h1>Hello, dear ${recipientLogin}! Welcome to the Blog Platform!</h1>
-            <div>
-                <p>To continue registration, </p><a href='https://some-front.com/confirm-registration?code=${confirmationCode}'>click here</a>
-            </div>
+        <h1>Hello, dear ${recipientLogin}! Welcome to the Blog Platform!</h1>
+        <div>
+        <p>To continue registration, </p><a href='https://some-front.com/confirm-registration?code=${confirmationCode}'>click here</a>
+        </div>
         `;
             return emailAdapter_1.emailAdapter.sendEmail(recipientEmail, 'ConfirmationCode', messageBody);
         });
     },
     sendPasswordRecoveryCode(recipientEmail, recipientLogin, confirmationCode) {
         return __awaiter(this, void 0, void 0, function* () {
+            console.log('manager');
             const messageBody = `
             <h1>${recipientLogin}, we revice notification, that you want to recover your password</h1>
             <div>

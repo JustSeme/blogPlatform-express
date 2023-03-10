@@ -18,6 +18,7 @@ const settings_1 = require("../settings");
 exports.emailAdapter = {
     sendEmail(email, subject, messageBody) {
         return __awaiter(this, void 0, void 0, function* () {
+            console.log('sendEmail');
             let transport = nodemailer_1.default.createTransport({
                 service: 'gmail',
                 auth: {
@@ -25,13 +26,13 @@ exports.emailAdapter = {
                     pass: settings_1.settings.GMAIL_APP_PASSWORD,
                 },
             });
-            let info = yield transport.sendMail({
+            transport.sendMail({
                 from: `"Blog Platform" <${settings_1.settings.GMAIL_LOGIN}>`,
                 to: email,
                 subject: subject,
                 html: messageBody,
             });
-            return info.accepted.length > 0;
+            return;
         });
     }
 };
