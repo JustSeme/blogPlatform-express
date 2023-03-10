@@ -116,7 +116,7 @@ exports.authService = {
                 return true;
             }
             const passwordRecoveryCode = (0, uuid_1.v4)();
-            yield emailManager_1.emailManager.sendConfirmationCode(user.email, user.login, passwordRecoveryCode);
+            yield emailManager_1.emailManager.sendPasswordRecoveryCode(user.email, user.login, passwordRecoveryCode);
             const isUpdated = yield users_db_repository_1.usersRepository.updatePasswordConfirmationInfo(user.id, passwordRecoveryCode);
             if (!isUpdated) {
                 return false;

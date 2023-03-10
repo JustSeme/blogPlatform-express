@@ -18,7 +18,6 @@ const settings_1 = require("../settings");
 exports.emailAdapter = {
     sendEmail(email, subject, messageBody) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log('sendEmail');
             let transport = nodemailer_1.default.createTransport({
                 service: 'gmail',
                 auth: {
