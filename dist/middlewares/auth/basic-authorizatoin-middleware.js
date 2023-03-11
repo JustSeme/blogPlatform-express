@@ -4,6 +4,7 @@ exports.basicAuthorizationMiddleware = void 0;
 const app_1 = require("../../app");
 const basicAuthorizationMiddleware = (req, res, next) => {
     const authStr = btoa('admin:qwerty');
+    console.log(req.headers.authorization);
     if (req.headers.authorization !== `Basic ${authStr}`) {
         res.sendStatus(app_1.HTTP_STATUSES.UNAUTHORIZED_401);
         return;

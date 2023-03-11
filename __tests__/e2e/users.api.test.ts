@@ -1,5 +1,5 @@
 import request from 'supertest'
-import { HTTP_STATUSES } from '../../src/app'
+import { HTTP_STATUSES, server } from '../../src/app'
 import { UserInputModel } from '../../src/models/users/UserInputModel'
 import { app } from '../../src/settings'
 
@@ -11,6 +11,10 @@ describe('/users', () => {
     beforeAll(async () => {
         await request(app)
             .delete(`/homeworks/testing/all-data`)
+    })
+
+    afterAll(async () => {
+        await server.close()
     })
 
     const correctUserInputData: UserInputModel = {
@@ -26,7 +30,7 @@ describe('/users', () => {
     }
 
     it(`shouldn't create new user without basic auth token`, async () => {
-        const response = await request(app)
+        await request(app)
             .post(`${baseURL}`)
             .send(correctUserInputData)
             .expect(HTTP_STATUSES.UNAUTHORIZED_401)

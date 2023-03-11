@@ -13,8 +13,4 @@ exports.blogsSchema = new mongoose_1.default.Schema({
     createdAt: { type: String, required: true },
     isMembership: { type: Boolean, required: true }
 });
-exports.blogsSchema.path('websiteUrl').validate((val) => {
-    const urlRegex = new RegExp('^https://([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$');
-    return urlRegex.test(val);
-}, 'Invalid URL.');
 //# sourceMappingURL=blogsSchema.js.map

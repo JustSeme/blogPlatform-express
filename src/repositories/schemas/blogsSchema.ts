@@ -9,8 +9,3 @@ export const blogsSchema = new mongoose.Schema<BlogViewModel>({
     createdAt: { type: String, required: true },
     isMembership: { type: Boolean, required: true }
 })
-
-blogsSchema.path('websiteUrl').validate((val) => {
-    const urlRegex = new RegExp('^https://([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$')
-    return urlRegex.test(val);
-}, 'Invalid URL.');

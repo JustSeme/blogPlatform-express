@@ -1,5 +1,5 @@
 import request from 'supertest'
-import { HTTP_STATUSES } from '../../src/app'
+import { HTTP_STATUSES, server } from '../../src/app'
 import { PostInputModel } from '../../src/models/posts/PostInputModel'
 import { BlogInputModel } from '../../src/models/blogs/BlogInputModel'
 import { CommentInputModel } from '../../src/models/comments/CommentInputModel'
@@ -9,6 +9,10 @@ describe('/comments', () => {
     beforeAll(async () => {
         await request(app)
             .delete(`/homeworks/testing/all-data`)
+    })
+
+    afterAll(async () => {
+        await server.close()
     })
 
     const correctBlogBody: BlogInputModel = {
@@ -31,9 +35,8 @@ describe('/comments', () => {
     it('should create blog, post for it and comment for it', async () => {
         await request(app)
             .post('/homeworks/blogs')
-            .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
             .send(correctBlogBody)
+            .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
             .expect(HTTP_STATUSES.CREATED_201)
-
     })
 })
