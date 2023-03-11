@@ -26,6 +26,15 @@ exports.commentContentValidation = (0, express_validator_1.body)('content')
     .notEmpty()
     .isString()
     .isLength({ min: 20, max: 300 });
+const likeValidation = (0, express_validator_1.body)('likeStatus')
+    .exists()
+    .trim()
+    .custom(value => {
+    if (value === 'None' || value === 'Like' || value === 'Dislike') {
+        return true;
+    }
+    throw new Error('likeStatus is incorrect');
+});
 exports.commentsRouter.get('/:commentId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const findedComment = yield comments_query_repository_1.commentsQueryRepository.findCommentById(req.params.commentId);
     if (!findedComment) {
@@ -50,4 +59,7 @@ exports.commentsRouter.put('/:commentId', auth_middleware_1.authMiddleware, comm
     }
     res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
 }));
+exports.commentsRouter.put('/:commentId/like-status', auth_middleware_1.authMiddleware, commentId_validation_middleware_1.commentIdValidationMiddleware, likeValidation, (req, res) => {
+    res.send('ok');
+});
 //# sourceMappingURL=comments-router.js.map
