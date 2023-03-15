@@ -59,7 +59,7 @@ exports.commentsRouter.put('/:commentId', auth_middleware_1.authMiddleware, comm
     }
     res.sendStatus(settings_1.HTTP_STATUSES.NO_CONTENT_204);
 }));
-exports.commentsRouter.put('/:commentId/like-status', auth_middleware_1.authMiddleware, commentId_validation_middleware_1.commentIdValidationMiddleware, likeValidation, (req, res) => {
-    res.send('ok');
+exports.commentsRouter.put('/:commentId/like-status', auth_middleware_1.authMiddleware, commentId_validation_middleware_1.commentIdValidationMiddleware, likeValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => {
+    res.send(200);
 });
 //# sourceMappingURL=comments-router.js.map

@@ -8,7 +8,7 @@ import { inputValidationMiddleware } from "../middlewares/validations/input-vali
 import { ownershipValidationMiddleware } from "../middlewares/validations/ownership-validation-middleware";
 import { CommentInputModel } from "../models/comments/CommentInputModel";
 import { CommentViewModel } from "../models/comments/CommentViewModel";
-import { LikeModel } from "../models/comments/LikeModel";
+import { LikeInputModel } from "../models/comments/LikeInputModel";
 import { ErrorMessagesOutputModel } from "../models/ErrorMessagesOutputModel";
 import { commentsQueryRepository } from "../repositories/query/comments-query-repository";
 import { RequestWithParams, RequestWithParamsAndBody } from "../types/types";
@@ -77,6 +77,7 @@ commentsRouter.put('/:commentId/like-status',
     authMiddleware,
     commentIdValidationMiddleware,
     likeValidation,
-    (req: RequestWithParamsAndBody<{ commentId: string }, LikeModel>, res: Response) => {
-        res.send('ok')
+    inputValidationMiddleware,
+    (req: RequestWithParamsAndBody<{ commentId: string }, LikeInputModel>, res: Response) => {
+        res.send(200)
     })

@@ -12,6 +12,10 @@ exports.postsSchema = new mongoose_1.default.Schema({
     content: { type: String, required: true, min: 3, max: 1000 },
     blogId: { type: String, required: true },
     blogName: { type: String, required: true },
-    createdAt: { type: String, required: true }
+    createdAt: { type: String, required: true },
+    likesInfo: {
+        likesCount: Number,
+        dislikesCount: Number
+    }
 });
 //# sourceMappingURL=postsSchema.js.map

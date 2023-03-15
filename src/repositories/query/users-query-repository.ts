@@ -23,7 +23,7 @@ export const usersQueryRepository = {
         const skipCount = (+pageNumber - 1) * +pageSize
         const sortDirectionNumber = sortDirection === 'asc' ? 1 : -1
 
-        let resultedUsers = await UsersModel.find(filterObject).skip(skipCount).limit(+pageSize).sort({ [sortBy]: sortDirectionNumber })
+        let resultedUsers = await UsersModel.find(filterObject).skip(skipCount).limit(+pageSize).sort({ [sortBy]: sortDirectionNumber }).lean()
 
         const displayedUsers = resultedUsers.map(el => ({
             id: el.id,

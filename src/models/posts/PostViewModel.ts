@@ -5,7 +5,8 @@ export type PostViewModel = {
     content: string,
     blogId: string,
     blogName: string,
-    createdAt: string
+    createdAt: string,
+    likesInfo: LikesInfoType
 }
 
 export type PostsWithQueryOutputModel = {
@@ -14,4 +15,10 @@ export type PostsWithQueryOutputModel = {
     pageSize: number
     totalCount: number
     items: PostViewModel[]
+}
+
+type LikesInfoType = {
+    likesCount: number,
+    dislikesCount: number,
+    myStatus: 'None' | 'Like' | 'Dislike'
 }

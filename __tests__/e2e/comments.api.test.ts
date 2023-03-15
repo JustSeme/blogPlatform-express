@@ -157,6 +157,52 @@ describe('/comments', () => {
         expect(updatedCommentData.body.content).toEqual('this comment was be updated')
     })
 
+    it('should return 400 code, trying like comment with incorrect value', async () => {
+        await request(app)
+            .put(`${baseURL}comments/${createdCommentId}/like-status`)
+            .set('Authorization', `Bearer ${recievedAccessToken}`)
+            .send({
+                likeStatus: 'incorrect' // correct: Like, Dislike, None
+            })
+            .expect(HTTP_STATUSES.BAD_REQUEST_400)
+    })
+
+    it('should return 401 code, tring like comment without bearer auth', async () => {
+        await request(app)
+            .put(`${baseURL}comments/${createdCommentId}/like-status`)
+            .set('Authorization', `Bearer token`)
+            .send({
+                likeStatus: 'Like'
+            })
+            .expect(HTTP_STATUSES.UNAUTHORIZED_401)
+    })
+
+    it('should return 404 code, tring like non-exist comment', async () => {
+        await request(app)
+            .put(`${baseURL}comments/12345/like-status`)
+            .set('Authorization', `Bearer ${recievedAccessToken}`)
+            .send({
+                likeStatus: 'Like'
+            })
+            .expect(HTTP_STATUSES.NOT_FOUND_404)
+    })
+
+    it('should like created comment', async () => {
+        await request(app)
+            .put(`${baseURL}comments/${createdCommentId}/like-status`)
+            .set('Authorization', `Bearer ${recievedAccessToken}`)
+            .send({
+                likeStatus: 'Like'
+            })
+            .expect(HTTP_STATUSES.NO_CONTENT_204)
+
+        const likedCommentData = await request(app)
+            .get(`${baseURL}comments/${createdCommentId}`)
+            .expect(HTTP_STATUSES.OK_200)
+
+        expect(likedCommentData.body.likesInfo.likesCount).toEqual(1)
+    })
+
     it('should delete comment by id', async () => {
         await request(app)
             .delete(`${baseURL}comments/${createdCommentId}`)

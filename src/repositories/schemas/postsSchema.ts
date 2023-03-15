@@ -8,5 +8,9 @@ export const postsSchema = new mongoose.Schema<PostViewModel>({
     content: { type: String, required: true, min: 3, max: 1000 },
     blogId: { type: String, required: true },
     blogName: { type: String, required: true },
-    createdAt: { type: String, required: true }
+    createdAt: { type: String, required: true },
+    likesInfo: {
+        likesCount: Number,
+        dislikesCount: Number
+    }
 })

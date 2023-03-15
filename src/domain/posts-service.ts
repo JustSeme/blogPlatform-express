@@ -19,6 +19,11 @@ export const postsService = {
             blogId: blogId ? blogId : body.blogId,
             blogName: blogById?.name ? blogById?.name : 'not found',
             createdAt: new Date().toISOString(),
+            likesInfo: {
+                likesCount: 0,
+                dislikesCount: 0,
+                myStatus: 'None'
+            }
         }
 
         await postsRepository.createPost(createdPost)
