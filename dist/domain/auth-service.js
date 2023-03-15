@@ -17,7 +17,6 @@ const users_db_repository_1 = require("../repositories/users-db-repository");
 const uuid_1 = require("uuid");
 const add_1 = __importDefault(require("date-fns/add"));
 const emailManager_1 = require("../managers/emailManager");
-const users_query_repository_1 = require("../repositories/query/users-query-repository");
 const bcryptAdapter_1 = require("../adapters/bcryptAdapter");
 const getUserDto = (login, email, isConfirmed, passwordHash) => {
     const newUser = {
@@ -67,7 +66,7 @@ exports.authService = {
     },
     confirmEmail(code) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield users_query_repository_1.usersQueryRepository.findUserByConfirmationCode(code);
+            const user = yield users_db_repository_1.usersRepository.findUserByConfirmationCode(code);
             if (!user)
                 return false;
             if (user.emailConfirmation.isConfirmed)
@@ -81,7 +80,7 @@ exports.authService = {
     },
     resendConfirmationCode(email) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield users_query_repository_1.usersQueryRepository.findUserByEmail(email);
+            const user = yield users_db_repository_1.usersRepository.findUserByEmail(email);
             if (!user || user.emailConfirmation.isConfirmed)
                 return false;
             const newConfirmationCode = (0, uuid_1.v4)();
@@ -98,7 +97,7 @@ exports.authService = {
     },
     checkCredentials(loginOrEmail, password) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield users_query_repository_1.usersQueryRepository.findUserByLoginOrEmail(loginOrEmail);
+            const user = yield users_db_repository_1.usersRepository.findUserByLoginOrEmail(loginOrEmail);
             if (!user)
                 return false;
             if (!user.emailConfirmation.isConfirmed)
@@ -111,7 +110,7 @@ exports.authService = {
     },
     sendPasswordRecoveryCode(email) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield users_query_repository_1.usersQueryRepository.findUserByEmail(email);
+            const user = yield users_db_repository_1.usersRepository.findUserByEmail(email);
             if (!user) {
                 return true;
             }

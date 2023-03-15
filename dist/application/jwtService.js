@@ -17,7 +17,6 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const settings_1 = require("../settings");
 const uuid_1 = require("uuid");
 const device_db_repository_1 = require("../repositories/device-db-repository");
-const device_query_repository_1 = require("../repositories/query/device-query-repository");
 exports.jwtService = {
     createAccessToken(expiresTime, userId) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -44,7 +43,7 @@ exports.jwtService = {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const result = yield jsonwebtoken_1.default.verify(verifiedToken, settings_1.settings.JWT_SECRET);
-                const issuedAtForDeviceId = yield device_query_repository_1.deviceQueryRepository.getCurrentIssuedAt(result.deviceId);
+                const issuedAtForDeviceId = yield device_db_repository_1.deviceRepository.getCurrentIssuedAt(result.deviceId);
                 if (issuedAtForDeviceId > result.iat) {
                     return null;
                 }

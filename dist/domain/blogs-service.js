@@ -28,8 +28,6 @@ exports.blogsService = {
                 isMembership: false
             };
             yield blogs_db_repository_1.blogsRepository.createBlog(createdBlog);
-            //@ts-ignore
-            delete createdBlog._id;
             return createdBlog;
         });
     },

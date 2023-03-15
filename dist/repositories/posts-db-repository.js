@@ -33,6 +33,6 @@ exports.postsRepository = {
             const result = yield db_1.PostsModel.updateOne({ id: id }, { $set: { content: body.content, title: body.title, shortDescription: body.shortDescription, blogId: body.blogId } });
             return result.matchedCount === 1;
         });
-    }
+    },
 };
 //# sourceMappingURL=posts-db-repository.js.map

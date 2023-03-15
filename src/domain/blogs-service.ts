@@ -19,8 +19,6 @@ export const blogsService = {
 
         await blogsRepository.createBlog(createdBlog)
 
-        //@ts-ignore
-        delete createdBlog._id
         return createdBlog
     },
 

@@ -75,6 +75,21 @@ exports.usersRepository = {
             });
             return result.matchedCount === 1;
         });
-    }
+    },
+    findUserByConfirmationCode(code) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return db_1.UsersModel.findOne({ 'emailConfirmation.confirmationCode': code });
+        });
+    },
+    findUserByEmail(email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return db_1.UsersModel.findOne({ email: email });
+        });
+    },
+    findUserByLoginOrEmail(loginOrEmail) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return db_1.UsersModel.findOne({ $or: [{ login: loginOrEmail }, { email: loginOrEmail }] });
+        });
+    },
 };
 //# sourceMappingURL=users-db-repository.js.map

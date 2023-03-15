@@ -1,7 +1,7 @@
 import { PostInputModel } from '../models/posts/PostInputModel'
 import { PostViewModel } from '../models/posts/PostViewModel'
-import { blogsQueryRepository } from '../repositories/query/blogs-query-repository'
 import { postsRepository } from '../repositories/posts-db-repository'
+import { blogsRepository } from '../repositories/blogs-db-repository'
 
 export const postsService = {
     async deletePosts(id: string | null) {
@@ -9,7 +9,7 @@ export const postsService = {
     },
 
     async createPost(body: PostInputModel, blogId: string | null): Promise<PostViewModel> {
-        const blogById = await blogsQueryRepository.findBlogById(blogId ? blogId : body.blogId)
+        const blogById = await blogsRepository.findBlogById(blogId ? blogId : body.blogId)
 
         const createdPost: PostViewModel = {
             id: Date.now().toString(),
@@ -28,8 +28,6 @@ export const postsService = {
 
         await postsRepository.createPost(createdPost)
 
-        //@ts-ignore
-        delete createdPost._id
         return createdPost
     },
 

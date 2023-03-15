@@ -11,11 +11,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.securityService = void 0;
 const device_db_repository_1 = require("../repositories/device-db-repository");
-const device_query_repository_1 = require("../repositories/query/device-query-repository");
 exports.securityService = {
     getActiveDevicesForUser(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const activeSessionsForUser = yield device_query_repository_1.deviceQueryRepository.getDevicesForUser(userId);
+            const activeSessionsForUser = yield device_db_repository_1.deviceRepository.getDevicesForUser(userId);
             if (!activeSessionsForUser) {
                 return null;
             }

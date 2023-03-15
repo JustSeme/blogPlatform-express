@@ -12,20 +12,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deviceQueryRepository = void 0;
 const db_1 = require("../db");
 exports.deviceQueryRepository = {
-    getCurrentIssuedAt(deviceId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.DeviceAuthSessionsModel.findOne({ 'deviceInfo.deviceId': deviceId });
-            return result.issuedAt;
-        });
-    },
-    getDevicesForUser(userId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return db_1.DeviceAuthSessionsModel.find({ "userInfo.userId": userId }).lean();
-        });
-    },
     getDeviceByDeviceId(deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.DeviceAuthSessionsModel.findOne({ "deviceInfo.deviceId": deviceId });
+            return db_1.DeviceAuthSessionsModel.findOne({ "deviceInfo.deviceId": deviceId }).lean();
         });
     },
 };

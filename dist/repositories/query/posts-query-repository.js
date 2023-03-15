@@ -23,7 +23,7 @@ exports.postsQueryRepository = {
             const pagesCount = Math.ceil(totalCount / +pageSize);
             const skipCount = (+pageNumber - 1) * +pageSize;
             const sortDirectionNumber = sortDirection === 'asc' ? 1 : -1;
-            let resultedPosts = yield db_1.PostsModel.find(filter, { _id: 0, __v: 0 }).skip(skipCount).limit(+pageSize).sort({ [sortBy]: sortDirectionNumber });
+            let resultedPosts = yield db_1.PostsModel.find(filter, { _id: 0, __v: 0 }).skip(skipCount).limit(+pageSize).sort({ [sortBy]: sortDirectionNumber }).lean();
             return {
                 pagesCount: pagesCount,
                 page: +pageNumber,
@@ -35,7 +35,7 @@ exports.postsQueryRepository = {
     },
     findPostById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield db_1.PostsModel.findOne({ id: id }, { _id: 0, __v: 0 });
+            return yield db_1.PostsModel.findOne({ id: id }, { _id: 0, __v: 0 }).lean();
         });
     }
 };

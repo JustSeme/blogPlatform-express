@@ -22,5 +22,9 @@ export const blogsRepository = {
         const result = await BlogsModel.updateOne({ id: id }, { name: body.name, description: body.description, websiteUrl: body.websiteUrl })
 
         return result.matchedCount === 1
+    },
+
+    async findBlogById(id: string): Promise<BlogViewModel | null> {
+        return await BlogsModel.findOne({ id: id }, { _id: 0, __v: 0 })
     }
 }

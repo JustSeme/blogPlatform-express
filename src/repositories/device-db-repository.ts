@@ -32,4 +32,13 @@ export const deviceRepository = {
         const result = await DeviceAuthSessionsModel.updateOne({ "deviceInfo.deviceId": deviceId }, { issuedAt, expireDate })
         return result.matchedCount === 1
     },
+
+    async getDevicesForUser(userId: string) {
+        return DeviceAuthSessionsModel.find({ "userInfo.userId": userId })
+    },
+
+    async getCurrentIssuedAt(deviceId: string) {
+        const result = await DeviceAuthSessionsModel.findOne({ 'deviceInfo.deviceId': deviceId }).lean()
+        return result!.issuedAt
+    },
 }

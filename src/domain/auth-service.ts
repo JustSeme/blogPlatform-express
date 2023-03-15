@@ -4,7 +4,6 @@ import { usersRepository } from '../repositories/users-db-repository'
 import { v4 as uuidv4 } from 'uuid'
 import add from 'date-fns/add'
 import { emailManager } from '../managers/emailManager'
-import { usersQueryRepository } from '../repositories/query/users-query-repository'
 import { bcryptAdapter } from '../adapters/bcryptAdapter'
 
 const getUserDto = (login: string, email: string, isConfirmed: boolean, passwordHash: string) => {
@@ -61,7 +60,7 @@ export const authService = {
     },
 
     async confirmEmail(code: string) {
-        const user = await usersQueryRepository.findUserByConfirmationCode(code)
+        const user = await usersRepository.findUserByConfirmationCode(code)
         if (!user) return false
         if (user.emailConfirmation.isConfirmed) return false
         if (user.emailConfirmation.confirmationCode !== code) return false
@@ -71,7 +70,7 @@ export const authService = {
     },
 
     async resendConfirmationCode(email: string) {
-        const user = await usersQueryRepository.findUserByEmail(email)
+        const user = await usersRepository.findUserByEmail(email)
         if (!user || user.emailConfirmation.isConfirmed) return false
 
         const newConfirmationCode = uuidv4()
@@ -87,7 +86,7 @@ export const authService = {
     },
 
     async checkCredentials(loginOrEmail: string, password: string) {
-        const user = await usersQueryRepository.findUserByLoginOrEmail(loginOrEmail)
+        const user = await usersRepository.findUserByLoginOrEmail(loginOrEmail)
         if (!user) return false
         if (!user.emailConfirmation.isConfirmed) return false
 
@@ -98,7 +97,7 @@ export const authService = {
     },
 
     async sendPasswordRecoveryCode(email: string) {
-        const user = await usersQueryRepository.findUserByEmail(email)
+        const user = await usersRepository.findUserByEmail(email)
         if (!user) {
             return true
         }

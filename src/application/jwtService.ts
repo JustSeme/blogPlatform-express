@@ -2,7 +2,6 @@ import jwt, { JwtPayload } from 'jsonwebtoken'
 import { settings } from "../settings";
 import { v4 as uuid } from 'uuid';
 import { deviceRepository } from '../repositories/device-db-repository';
-import { deviceQueryRepository } from '../repositories/query/device-query-repository';
 
 export const jwtService = {
     async createAccessToken(expiresTime: string, userId: string) {
@@ -25,7 +24,7 @@ export const jwtService = {
     async verifyToken(verifiedToken: string) {
         try {
             const result = await jwt.verify(verifiedToken, settings.JWT_SECRET) as JwtPayload
-            const issuedAtForDeviceId = await deviceQueryRepository.getCurrentIssuedAt(result.deviceId)
+            const issuedAtForDeviceId = await deviceRepository.getCurrentIssuedAt(result.deviceId)
             if (issuedAtForDeviceId > result.iat!) {
                 return null
             }

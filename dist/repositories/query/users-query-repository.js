@@ -45,32 +45,17 @@ exports.usersQueryRepository = {
     },
     findUserById(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.UsersModel.findOne({ id: userId }, { _id: 0, __v: 0 });
-        });
-    },
-    findUserByEmail(email) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return db_1.UsersModel.findOne({ email: email });
+            return db_1.UsersModel.findOne({ id: userId }, { _id: 0, __v: 0 }).lean();
         });
     },
     findUserByLogin(login) {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.UsersModel.findOne({ login: login });
-        });
-    },
-    findUserByLoginOrEmail(loginOrEmail) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return db_1.UsersModel.findOne({ $or: [{ login: loginOrEmail }, { email: loginOrEmail }] });
-        });
-    },
-    findUserByConfirmationCode(code) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return db_1.UsersModel.findOne({ 'emailConfirmation.confirmationCode': code });
+            return db_1.UsersModel.findOne({ login: login }).lean();
         });
     },
     findUserByRecoveryPasswordCode(code) {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.UsersModel.findOne({ 'passwordRecovery.confirmationCode': code });
+            return db_1.UsersModel.findOne({ 'passwordRecovery.confirmationCode': code }).lean();
         });
     },
 };

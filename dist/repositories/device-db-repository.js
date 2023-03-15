@@ -47,5 +47,16 @@ exports.deviceRepository = {
             return result.matchedCount === 1;
         });
     },
+    getDevicesForUser(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return db_1.DeviceAuthSessionsModel.find({ "userInfo.userId": userId });
+        });
+    },
+    getCurrentIssuedAt(deviceId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield db_1.DeviceAuthSessionsModel.findOne({ 'deviceInfo.deviceId': deviceId }).lean();
+            return result.issuedAt;
+        });
+    },
 };
 //# sourceMappingURL=device-db-repository.js.map

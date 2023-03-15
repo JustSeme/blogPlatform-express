@@ -16,7 +16,7 @@ export const postsQueryRepository = {
 
         const skipCount = (+pageNumber - 1) * +pageSize
         const sortDirectionNumber = sortDirection === 'asc' ? 1 : -1
-        let resultedPosts = await PostsModel.find(filter, { _id: 0, __v: 0 }).skip(skipCount).limit(+pageSize).sort({ [sortBy]: sortDirectionNumber })
+        let resultedPosts = await PostsModel.find(filter, { _id: 0, __v: 0 }).skip(skipCount).limit(+pageSize).sort({ [sortBy]: sortDirectionNumber }).lean()
 
         return {
             pagesCount: pagesCount,
@@ -28,6 +28,6 @@ export const postsQueryRepository = {
     },
 
     async findPostById(id: string): Promise<PostViewModel | null> {
-        return await PostsModel.findOne({ id: id }, { _id: 0, __v: 0 })
+        return await PostsModel.findOne({ id: id }, { _id: 0, __v: 0 }).lean()
     }
 }

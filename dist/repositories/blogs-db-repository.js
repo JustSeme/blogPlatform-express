@@ -33,6 +33,11 @@ exports.blogsRepository = {
             const result = yield db_1.BlogsModel.updateOne({ id: id }, { name: body.name, description: body.description, websiteUrl: body.websiteUrl });
             return result.matchedCount === 1;
         });
+    },
+    findBlogById(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield db_1.BlogsModel.findOne({ id: id }, { _id: 0, __v: 0 });
+        });
     }
 };
 //# sourceMappingURL=blogs-db-repository.js.map

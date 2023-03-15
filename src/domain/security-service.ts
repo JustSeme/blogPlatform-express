@@ -1,11 +1,10 @@
 import { DeviceSessionsViewModel } from "../models/devices/DeviceSessionsViewModel"
 import { deviceRepository } from "../repositories/device-db-repository"
-import { deviceQueryRepository } from "../repositories/query/device-query-repository"
 
 export const securityService = {
     async getActiveDevicesForUser(userId: string) {
-        const activeSessionsForUser = await deviceQueryRepository.getDevicesForUser(userId)
-        if(!activeSessionsForUser) {
+        const activeSessionsForUser = await deviceRepository.getDevicesForUser(userId)
+        if (!activeSessionsForUser) {
             return null
         }
 
@@ -17,7 +16,7 @@ export const securityService = {
         }))
         return displayedActiveSessionsForUser
     },
-    
+
     async removeAllSessions(userId: string, deviceId: string) { // exclude current session
         return deviceRepository.deleteAllSessions(userId, deviceId)
     },

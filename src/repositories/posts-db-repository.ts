@@ -21,5 +21,5 @@ export const postsRepository = {
     async updatePost(id: string, body: PostInputModel) {
         const result = await PostsModel.updateOne({ id: id }, { $set: { content: body.content, title: body.title, shortDescription: body.shortDescription, blogId: body.blogId } })
         return result.matchedCount === 1
-    }
+    },
 }

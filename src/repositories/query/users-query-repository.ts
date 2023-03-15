@@ -42,26 +42,14 @@ export const usersQueryRepository = {
     },
 
     async findUserById(userId: string) {
-        return UsersModel.findOne({ id: userId }, { _id: 0, __v: 0 })
-    },
-
-    async findUserByEmail(email: string) {
-        return UsersModel.findOne({ email: email })
+        return UsersModel.findOne({ id: userId }, { _id: 0, __v: 0 }).lean()
     },
 
     async findUserByLogin(login: string) {
-        return UsersModel.findOne({ login: login })
-    },
-
-    async findUserByLoginOrEmail(loginOrEmail: string): Promise<UserDBModel | null> {
-        return UsersModel.findOne({ $or: [{ login: loginOrEmail }, { email: loginOrEmail }] })
-    },
-
-    async findUserByConfirmationCode(code: string) {
-        return UsersModel.findOne({ 'emailConfirmation.confirmationCode': code })
+        return UsersModel.findOne({ login: login }).lean()
     },
 
     async findUserByRecoveryPasswordCode(code: string) {
-        return UsersModel.findOne({ 'passwordRecovery.confirmationCode': code })
+        return UsersModel.findOne({ 'passwordRecovery.confirmationCode': code }).lean()
     },
 }

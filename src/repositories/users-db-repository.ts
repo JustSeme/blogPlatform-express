@@ -58,5 +58,17 @@ export const usersRepository = {
         })
 
         return result.matchedCount === 1
-    }
+    },
+
+    async findUserByConfirmationCode(code: string) {
+        return UsersModel.findOne({ 'emailConfirmation.confirmationCode': code })
+    },
+
+    async findUserByEmail(email: string) {
+        return UsersModel.findOne({ email: email })
+    },
+
+    async findUserByLoginOrEmail(loginOrEmail: string): Promise<UserDBModel | null> {
+        return UsersModel.findOne({ $or: [{ login: loginOrEmail }, { email: loginOrEmail }] })
+    },
 }
