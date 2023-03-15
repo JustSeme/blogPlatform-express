@@ -83,6 +83,10 @@ describe('/comments', () => {
         content: 'this content should be a correct' // min 20 max 300
     }
 
+    const incorrectCommentBody: CommentInputModel = {
+        content: '<20 chars' // min 20 max 300
+    }
+
     let createdCommentId = ''
 
     it('should create comment for created post', async () => {
@@ -95,6 +99,14 @@ describe('/comments', () => {
         createdCommentId = createdCommentResponseData.body.id
     })
 
+    it('shouldn\'t create comment for created post', async () => {
+        await request(app)
+            .post(`${baseURL}posts/${postId}/comments`)
+            .set('Authorization', `Bearer ${recievedAccessToken}`)
+            .send(incorrectCommentBody)
+            .expect(HTTP_STATUSES.BAD_REQUEST_400)
+    })
+
     it('should get created comment by id', async () => {
         const recievedCommentData = await request(app)
             .get(`${baseURL}comments/${createdCommentId}`)
@@ -104,8 +116,33 @@ describe('/comments', () => {
         expect(recievedCommentData.body.commentatorInfo.userLogin).toEqual(createUserInputData.login)
     })
 
-    it('should update comment by id', async () => {
+    it('shouldn\'t get comment by id if it doesn\'t exist', async () => {
+        await request(app)
+            .get(`${baseURL}comments/12345`)
+            .expect(HTTP_STATUSES.NOT_FOUND_404)
+    })
+
+
+    it('shouldn\'t update comment by id if access token is incorrect', async () => {
+        const responseData = await request(app)
+            .put(`${baseURL}comments/${createdCommentId}`)
+            .set('Authorization', `Bearer incorrect`)
+            .send({
+                content: 'this comment wasn\'t be updated'
+            })
+            .expect(HTTP_STATUSES.UNAUTHORIZED_401)
+
+        expect(responseData.body)
+
         const updatedCommentData = await request(app)
+            .get(`${baseURL}comments/${createdCommentId}`)
+            .expect(HTTP_STATUSES.OK_200)
+
+        expect(updatedCommentData.body.content).toEqual(correctCommentBody.content)
+    })
+
+    it('should update comment by id', async () => {
+        await request(app)
             .put(`${baseURL}comments/${createdCommentId}`)
             .set('Authorization', `Bearer ${recievedAccessToken}`)
             .send({
@@ -113,5 +150,28 @@ describe('/comments', () => {
             })
             .expect(HTTP_STATUSES.NO_CONTENT_204)
 
+        const updatedCommentData = await request(app)
+            .get(`${baseURL}comments/${createdCommentId}`)
+            .expect(HTTP_STATUSES.OK_200)
+
+        expect(updatedCommentData.body.content).toEqual('this comment was be updated')
+    })
+
+    it('should delete comment by id', async () => {
+        await request(app)
+            .delete(`${baseURL}comments/${createdCommentId}`)
+            .set('Authorization', `Bearer ${recievedAccessToken}`)
+            .expect(HTTP_STATUSES.NO_CONTENT_204)
+
+        await request(app)
+            .get(`${baseURL}comments/${createdCommentId}`)
+            .expect(HTTP_STATUSES.NOT_FOUND_404)
+    })
+
+    it('shouldn\'t delete comment by id if it is already deleted', async () => {
+        await request(app)
+            .delete(`${baseURL}comments/${createdCommentId}`)
+            .set('Authorization', `Bearer ${recievedAccessToken}`)
+            .expect(HTTP_STATUSES.NOT_FOUND_404)
     })
 })

@@ -8,7 +8,7 @@
     "watch": "tsc -w",
     "dev": "nodemon --inspect ./dist/app.js",
     "test": "jest --detectOpenHandles",
-    "testMatch": "jest -t"
+    "testMatch": "jest -t --watch --detectOpenHandles"
   },
   "dependencies": {
     "@types/bcrypt": "^5.0.0",

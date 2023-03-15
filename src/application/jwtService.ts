@@ -61,8 +61,8 @@ export const jwtService = {
     async login(userId: string, userIp: string, deviceName: string) {
         const deviceId = uuid()
 
-        const accessToken = await this.createAccessToken('10s', userId)
-        const refreshToken = await this.createRefreshToken('20s', deviceId, userId)
+        const accessToken = await this.createAccessToken('5m', userId)
+        const refreshToken = await this.createRefreshToken('20m', deviceId, userId)
         const result = jwt.decode(refreshToken) as JwtPayload
 
         const isAdded = await deviceRepository.addSession(result.iat!, result.exp!, userId, userIp, deviceId, deviceName)
