@@ -10,12 +10,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.commentIdValidationMiddleware = void 0;
-const app_1 = require("../../app");
+const settings_1 = require("../../settings");
 const comments_query_repository_1 = require("../../repositories/query/comments-query-repository");
 const commentIdValidationMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const findedComment = yield comments_query_repository_1.commentsQueryRepository.findCommentById(req.params.commentId);
     if (!findedComment) {
-        res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
+        res.sendStatus(settings_1.HTTP_STATUSES.NOT_FOUND_404);
         return;
     }
     next();

@@ -1,6 +1,6 @@
 import { Router, Response } from "express";
 import { body } from "express-validator";
-import { HTTP_STATUSES } from "../app";
+import { HTTP_STATUSES } from "../settings";
 import { ErrorMessagesOutputModel } from "../models/ErrorMessagesOutputModel";
 import { PostInputModel } from "../models/posts/PostInputModel";
 import { PostsWithQueryOutputModel, PostViewModel } from "../models/posts/PostViewModel";

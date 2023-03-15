@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.postContentValidation = exports.shortDescriptionValidation = exports.titleValidation = exports.postsRouter = void 0;
 const express_1 = require("express");
 const express_validator_1 = require("express-validator");
-const app_1 = require("../app");
+const settings_1 = require("../settings");
 const input_validation_middleware_1 = require("../middlewares/validations/input-validation-middleware");
 const basic_authorizatoin_middleware_1 = require("../middlewares/auth/basic-authorizatoin-middleware");
 const posts_service_1 = require("../domain/posts-service");
@@ -59,7 +59,7 @@ const blogIdValidation = (0, express_validator_1.body)('blogId')
 exports.postsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const findedPosts = yield posts_query_repository_1.postsQueryRepository.findPosts(req.query, null);
     if (!findedPosts.items.length) {
-        res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
+        res.sendStatus(settings_1.HTTP_STATUSES.NOT_FOUND_404);
         return;
     }
     res.json(findedPosts);
@@ -67,7 +67,7 @@ exports.postsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, fun
 exports.postsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const findedPosts = yield posts_query_repository_1.postsQueryRepository.findPostById(req.params.id);
     if (!findedPosts) {
-        res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
+        res.sendStatus(settings_1.HTTP_STATUSES.NOT_FOUND_404);
         return;
     }
     res.json(findedPosts);
@@ -79,7 +79,7 @@ exports.postsRouter.get('/:postId/comments', postId_validation_middleware_1.post
 exports.postsRouter.post('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, exports.titleValidation, exports.shortDescriptionValidation, exports.postContentValidation, blogIdValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const createdPost = yield posts_service_1.postsService.createPost(req.body, null);
     res
-        .status(app_1.HTTP_STATUSES.CREATED_201)
+        .status(settings_1.HTTP_STATUSES.CREATED_201)
         .send(createdPost);
 }));
 exports.postsRouter.post('/:postId/comments', auth_middleware_1.authMiddleware, postId_validation_middleware_1.postIdValidationMiddleware, comments_router_1.commentContentValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -88,27 +88,27 @@ exports.postsRouter.post('/:postId/comments', auth_middleware_1.authMiddleware, 
     const commentator = yield users_query_repository_1.usersQueryRepository.findUserById(userId);
     const createdComment = yield comments_service_1.commentsService.createComment(req.body.content, commentator, req.params.postId);
     if (!createdComment) {
-        res.sendStatus(app_1.HTTP_STATUSES.NOT_IMPLEMENTED_501);
+        res.sendStatus(settings_1.HTTP_STATUSES.NOT_IMPLEMENTED_501);
         return;
     }
     res
-        .status(app_1.HTTP_STATUSES.CREATED_201)
+        .status(settings_1.HTTP_STATUSES.CREATED_201)
         .send(createdComment);
 }));
 exports.postsRouter.put('/:id', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, exports.titleValidation, exports.shortDescriptionValidation, exports.postContentValidation, blogIdValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const isUpdated = yield posts_service_1.postsService.updatePost(req.params.id, req.body);
     if (!isUpdated) {
-        res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
+        res.sendStatus(settings_1.HTTP_STATUSES.NOT_FOUND_404);
         return;
     }
-    res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
+    res.sendStatus(settings_1.HTTP_STATUSES.NO_CONTENT_204);
 }));
 exports.postsRouter.delete('/:id', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const isDeleted = yield posts_service_1.postsService.deletePosts(req.params.id);
     if (isDeleted) {
-        res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
+        res.sendStatus(settings_1.HTTP_STATUSES.NO_CONTENT_204);
         return;
     }
-    res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
+    res.sendStatus(settings_1.HTTP_STATUSES.NOT_FOUND_404);
 }));
 //# sourceMappingURL=posts-router.js.map

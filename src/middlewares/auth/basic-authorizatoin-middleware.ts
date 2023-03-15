@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { HTTP_STATUSES } from "../../app";
+import { HTTP_STATUSES } from "../../settings"
 
 export const basicAuthorizationMiddleware = (req: Request<any, any, any, any>, res: Response<any, any>, next: NextFunction) => {
     const authStr = btoa('admin:qwerty')

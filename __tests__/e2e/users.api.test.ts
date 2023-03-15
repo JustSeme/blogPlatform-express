@@ -1,5 +1,6 @@
 import request from 'supertest'
-import { HTTP_STATUSES, server } from '../../src/app'
+import { server } from '../../src/app'
+import { HTTP_STATUSES } from '../../src/settings'
 import { UserInputModel } from '../../src/models/users/UserInputModel'
 import { app } from '../../src/settings'
 

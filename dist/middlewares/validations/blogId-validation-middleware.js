@@ -10,12 +10,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.blogIdValidationMiddleware = void 0;
-const app_1 = require("../../app");
+const settings_1 = require("../../settings");
 const blogs_query_repository_1 = require("../../repositories/query/blogs-query-repository");
 const blogIdValidationMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const findedBlog = yield blogs_query_repository_1.blogsQueryRepository.findBlogById(req.params.blogId);
     if (!findedBlog) {
-        res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
+        res.sendStatus(settings_1.HTTP_STATUSES.NOT_FOUND_404);
         return;
     }
     next();

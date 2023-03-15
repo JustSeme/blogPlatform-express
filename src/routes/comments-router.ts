@@ -1,6 +1,6 @@
 import { Router, Response } from "express";
 import { body } from "express-validator";
-import { HTTP_STATUSES } from "../app";
+import { HTTP_STATUSES } from "../settings";
 import { commentsService } from "../domain/comments-service";
 import { authMiddleware } from "../middlewares/auth/auth-middleware";
 import { commentIdValidationMiddleware } from "../middlewares/validations/commentId-validation-middleware";

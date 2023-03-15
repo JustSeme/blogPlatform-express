@@ -12,7 +12,6 @@ import { authService } from './domain/auth-service'
 import { commentsRouter } from './routes/comments-router'
 import { securityRouter } from './routes/security-router'
 import { attemptsRepository } from './repositories/attempts-db-repository'
-import { HTTP_STATUSES } from "./app"
 
 const username = "justSeme"
 const password = "RMMXpX1hUlXqbKED"
@@ -25,6 +24,20 @@ export const settings = {
     PORT: process.env.PORT || 3000,
     GMAIL_LOGIN: process.env.GMAIL_LOGIN || 'kepxep69@gmail.com',
     GMAIL_APP_PASSWORD: process.env.GMAIL_APP_PASSWORD || 'gpllbohdhqcrdvnh'
+}
+
+export const HTTP_STATUSES = {
+    OK_200: 200,
+    CREATED_201: 201,
+    NO_CONTENT_204: 204,
+
+    NOT_FOUND_404: 404,
+    BAD_REQUEST_400: 400,
+    UNAUTHORIZED_401: 401,
+    FORBIDDEN_403: 403,
+    TOO_MANY_REQUESTS_429: 429,
+
+    NOT_IMPLEMENTED_501: 501
 }
 
 export const app = express()

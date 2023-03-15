@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.videosRouter = void 0;
 const express_1 = require("express");
-const app_1 = require("../app");
+const settings_1 = require("../settings");
 const helpers_1 = require("../helpers");
 const VideoViewModel_1 = require("../models/videos/VideoViewModel");
 const videos_in_memory_repository_1 = require("../repositories/videos-in-memory-repository");
@@ -22,23 +22,23 @@ exports.videosRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, fu
 exports.videosRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const findedVideo = yield videos_in_memory_repository_1.videosRepository.findVideos(+req.params.id);
     if (!findedVideo) {
-        res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
+        res.sendStatus(settings_1.HTTP_STATUSES.NOT_FOUND_404);
     }
     res.json(findedVideo);
 }));
 exports.videosRouter.delete('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const findedVideo = yield videos_in_memory_repository_1.videosRepository.findVideos(+req.params.id);
     if (!findedVideo) {
-        res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
+        res.sendStatus(settings_1.HTTP_STATUSES.NOT_FOUND_404);
     }
     yield videos_in_memory_repository_1.videosRepository.deleteVideo(+req.params.id);
-    res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
+    res.sendStatus(settings_1.HTTP_STATUSES.NO_CONTENT_204);
 }));
 exports.videosRouter.put('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
     const findedVideo = yield videos_in_memory_repository_1.videosRepository.findVideos(+req.params.id);
     if (!findedVideo) {
-        res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
+        res.sendStatus(settings_1.HTTP_STATUSES.NOT_FOUND_404);
         return;
     }
     const errorMessagesList = [];
@@ -65,12 +65,12 @@ exports.videosRouter.put('/:id', (req, res) => __awaiter(void 0, void 0, void 0,
     }
     if (errorMessagesList.length) {
         res
-            .status(app_1.HTTP_STATUSES.BAD_REQUEST_400)
+            .status(settings_1.HTTP_STATUSES.BAD_REQUEST_400)
             .send((0, helpers_1.generateErrorMessage)('field is incorrect', errorMessagesList));
         return;
     }
     yield videos_in_memory_repository_1.videosRepository.updateVideo(+req.params.id, req.body);
-    res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
+    res.sendStatus(settings_1.HTTP_STATUSES.NO_CONTENT_204);
 }));
 exports.videosRouter.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _c, _d;
@@ -92,13 +92,13 @@ exports.videosRouter.post('/', (req, res) => __awaiter(void 0, void 0, void 0, f
     }
     if (errorMessagesList.length) {
         res
-            .status(app_1.HTTP_STATUSES.BAD_REQUEST_400)
+            .status(settings_1.HTTP_STATUSES.BAD_REQUEST_400)
             .send((0, helpers_1.generateErrorMessage)('field is incorrect', errorMessagesList));
         return;
     }
     const createdVideo = yield videos_in_memory_repository_1.videosRepository.createVideo(req.body);
     res
-        .status(app_1.HTTP_STATUSES.CREATED_201)
+        .status(settings_1.HTTP_STATUSES.CREATED_201)
         .json(createdVideo);
 }));
 //# sourceMappingURL=videos-router.js.map

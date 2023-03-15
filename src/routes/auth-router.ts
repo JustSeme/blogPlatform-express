@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import { body } from "express-validator";
-import { HTTP_STATUSES } from "../app";
+import { HTTP_STATUSES } from '../../src/settings'
 import { jwtService } from "../application/jwtService";
 import { authService } from "../domain/auth-service";
 import { authMiddleware } from "../middlewares/auth/auth-middleware";

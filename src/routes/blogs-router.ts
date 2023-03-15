@@ -1,6 +1,6 @@
 import { Router, Response } from "express";
 import { body, param } from "express-validator";
-import { HTTP_STATUSES } from "../app";
+import { HTTP_STATUSES } from '../../src/settings'
 import { basicAuthorizationMiddleware } from "../middlewares/auth/basic-authorizatoin-middleware";
 import { inputValidationMiddleware } from "../middlewares/validations/input-validation-middleware";
 import { BlogInputModel } from "../models/blogs/BlogInputModel";
@@ -24,37 +24,37 @@ import { ReadPostsQueryParams } from "../models/posts/ReadPostsQuery";
 export const blogsRouter = Router({})
 
 const nameValidation = body('name')
-.exists()
-.trim()
-.notEmpty()
-.isString()
-.isLength({ min: 1, max: 15 })
+    .exists()
+    .trim()
+    .notEmpty()
+    .isString()
+    .isLength({ min: 1, max: 15 })
 
 const descriptionValidation = body('description')
-.exists()
-.trim()
-.notEmpty()
-.isString()
-.isLength({ min: 1, max: 500 })
+    .exists()
+    .trim()
+    .notEmpty()
+    .isString()
+    .isLength({ min: 1, max: 500 })
 
 const websiteUrlValidation = body('websiteUrl')
-.exists()
-.trim()
-.notEmpty()
-.isURL()
-.isLength({ min: 1, max: 100 })
+    .exists()
+    .trim()
+    .notEmpty()
+    .isURL()
+    .isLength({ min: 1, max: 100 })
 
 const blogIdValidation = param('blogId')
-.exists()
-.trim()
-.notEmpty()
-.isString()
-.isLength({ min: 1, max: 100 })
+    .exists()
+    .trim()
+    .notEmpty()
+    .isString()
+    .isLength({ min: 1, max: 100 })
 
 blogsRouter.get('/', async (req: RequestWithQuery<ReadBlogsQueryParams>, res: Response<BlogsWithQueryOutputModel>) => {
     const findedBlogs = await blogsQueryRepository.findBlogs(req.query)
 
-    if(!findedBlogs.items.length) {
+    if (!findedBlogs.items.length) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
         return
     }
@@ -64,7 +64,7 @@ blogsRouter.get('/', async (req: RequestWithQuery<ReadBlogsQueryParams>, res: Re
 blogsRouter.get('/:id', async (req: RequestWithParams<{ id: string }>, res: Response<BlogViewModel>) => {
     const findedBlog = await blogsQueryRepository.findBlogById(req.params.id)
 
-    if(!findedBlog) {
+    if (!findedBlog) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
         return
     }
@@ -74,16 +74,16 @@ blogsRouter.get('/:id', async (req: RequestWithParams<{ id: string }>, res: Resp
 blogsRouter.get('/:blogId/posts',
     blogIdValidation,
     blogIdValidationMiddleware,
-    async (req: RequestWithParamsAndQuery<{blogId: string}, ReadPostsQueryParams>, res: Response<PostsWithQueryOutputModel>) => {
+    async (req: RequestWithParamsAndQuery<{ blogId: string }, ReadPostsQueryParams>, res: Response<PostsWithQueryOutputModel>) => {
         const findedPostsForBlog = await postsQueryRepository.findPosts(req.query, req.params.blogId)
 
-        if(!findedPostsForBlog.items.length) {
+        if (!findedPostsForBlog.items.length) {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
             return
         }
 
         res.json(findedPostsForBlog)
-})
+    })
 
 blogsRouter.post('/',
     basicAuthorizationMiddleware,
@@ -97,7 +97,7 @@ blogsRouter.post('/',
         res
             .status(HTTP_STATUSES.CREATED_201)
             .send(createdBlog)
-})
+    })
 
 blogsRouter.post('/:blogId/posts',
     basicAuthorizationMiddleware,
@@ -107,13 +107,13 @@ blogsRouter.post('/:blogId/posts',
     blogIdValidationMiddleware,
     blogIdValidation,
     inputValidationMiddleware,
-    async (req: RequestWithParamsAndBody<{blogId: string}, PostInputModel>, res: Response<PostViewModel>) => {
+    async (req: RequestWithParamsAndBody<{ blogId: string }, PostInputModel>, res: Response<PostViewModel>) => {
         const createdPost = await postsService.createPost(req.body, req.params.blogId)
 
         res
             .status(HTTP_STATUSES.CREATED_201)
             .send(createdPost)
-})
+    })
 
 blogsRouter.put('/:id',
     basicAuthorizationMiddleware,
@@ -123,20 +123,20 @@ blogsRouter.put('/:id',
     inputValidationMiddleware,
     async (req: RequestWithParamsAndBody<{ id: string }, BlogInputModel>, res: Response<ErrorMessagesOutputModel>) => {
         const isUpdated = await blogsService.updateBlog(req.params.id, req.body)
-        if(!isUpdated) {
+        if (!isUpdated) {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
             return
         }
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
-})
+    })
 
-blogsRouter.delete('/:id', 
+blogsRouter.delete('/:id',
     basicAuthorizationMiddleware,
     async (req: RequestWithParams<{ id: string }>, res: Response<ErrorMessagesOutputModel>) => {
-    const isDeleted = await blogsService.deleteBlog(req.params.id)
-    if(isDeleted) {
-        res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
-        return
-    }
-    res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
-})
+        const isDeleted = await blogsService.deleteBlog(req.params.id)
+        if (isDeleted) {
+            res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
+            return
+        }
+        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+    })

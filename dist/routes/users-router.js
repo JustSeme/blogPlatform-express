@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.emailValidationWithCustomSearch = exports.passwordValidation = exports.loginValidation = exports.usersRouter = void 0;
 const express_1 = require("express");
 const express_validator_1 = require("express-validator");
-const app_1 = require("../app");
+const settings_1 = require("../../src/settings");
 const auth_service_1 = require("../domain/auth-service");
 const basic_authorizatoin_middleware_1 = require("../middlewares/auth/basic-authorizatoin-middleware");
 const input_validation_middleware_1 = require("../middlewares/validations/input-validation-middleware");
@@ -54,18 +54,18 @@ exports.emailValidationWithCustomSearch = (0, express_validator_1.body)('email')
 exports.usersRouter.post('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, exports.loginValidation, exports.passwordValidation, exports.emailValidationWithCustomSearch, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const createdUser = yield auth_service_1.authService.createUserWithBasicAuth(req.body.login, req.body.password, req.body.email);
     if (!createdUser) {
-        res.sendStatus(app_1.HTTP_STATUSES.BAD_REQUEST_400);
+        res.sendStatus(settings_1.HTTP_STATUSES.BAD_REQUEST_400);
         return;
     }
-    res.status(app_1.HTTP_STATUSES.CREATED_201).json(createdUser);
+    res.status(settings_1.HTTP_STATUSES.CREATED_201).json(createdUser);
 }));
 exports.usersRouter.delete('/:id', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const isDeleted = yield auth_service_1.authService.deleteUsers(req.params.id);
     if (!isDeleted) {
-        res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
+        res.sendStatus(settings_1.HTTP_STATUSES.NOT_FOUND_404);
         return;
     }
-    res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
+    res.sendStatus(settings_1.HTTP_STATUSES.NO_CONTENT_204);
 }));
 exports.usersRouter.get('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const findedUsers = yield users_query_repository_1.usersQueryRepository.findUsers(req.query);

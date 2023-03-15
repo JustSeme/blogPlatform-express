@@ -1,5 +1,5 @@
 import { Response, Request, NextFunction } from "express";
-import { HTTP_STATUSES } from "../../app";
+import { HTTP_STATUSES } from "../../settings"
 import { attemptsRepository } from "../../repositories/attempts-db-repository";
 
 export const rateLimitMiddleware = async (req: Request, res: Response, next: NextFunction) => {

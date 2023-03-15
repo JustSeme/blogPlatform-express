@@ -1,10 +1,10 @@
 import request from 'supertest'
-import { HTTP_STATUSES, server } from '../../src/app'
+import { server } from '../../src/app'
 import { PostInputModel } from '../../src/models/posts/PostInputModel'
 import { BlogInputModel } from '../../src/models/blogs/BlogInputModel'
 import { CommentInputModel } from '../../src/models/comments/CommentInputModel'
 import { app } from '../../src/settings'
-import { jwtService } from '../../src/application/jwtService'
+import { HTTP_STATUSES } from '../../src/settings'
 
 const baseURL = '/homeworks/'
 
@@ -12,24 +12,23 @@ describe('/comments', () => {
     beforeAll(async () => {
         await request(app)
             .delete(`/homeworks/testing/all-data`)
-    })
 
-    afterAll(async () => {
         await server.close()
     })
 
-    const correctCommentBody: CommentInputModel = {
-        content: 'this content should be a correct' // min 20 max 300
-    }
+    afterEach(async () => {
+        await server.close()
+    })
 
     let recievedAccessToken = ''
 
+    const createUserInputData = {
+        login: 'login',
+        password: 'password',
+        email: 'email@email.ru'
+    }
+
     it('should create user and should login, getting accessToken', async () => {
-        const createUserInputData = {
-            login: 'login',
-            password: 'password',
-            email: 'email@email.ru'
-        }
         await request(app)
             .post(`${baseURL}users`)
             .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
@@ -80,11 +79,39 @@ describe('/comments', () => {
         postId = createdPostResponseData.body.id
     })
 
+    const correctCommentBody: CommentInputModel = {
+        content: 'this content should be a correct' // min 20 max 300
+    }
+
+    let createdCommentId = ''
+
     it('should create comment for created post', async () => {
-        await request(app)
+        const createdCommentResponseData = await request(app)
             .post(`${baseURL}posts/${postId}/comments`)
             .set('Authorization', `Bearer ${recievedAccessToken}`)
             .send(correctCommentBody)
             .expect(HTTP_STATUSES.CREATED_201)
+
+        createdCommentId = createdCommentResponseData.body.id
+    })
+
+    it('should get created comment by id', async () => {
+        const recievedCommentData = await request(app)
+            .get(`${baseURL}comments/${createdCommentId}`)
+            .expect(HTTP_STATUSES.OK_200)
+
+        expect(recievedCommentData.body.content).toEqual(correctCommentBody.content)
+        expect(recievedCommentData.body.commentatorInfo.userLogin).toEqual(createUserInputData.login)
+    })
+
+    it('should update comment by id', async () => {
+        const updatedCommentData = await request(app)
+            .put(`${baseURL}comments/${createdCommentId}`)
+            .set('Authorization', `Bearer ${recievedAccessToken}`)
+            .send({
+                content: 'this comment was be updated'
+            })
+            .expect(HTTP_STATUSES.NO_CONTENT_204)
+
     })
 })

@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.blogsRouter = void 0;
 const express_1 = require("express");
 const express_validator_1 = require("express-validator");
-const app_1 = require("../app");
+const settings_1 = require("../../src/settings");
 const basic_authorizatoin_middleware_1 = require("../middlewares/auth/basic-authorizatoin-middleware");
 const input_validation_middleware_1 = require("../middlewares/validations/input-validation-middleware");
 const blogs_service_1 = require("../domain/blogs-service");
@@ -49,7 +49,7 @@ const blogIdValidation = (0, express_validator_1.param)('blogId')
 exports.blogsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const findedBlogs = yield blogs_query_repository_1.blogsQueryRepository.findBlogs(req.query);
     if (!findedBlogs.items.length) {
-        res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
+        res.sendStatus(settings_1.HTTP_STATUSES.NOT_FOUND_404);
         return;
     }
     res.json(findedBlogs);
@@ -57,7 +57,7 @@ exports.blogsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, fun
 exports.blogsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const findedBlog = yield blogs_query_repository_1.blogsQueryRepository.findBlogById(req.params.id);
     if (!findedBlog) {
-        res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
+        res.sendStatus(settings_1.HTTP_STATUSES.NOT_FOUND_404);
         return;
     }
     res.json(findedBlog);
@@ -65,7 +65,7 @@ exports.blogsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, 
 exports.blogsRouter.get('/:blogId/posts', blogIdValidation, blogId_validation_middleware_1.blogIdValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const findedPostsForBlog = yield posts_query_repository_1.postsQueryRepository.findPosts(req.query, req.params.blogId);
     if (!findedPostsForBlog.items.length) {
-        res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
+        res.sendStatus(settings_1.HTTP_STATUSES.NOT_FOUND_404);
         return;
     }
     res.json(findedPostsForBlog);
@@ -73,29 +73,29 @@ exports.blogsRouter.get('/:blogId/posts', blogIdValidation, blogId_validation_mi
 exports.blogsRouter.post('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, nameValidation, descriptionValidation, websiteUrlValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const createdBlog = yield blogs_service_1.blogsService.createBlog(req.body);
     res
-        .status(app_1.HTTP_STATUSES.CREATED_201)
+        .status(settings_1.HTTP_STATUSES.CREATED_201)
         .send(createdBlog);
 }));
 exports.blogsRouter.post('/:blogId/posts', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, posts_router_1.titleValidation, posts_router_1.postContentValidation, posts_router_1.shortDescriptionValidation, blogId_validation_middleware_1.blogIdValidationMiddleware, blogIdValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const createdPost = yield posts_service_1.postsService.createPost(req.body, req.params.blogId);
     res
-        .status(app_1.HTTP_STATUSES.CREATED_201)
+        .status(settings_1.HTTP_STATUSES.CREATED_201)
         .send(createdPost);
 }));
 exports.blogsRouter.put('/:id', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, nameValidation, descriptionValidation, websiteUrlValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const isUpdated = yield blogs_service_1.blogsService.updateBlog(req.params.id, req.body);
     if (!isUpdated) {
-        res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
+        res.sendStatus(settings_1.HTTP_STATUSES.NOT_FOUND_404);
         return;
     }
-    res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
+    res.sendStatus(settings_1.HTTP_STATUSES.NO_CONTENT_204);
 }));
 exports.blogsRouter.delete('/:id', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const isDeleted = yield blogs_service_1.blogsService.deleteBlog(req.params.id);
     if (isDeleted) {
-        res.sendStatus(app_1.HTTP_STATUSES.NO_CONTENT_204);
+        res.sendStatus(settings_1.HTTP_STATUSES.NO_CONTENT_204);
         return;
     }
-    res.sendStatus(app_1.HTTP_STATUSES.NOT_FOUND_404);
+    res.sendStatus(settings_1.HTTP_STATUSES.NOT_FOUND_404);
 }));
 //# sourceMappingURL=blogs-router.js.map

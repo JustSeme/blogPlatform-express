@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.rateLimitMiddleware = void 0;
-const app_1 = require("../../app");
+const settings_1 = require("../../settings");
 const attempts_db_repository_1 = require("../../repositories/attempts-db-repository");
 const rateLimitMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const interval = 10 * 1000;
@@ -21,7 +21,7 @@ const rateLimitMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0
     const attemptsCount = yield attempts_db_repository_1.attemptsRepository.getAttemptsCount(clientIp, requestedUrl, lastAttemptDate);
     yield attempts_db_repository_1.attemptsRepository.insertAttempt(clientIp, requestedUrl, currentDate);
     if (attemptsCount >= 5) {
-        res.sendStatus(app_1.HTTP_STATUSES.TOO_MANY_REQUESTS_429);
+        res.sendStatus(settings_1.HTTP_STATUSES.TOO_MANY_REQUESTS_429);
         return;
     }
     setInterval(() => __awaiter(void 0, void 0, void 0, function* () {
