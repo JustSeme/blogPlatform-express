@@ -4,7 +4,8 @@ import { postsQueryRepository } from "../../repositories/query/posts-query-repos
 
 export const postIdValidationMiddleware = async (req: any, res: Response, next: NextFunction) => {
     const commentedPost = await postsQueryRepository.findPostById(req.params.postId)
-    if(!commentedPost) {
+
+    if (!commentedPost) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
         return
     }

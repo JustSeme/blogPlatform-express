@@ -20,6 +20,8 @@ import { ReadCommentsQueryParams } from "../models/comments/ReadCommentsQuery";
 import { CommentsWithQueryOutputModel } from "../models/comments/CommentViewModel";
 import { commentsQueryRepository } from "../repositories/query/comments-query-repository";
 import { commentContentValidation } from "./comments-router";
+import { jwtService } from "../application/jwtService";
+import { usersQueryRepository } from "../repositories/query/users-query-repository";
 
 export const postsRouter = Router({})
 
@@ -105,9 +107,13 @@ postsRouter.post('/:postId/comments',
     commentContentValidation,
     inputValidationMiddleware,
     async (req: RequestWithParamsAndBody<{ postId: string }, CommentInputModel>, res: Response<CommentViewModel | ErrorMessagesOutputModel>) => {
-        const createdComment = await commentsService.createComment(req.body.content, req.user, req.params.postId)
+        const token = req.headers.authorization!.split(' ')[1]
+        const userId = await jwtService.getUserIdByToken(token)
+        const commentator = await usersQueryRepository.findUserById(userId)
+
+        const createdComment = await commentsService.createComment(req.body.content, commentator, req.params.postId)
         if (!createdComment) {
-            res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
+            res.sendStatus(HTTP_STATUSES.NOT_IMPLEMENTED_501)
             return
         }
 
