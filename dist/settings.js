@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.app = exports.HTTP_STATUSES = exports.settings = void 0;
+exports.app = exports.HTTP_STATUSES = exports.baseURL = exports.settings = void 0;
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const express_1 = __importDefault(require("express"));
 const videos_in_memory_repository_1 = require("./repositories/videos-in-memory-repository");
@@ -37,6 +37,7 @@ exports.settings = {
     GMAIL_LOGIN: process.env.GMAIL_LOGIN || 'kepxep69@gmail.com',
     GMAIL_APP_PASSWORD: process.env.GMAIL_APP_PASSWORD || 'gpllbohdhqcrdvnh'
 };
+exports.baseURL = '/homeworks/';
 exports.HTTP_STATUSES = {
     OK_200: 200,
     CREATED_201: 201,

@@ -1,6 +1,6 @@
 import { Router, Response } from "express";
 import { body, param } from "express-validator";
-import { HTTP_STATUSES } from '../../src/settings'
+import { HTTP_STATUSES } from '../settings'
 import { basicAuthorizationMiddleware } from "../middlewares/auth/basic-authorizatoin-middleware";
 import { inputValidationMiddleware } from "../middlewares/validations/input-validation-middleware";
 import { BlogInputModel } from "../models/blogs/BlogInputModel";

@@ -8,52 +8,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.authService = void 0;
+const UserDBModel_1 = require("../models/users/UserDBModel");
 const users_db_repository_1 = require("../repositories/users-db-repository");
 const uuid_1 = require("uuid");
-const add_1 = __importDefault(require("date-fns/add"));
 const emailManager_1 = require("../managers/emailManager");
 const bcryptAdapter_1 = require("../adapters/bcryptAdapter");
-const getUserDto = (login, email, isConfirmed, passwordHash) => {
-    const newUser = {
-        id: (0, uuid_1.v4)(),
-        login: login,
-        email: email,
-        passwordHash,
-        createdAt: new Date().toISOString(),
-        emailConfirmation: {
-            confirmationCode: (0, uuid_1.v4)(),
-            expirationDate: (0, add_1.default)(new Date(), {
-                hours: 1,
-                minutes: 3
-            }),
-            isConfirmed: isConfirmed
-        },
-        passwordRecovery: {
-            confirmationCode: null,
-            expirationDate: new Date()
-        }
-    };
-    return newUser;
-};
-exports.authService = {
+//transaction script
+class AuthService {
     createUser(login, password, email) {
         return __awaiter(this, void 0, void 0, function* () {
             const passwordHash = yield bcryptAdapter_1.bcryptAdapter.generatePasswordHash(password, 10);
-            const newUser = getUserDto(login, email, false, passwordHash);
+            const newUser = new UserDBModel_1.UserDBModel(login, email, passwordHash, false);
             users_db_repository_1.usersRepository.createUser(newUser);
             yield emailManager_1.emailManager.sendConfirmationCode(email, login, newUser.emailConfirmation.confirmationCode);
             return true;
         });
-    },
+    }
     createUserWithBasicAuth(login, password, email) {
         return __awaiter(this, void 0, void 0, function* () {
             const passwordHash = yield bcryptAdapter_1.bcryptAdapter.generatePasswordHash(password, 10);
-            const newUser = yield getUserDto(login, email, true, passwordHash);
+            const newUser = new UserDBModel_1.UserDBModel(login, email, passwordHash, true);
             yield users_db_repository_1.usersRepository.createUser(newUser);
             const displayedUser = {
                 id: newUser.id,
@@ -63,7 +39,7 @@ exports.authService = {
             };
             return displayedUser;
         });
-    },
+    }
     confirmEmail(code) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield users_db_repository_1.usersRepository.findUserByConfirmationCode(code);
@@ -77,7 +53,7 @@ exports.authService = {
                 return false;
             return yield users_db_repository_1.usersRepository.updateIsConfirmed(user.id);
         });
-    },
+    }
     resendConfirmationCode(email) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield users_db_repository_1.usersRepository.findUserByEmail(email);
@@ -94,7 +70,7 @@ exports.authService = {
                 return false;
             }
         });
-    },
+    }
     checkCredentials(loginOrEmail, password) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield users_db_repository_1.usersRepository.findUserByLoginOrEmail(loginOrEmail);
@@ -107,7 +83,7 @@ exports.authService = {
                 return user;
             }
         });
-    },
+    }
     sendPasswordRecoveryCode(email) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield users_db_repository_1.usersRepository.findUserByEmail(email);
@@ -122,13 +98,13 @@ exports.authService = {
             }
             return true;
         });
-    },
+    }
     confirmRecoveryPassword(userId, newPassword) {
         return __awaiter(this, void 0, void 0, function* () {
             const newPasswordHash = yield bcryptAdapter_1.bcryptAdapter.generatePasswordHash(newPassword, 10);
             return users_db_repository_1.usersRepository.updateUserPassword(userId, newPasswordHash);
         });
-    },
+    }
     deleteUsers(userId) {
         return __awaiter(this, void 0, void 0, function* () {
             if (userId) {
@@ -137,5 +113,6 @@ exports.authService = {
             return yield users_db_repository_1.usersRepository.deleteUsers();
         });
     }
-};
+}
+exports.authService = new AuthService();
 //# sourceMappingURL=auth-service.js.map

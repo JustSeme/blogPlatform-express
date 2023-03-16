@@ -2,51 +2,27 @@ import { UserDBModel } from '../models/users/UserDBModel'
 import { UserViewModelType } from '../models/users/UsersViewModel'
 import { usersRepository } from '../repositories/users-db-repository'
 import { v4 as uuidv4 } from 'uuid'
-import add from 'date-fns/add'
 import { emailManager } from '../managers/emailManager'
 import { bcryptAdapter } from '../adapters/bcryptAdapter'
 
-const getUserDto = (login: string, email: string, isConfirmed: boolean, passwordHash: string) => {
-    const newUser: UserDBModel = {
-        id: uuidv4(),
-        login: login,
-        email: email,
-        passwordHash,
-        createdAt: new Date().toISOString(),
-        emailConfirmation: {
-            confirmationCode: uuidv4(),
-            expirationDate: add(new Date(), {
-                hours: 1,
-                minutes: 3
-            }),
-            isConfirmed: isConfirmed
-        },
-        passwordRecovery: {
-            confirmationCode: null,
-            expirationDate: new Date()
-        }
-    }
-
-    return newUser
-}
-
-export const authService = {
+//transaction script
+class AuthService {
     async createUser(login: string, password: string, email: string): Promise<boolean> {
         const passwordHash = await bcryptAdapter.generatePasswordHash(password, 10)
 
-        const newUser = getUserDto(login, email, false, passwordHash)
+        const newUser = new UserDBModel(login, email, passwordHash, false)
 
         usersRepository.createUser(newUser)
 
         await emailManager.sendConfirmationCode(email, login, newUser.emailConfirmation.confirmationCode)
 
         return true
-    },
+    }
 
     async createUserWithBasicAuth(login: string, password: string, email: string): Promise<UserViewModelType | null> {
         const passwordHash = await bcryptAdapter.generatePasswordHash(password, 10)
 
-        const newUser = await getUserDto(login, email, true, passwordHash)
+        const newUser = new UserDBModel(login, email, passwordHash, true)
 
         await usersRepository.createUser(newUser)
         const displayedUser: UserViewModelType = {
@@ -57,7 +33,7 @@ export const authService = {
         }
 
         return displayedUser
-    },
+    }
 
     async confirmEmail(code: string) {
         const user = await usersRepository.findUserByConfirmationCode(code)
@@ -67,7 +43,7 @@ export const authService = {
         if (user.emailConfirmation.expirationDate < new Date()) return false
 
         return await usersRepository.updateIsConfirmed(user.id)
-    },
+    }
 
     async resendConfirmationCode(email: string) {
         const user = await usersRepository.findUserByEmail(email)
@@ -83,7 +59,7 @@ export const authService = {
             usersRepository.deleteUser(user.id)
             return false
         }
-    },
+    }
 
     async checkCredentials(loginOrEmail: string, password: string) {
         const user = await usersRepository.findUserByLoginOrEmail(loginOrEmail)
@@ -94,7 +70,7 @@ export const authService = {
         if (isConfirmed) {
             return user
         }
-    },
+    }
 
     async sendPasswordRecoveryCode(email: string) {
         const user = await usersRepository.findUserByEmail(email)
@@ -110,13 +86,13 @@ export const authService = {
             return false
         }
         return true
-    },
+    }
 
     async confirmRecoveryPassword(userId: string, newPassword: string) {
         const newPasswordHash = await bcryptAdapter.generatePasswordHash(newPassword, 10)
 
         return usersRepository.updateUserPassword(userId, newPasswordHash)
-    },
+    }
 
     async deleteUsers(userId: string | null) {
         if (userId) {
@@ -125,3 +101,5 @@ export const authService = {
         return await usersRepository.deleteUsers()
     }
 }
+
+export const authService = new AuthService()

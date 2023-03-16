@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import { JwtPayload } from "jsonwebtoken";
-import { HTTP_STATUSES } from '../../src/settings'
+import { HTTP_STATUSES } from '../settings'
 import { jwtService } from "../application/jwtService";
 import { securityService } from "../domain/security-service";
 import { DeviceSessionsViewModel } from "../models/devices/DeviceSessionsViewModel";

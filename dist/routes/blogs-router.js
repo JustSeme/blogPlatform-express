@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.blogsRouter = void 0;
 const express_1 = require("express");
 const express_validator_1 = require("express-validator");
-const settings_1 = require("../../src/settings");
+const settings_1 = require("../settings");
 const basic_authorizatoin_middleware_1 = require("../middlewares/auth/basic-authorizatoin-middleware");
 const input_validation_middleware_1 = require("../middlewares/validations/input-validation-middleware");
 const blogs_service_1 = require("../domain/blogs-service");

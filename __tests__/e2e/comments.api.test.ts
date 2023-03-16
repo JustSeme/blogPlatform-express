@@ -5,8 +5,7 @@ import { BlogInputModel } from '../../src/models/blogs/BlogInputModel'
 import { CommentInputModel } from '../../src/models/comments/CommentInputModel'
 import { app } from '../../src/settings'
 import { HTTP_STATUSES } from '../../src/settings'
-
-const baseURL = '/homeworks/'
+import { baseURL } from '../../src/settings'
 
 describe('/comments', () => {
     beforeAll(async () => {
@@ -177,7 +176,7 @@ describe('/comments', () => {
             .expect(HTTP_STATUSES.UNAUTHORIZED_401)
     })
 
-    it('should return 404 code, tring like non-exist comment', async () => {
+    it('should return 404 code, trying like non-exist comment', async () => {
         await request(app)
             .put(`${baseURL}comments/12345/like-status`)
             .set('Authorization', `Bearer ${recievedAccessToken}`)

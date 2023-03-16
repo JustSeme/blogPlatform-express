@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.authRouter = void 0;
 const express_1 = require("express");
 const express_validator_1 = require("express-validator");
-const settings_1 = require("../../src/settings");
+const settings_1 = require("../settings");
 const jwtService_1 = require("../application/jwtService");
 const auth_service_1 = require("../domain/auth-service");
 const auth_middleware_1 = require("../middlewares/auth/auth-middleware");

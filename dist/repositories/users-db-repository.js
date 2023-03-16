@@ -12,31 +12,32 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.usersRepository = void 0;
 const date_fns_1 = require("date-fns");
 const db_1 = require("./db");
-exports.usersRepository = {
+//transaaction script
+class UsersRepository {
     createUser(newUser) {
         return __awaiter(this, void 0, void 0, function* () {
             yield new db_1.UsersModel(newUser).save();
         });
-    },
+    }
     deleteUser(id) {
         return __awaiter(this, void 0, void 0, function* () {
             const deletedUser = db_1.UsersModel.find({ id });
             const result = yield deletedUser.deleteOne();
             return result.deletedCount === 1;
         });
-    },
+    }
     deleteUsers() {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield db_1.UsersModel.deleteMany({});
             return result.deletedCount > 0;
         });
-    },
+    }
     updateIsConfirmed(id) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield db_1.UsersModel.updateOne({ id: id }, { $set: { 'emailConfirmation.isConfirmed': true } });
             return result.matchedCount === 1;
         });
-    },
+    }
     updateEmailConfirmationInfo(id, code) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield db_1.UsersModel.updateOne({ id: id }, {
@@ -50,7 +51,7 @@ exports.usersRepository = {
             });
             return result.matchedCount === 1;
         });
-    },
+    }
     updatePasswordConfirmationInfo(id, code) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield db_1.UsersModel.updateOne({ id: id }, {
@@ -64,7 +65,7 @@ exports.usersRepository = {
             });
             return result.matchedCount === 1;
         });
-    },
+    }
     updateUserPassword(id, newPasswordHash) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield db_1.UsersModel.updateOne({ id: id }, {
@@ -75,21 +76,22 @@ exports.usersRepository = {
             });
             return result.matchedCount === 1;
         });
-    },
+    }
     findUserByConfirmationCode(code) {
         return __awaiter(this, void 0, void 0, function* () {
             return db_1.UsersModel.findOne({ 'emailConfirmation.confirmationCode': code });
         });
-    },
+    }
     findUserByEmail(email) {
         return __awaiter(this, void 0, void 0, function* () {
             return db_1.UsersModel.findOne({ email: email });
         });
-    },
+    }
     findUserByLoginOrEmail(loginOrEmail) {
         return __awaiter(this, void 0, void 0, function* () {
             return db_1.UsersModel.findOne({ $or: [{ login: loginOrEmail }, { email: loginOrEmail }] });
         });
-    },
-};
+    }
+}
+exports.usersRepository = new UsersRepository();
 //# sourceMappingURL=users-db-repository.js.map

@@ -26,6 +26,8 @@ export const settings = {
     GMAIL_APP_PASSWORD: process.env.GMAIL_APP_PASSWORD || 'gpllbohdhqcrdvnh'
 }
 
+export const baseURL = '/homeworks/'
+
 export const HTTP_STATUSES = {
     OK_200: 200,
     CREATED_201: 201,

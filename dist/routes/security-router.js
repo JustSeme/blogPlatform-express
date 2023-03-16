@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.securityRouter = void 0;
 const express_1 = require("express");
-const settings_1 = require("../../src/settings");
+const settings_1 = require("../settings");
 const jwtService_1 = require("../application/jwtService");
 const security_service_1 = require("../domain/security-service");
 const device_query_repository_1 = require("../repositories/query/device-query-repository");
