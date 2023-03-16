@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.blogsRepository = void 0;
 const db_1 = require("./db");
-exports.blogsRepository = {
+class BlogsRepository {
     deleteBlog(id) {
         return __awaiter(this, void 0, void 0, function* () {
             let result;
@@ -22,22 +22,23 @@ exports.blogsRepository = {
             result = yield db_1.BlogsModel.deleteOne({ id: id });
             return result.deletedCount === 1;
         });
-    },
+    }
     createBlog(createdBlog) {
         return __awaiter(this, void 0, void 0, function* () {
             yield db_1.BlogsModel.create(createdBlog);
         });
-    },
+    }
     updateBlog(id, body) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield db_1.BlogsModel.updateOne({ id: id }, { name: body.name, description: body.description, websiteUrl: body.websiteUrl });
             return result.matchedCount === 1;
         });
-    },
+    }
     findBlogById(id) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield db_1.BlogsModel.findOne({ id: id }, { _id: 0, __v: 0 });
         });
     }
-};
+}
+exports.blogsRepository = new BlogsRepository();
 //# sourceMappingURL=blogs-db-repository.js.map

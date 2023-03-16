@@ -22,4 +22,4 @@ class DeviceAuthSessionsModel {
     }
 }
 exports.DeviceAuthSessionsModel = DeviceAuthSessionsModel;
-//# sourceMappingURL=DeviceSessionsDBModel.js.map
+//# sourceMappingURL=DeviceSessionsModel.js.map

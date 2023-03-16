@@ -1,4 +1,4 @@
-import { DeviceAuthSessionsModelType } from '../models/devices/DeviceSessionsDBModel';
+import { DeviceAuthSessionsModel } from '../models/devices/DeviceSessionsModel';
 import { BlogViewModel } from '../models/blogs/BlogViewModel';
 import { CommentDBModel } from '../models/comments/CommentDBModel';
 import { PostViewModel } from '../models/posts/PostViewModel';
@@ -19,7 +19,7 @@ export const PostsModel = mongoose.model<PostViewModel>('posts', postsSchema)
 export const BlogsModel = mongoose.model<BlogViewModel>('blogs', blogsSchema)
 export const UsersModel = mongoose.model<UserDBModel>('users', usersSchema)
 export const CommentsModel = mongoose.model<CommentDBModel>('comments', commentsSchema)
-export const DeviceAuthSessionsModel = mongoose.model<DeviceAuthSessionsModelType>('deviceAuthSessions', deviceAuthSessionsSchema)
+export const DeviceAuthSessionsDBModel = mongoose.model<DeviceAuthSessionsModel>('deviceAuthSessions', deviceAuthSessionsSchema)
 export const AttemptsModel = mongoose.model<AttemptsDBModel>('attempts', attemptsSchema)
 
 export async function runDB() {

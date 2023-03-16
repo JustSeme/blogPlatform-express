@@ -17,6 +17,7 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const settings_1 = require("../settings");
 const uuid_1 = require("uuid");
 const device_db_repository_1 = require("../repositories/device-db-repository");
+const DeviceSessionsModel_1 = require("../models/devices/DeviceSessionsModel");
 exports.jwtService = {
     createAccessToken(expiresTime, userId) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -79,7 +80,8 @@ exports.jwtService = {
             const accessToken = yield this.createAccessToken('5m', userId);
             const refreshToken = yield this.createRefreshToken('20m', deviceId, userId);
             const result = jsonwebtoken_1.default.decode(refreshToken);
-            const isAdded = yield device_db_repository_1.deviceRepository.addSession(result.iat, result.exp, userId, userIp, deviceId, deviceName);
+            const newSession = new DeviceSessionsModel_1.DeviceAuthSessionsModel(result.iat, result.exp, userId, userIp, deviceId, deviceName);
+            const isAdded = yield device_db_repository_1.deviceRepository.addSession(newSession);
             if (!isAdded) {
                 return null;
             }

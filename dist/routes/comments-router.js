@@ -35,31 +35,46 @@ const likeValidation = (0, express_validator_1.body)('likeStatus')
     }
     throw new Error('likeStatus is incorrect');
 });
-exports.commentsRouter.get('/:commentId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const findedComment = yield comments_query_repository_1.commentsQueryRepository.findCommentById(req.params.commentId);
-    if (!findedComment) {
-        res.sendStatus(settings_1.HTTP_STATUSES.NOT_FOUND_404);
-        return;
+class CommentsController {
+    getComment(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const findedComment = yield comments_query_repository_1.commentsQueryRepository.findCommentById(req.params.commentId);
+            if (!findedComment) {
+                res.sendStatus(settings_1.HTTP_STATUSES.NOT_FOUND_404);
+                return;
+            }
+            res.send(findedComment);
+        });
     }
-    res.send(findedComment);
-}));
-exports.commentsRouter.delete('/:commentId', auth_middleware_1.authMiddleware, commentId_validation_middleware_1.commentIdValidationMiddleware, ownership_validation_middleware_1.ownershipValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const isDeleted = yield comments_service_1.commentsService.deleteComment(req.params.commentId);
-    if (!isDeleted) {
-        res.sendStatus(settings_1.HTTP_STATUSES.NOT_FOUND_404);
-        return;
+    deleteComment(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const isDeleted = yield comments_service_1.commentsService.deleteComment(req.params.commentId);
+            if (!isDeleted) {
+                res.sendStatus(settings_1.HTTP_STATUSES.NOT_FOUND_404);
+                return;
+            }
+            res.sendStatus(settings_1.HTTP_STATUSES.NO_CONTENT_204);
+        });
     }
-    res.sendStatus(settings_1.HTTP_STATUSES.NO_CONTENT_204);
-}));
-exports.commentsRouter.put('/:commentId', auth_middleware_1.authMiddleware, commentId_validation_middleware_1.commentIdValidationMiddleware, ownership_validation_middleware_1.ownershipValidationMiddleware, exports.commentContentValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const isUpdated = yield comments_service_1.commentsService.updateComment(req.params.commentId, req.body.content);
-    if (!isUpdated) {
-        res.sendStatus(settings_1.HTTP_STATUSES.NOT_FOUND_404);
-        return;
+    updateComment(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const isUpdated = yield comments_service_1.commentsService.updateComment(req.params.commentId, req.body.content);
+            if (!isUpdated) {
+                res.sendStatus(settings_1.HTTP_STATUSES.NOT_FOUND_404);
+                return;
+            }
+            res.sendStatus(settings_1.HTTP_STATUSES.NO_CONTENT_204);
+        });
     }
-    res.sendStatus(settings_1.HTTP_STATUSES.NO_CONTENT_204);
-}));
-exports.commentsRouter.put('/:commentId/like-status', auth_middleware_1.authMiddleware, commentId_validation_middleware_1.commentIdValidationMiddleware, likeValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => {
-    res.send(200);
-});
+    updateLikeForComment(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            res.send(200);
+        });
+    }
+}
+const commentsController = new CommentsController();
+exports.commentsRouter.get('/:commentId', commentsController.getComment);
+exports.commentsRouter.delete('/:commentId', auth_middleware_1.authMiddleware, commentId_validation_middleware_1.commentIdValidationMiddleware, ownership_validation_middleware_1.ownershipValidationMiddleware, commentsController.deleteComment);
+exports.commentsRouter.put('/:commentId', auth_middleware_1.authMiddleware, commentId_validation_middleware_1.commentIdValidationMiddleware, ownership_validation_middleware_1.ownershipValidationMiddleware, exports.commentContentValidation, input_validation_middleware_1.inputValidationMiddleware, commentsController.updateComment);
+exports.commentsRouter.put('/:commentId/like-status', auth_middleware_1.authMiddleware, commentId_validation_middleware_1.commentIdValidationMiddleware, likeValidation, input_validation_middleware_1.inputValidationMiddleware, commentsController.updateLikeForComment);
 //# sourceMappingURL=comments-router.js.map

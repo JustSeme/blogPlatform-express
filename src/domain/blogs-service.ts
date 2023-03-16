@@ -2,10 +2,10 @@ import { BlogInputModel } from "../models/blogs/BlogInputModel";
 import { BlogViewModel } from "../models/blogs/BlogViewModel";
 import { blogsRepository } from "../repositories/blogs-db-repository";
 
-export const blogsService = {
+class BlogsService {
     async deleteBlog(id: string | null) {
         return blogsRepository.deleteBlog(id)
-    },
+    }
 
     async createBlog(body: BlogInputModel): Promise<BlogViewModel> {
         const createdBlog: BlogViewModel = {
@@ -20,9 +20,11 @@ export const blogsService = {
         await blogsRepository.createBlog(createdBlog)
 
         return createdBlog
-    },
+    }
 
     async updateBlog(id: string, body: BlogInputModel) {
         return await blogsRepository.updateBlog(id, body)
     }
 }
+
+export const blogsService = new BlogsService()

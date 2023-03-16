@@ -11,23 +11,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.commentsRepository = void 0;
 const db_1 = require("./db");
-exports.commentsRepository = {
+class CommentsRepository {
     createComment(createdComment) {
         return __awaiter(this, void 0, void 0, function* () {
             yield db_1.CommentsModel.create(createdComment);
         });
-    },
+    }
     deleteComment(commentId) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield db_1.CommentsModel.deleteOne({ id: commentId });
             return result.deletedCount === 1;
         });
-    },
+    }
     updateComment(commentId, content) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield db_1.CommentsModel.updateOne({ id: commentId }, { content: content });
             return result.matchedCount === 1;
         });
     }
-};
+}
+exports.commentsRepository = new CommentsRepository();
 //# sourceMappingURL=comments-db-repository.js.map

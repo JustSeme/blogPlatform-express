@@ -11,14 +11,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.securityService = void 0;
 const device_db_repository_1 = require("../repositories/device-db-repository");
-exports.securityService = {
+class SecurityService {
     getActiveDevicesForUser(userId) {
         return __awaiter(this, void 0, void 0, function* () {
             const activeSessionsForUser = yield device_db_repository_1.deviceRepository.getDevicesForUser(userId);
             if (!activeSessionsForUser) {
                 return null;
             }
-            const displayedActiveSessionsForUser = yield activeSessionsForUser.map(el => ({
+            const displayedActiveSessionsForUser = activeSessionsForUser.map(el => ({
                 ip: el.userInfo.userIp,
                 title: el.deviceInfo.deviceName,
                 lastActiveDate: new Date(el.issuedAt * 1000),
@@ -26,16 +26,17 @@ exports.securityService = {
             }));
             return displayedActiveSessionsForUser;
         });
-    },
+    }
     removeAllSessions(userId, deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
             return device_db_repository_1.deviceRepository.deleteAllSessions(userId, deviceId);
         });
-    },
+    }
     deleteDevice(deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
             return device_db_repository_1.deviceRepository.removeSession(deviceId);
         });
     }
-};
+}
+exports.securityService = new SecurityService();
 //# sourceMappingURL=security-service.js.map

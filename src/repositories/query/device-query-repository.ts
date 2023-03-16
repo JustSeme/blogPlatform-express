@@ -1,7 +1,7 @@
-import { DeviceAuthSessionsModel } from "../db"
+import { DeviceAuthSessionsDBModel } from "../db"
 
 export const deviceQueryRepository = {
     async getDeviceByDeviceId(deviceId: string) {
-        return DeviceAuthSessionsModel.findOne({ "deviceInfo.deviceId": deviceId }).lean()
+        return DeviceAuthSessionsDBModel.findOne({ "deviceInfo.deviceId": deviceId }).lean()
     },
 }

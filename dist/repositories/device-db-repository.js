@@ -11,52 +11,42 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deviceRepository = void 0;
 const db_1 = require("./db");
-exports.deviceRepository = {
-    addSession(issuedAt, expireAt, userId, userIp, deviceId, deviceName) {
+class DeviceRepository {
+    addSession(newSession) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.DeviceAuthSessionsModel.create({
-                issuedAt: issuedAt,
-                expireDate: expireAt,
-                userInfo: {
-                    userId,
-                    userIp
-                },
-                deviceInfo: {
-                    deviceId,
-                    deviceName
-                }
-            });
+            const result = yield db_1.DeviceAuthSessionsDBModel.create(newSession);
             return result ? true : false;
         });
-    },
+    }
     removeSession(deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.DeviceAuthSessionsModel.deleteOne({ 'deviceInfo.deviceId': deviceId });
+            const result = yield db_1.DeviceAuthSessionsDBModel.deleteOne({ 'deviceInfo.deviceId': deviceId });
             return result.deletedCount === 1;
         });
-    },
+    }
     deleteAllSessions(userId, deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.DeviceAuthSessionsModel.deleteMany({ $and: [{ 'userInfo.userId': userId }, { 'deviceInfo.deviceId': { $ne: deviceId } }] });
+            const result = yield db_1.DeviceAuthSessionsDBModel.deleteMany({ $and: [{ 'userInfo.userId': userId }, { 'deviceInfo.deviceId': { $ne: deviceId } }] });
             return result.deletedCount > 0;
         });
-    },
+    }
     updateSession(deviceId, issuedAt, expireDate) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.DeviceAuthSessionsModel.updateOne({ "deviceInfo.deviceId": deviceId }, { issuedAt, expireDate });
+            const result = yield db_1.DeviceAuthSessionsDBModel.updateOne({ "deviceInfo.deviceId": deviceId }, { issuedAt, expireDate });
             return result.matchedCount === 1;
         });
-    },
+    }
     getDevicesForUser(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.DeviceAuthSessionsModel.find({ "userInfo.userId": userId });
+            return db_1.DeviceAuthSessionsDBModel.find({ "userInfo.userId": userId });
         });
-    },
+    }
     getCurrentIssuedAt(deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.DeviceAuthSessionsModel.findOne({ 'deviceInfo.deviceId': deviceId }).lean();
+            const result = yield db_1.DeviceAuthSessionsDBModel.findOne({ 'deviceInfo.deviceId': deviceId }).lean();
             return result.issuedAt;
         });
-    },
-};
+    }
+}
+exports.deviceRepository = new DeviceRepository();
 //# sourceMappingURL=device-db-repository.js.map

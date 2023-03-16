@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import { DeviceAuthSessionsModelType } from "../../models/devices/DeviceSessionsDBModel";
+import { DeviceAuthSessionsModel } from "../../models/devices/DeviceSessionsModel";
 
-export const deviceAuthSessionsSchema = new mongoose.Schema<DeviceAuthSessionsModelType>({
+export const deviceAuthSessionsSchema = new mongoose.Schema<DeviceAuthSessionsModel>({
     issuedAt: { type: Number, required: true },
     expireDate: { type: Number, required: true },
     userInfo: {

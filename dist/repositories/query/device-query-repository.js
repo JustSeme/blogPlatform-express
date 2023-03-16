@@ -14,7 +14,7 @@ const db_1 = require("../db");
 exports.deviceQueryRepository = {
     getDeviceByDeviceId(deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.DeviceAuthSessionsModel.findOne({ "deviceInfo.deviceId": deviceId }).lean();
+            return db_1.DeviceAuthSessionsDBModel.findOne({ "deviceInfo.deviceId": deviceId }).lean();
         });
     },
 };

@@ -10,24 +10,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.commentsService = void 0;
-const crypto_1 = require("crypto");
+const CommentDBModel_1 = require("../models/comments/CommentDBModel");
 const comments_db_repository_1 = require("../repositories/comments-db-repository");
-exports.commentsService = {
+class CommentsService {
     createComment(content, commentator, postId) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!commentator) {
                 return null;
             }
-            const createdComment = {
-                id: (0, crypto_1.randomUUID)(),
-                content,
-                commentatorInfo: {
-                    userId: commentator.id,
-                    userLogin: commentator.login
-                },
-                createdAt: new Date().toISOString(),
-                postId
-            };
+            const createdComment = new CommentDBModel_1.CommentDBModel(content, postId, commentator.id, commentator.login);
             yield comments_db_repository_1.commentsRepository.createComment(createdComment);
             return {
                 id: createdComment.id,
@@ -36,16 +27,17 @@ exports.commentsService = {
                 createdAt: createdComment.createdAt
             };
         });
-    },
+    }
     deleteComment(commentId) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield comments_db_repository_1.commentsRepository.deleteComment(commentId);
         });
-    },
+    }
     updateComment(commentId, content) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield comments_db_repository_1.commentsRepository.updateComment(commentId, content);
         });
     }
-};
+}
+exports.commentsService = new CommentsService();
 //# sourceMappingURL=comments-service.js.map

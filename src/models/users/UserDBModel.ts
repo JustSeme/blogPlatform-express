@@ -8,7 +8,8 @@ export class UserDBModel {
     public emailConfirmation: EmailConfirmationData
     public passwordRecovery: PasswordConfirmationData
 
-    constructor(public login: string,
+    constructor(
+        public login: string,
         public email: string,
         public passwordHash: string,
         isConfirmed: boolean

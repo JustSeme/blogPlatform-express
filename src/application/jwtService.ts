@@ -2,6 +2,7 @@ import jwt, { JwtPayload } from 'jsonwebtoken'
 import { settings } from "../settings";
 import { v4 as uuid } from 'uuid';
 import { deviceRepository } from '../repositories/device-db-repository';
+import { DeviceAuthSessionsModel } from '../models/devices/DeviceSessionsModel';
 
 export const jwtService = {
     async createAccessToken(expiresTime: string, userId: string) {
@@ -64,7 +65,9 @@ export const jwtService = {
         const refreshToken = await this.createRefreshToken('20m', deviceId, userId)
         const result = jwt.decode(refreshToken) as JwtPayload
 
-        const isAdded = await deviceRepository.addSession(result.iat!, result.exp!, userId, userIp, deviceId, deviceName)
+        const newSession = new DeviceAuthSessionsModel(result.iat!, result.exp!, userId, userIp, deviceId, deviceName)
+
+        const isAdded = await deviceRepository.addSession(newSession)
         if (!isAdded) {
             return null
         }

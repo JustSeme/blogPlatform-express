@@ -3,10 +3,10 @@ import { PostViewModel } from '../models/posts/PostViewModel'
 import { postsRepository } from '../repositories/posts-db-repository'
 import { blogsRepository } from '../repositories/blogs-db-repository'
 
-export const postsService = {
+class PostsService {
     async deletePosts(id: string | null) {
         return await postsRepository.deletePosts(id)
-    },
+    }
 
     async createPost(body: PostInputModel, blogId: string | null): Promise<PostViewModel> {
         const blogById = await blogsRepository.findBlogById(blogId ? blogId : body.blogId)
@@ -29,9 +29,11 @@ export const postsService = {
         await postsRepository.createPost(createdPost)
 
         return createdPost
-    },
+    }
 
     async updatePost(id: string, body: PostInputModel) {
         return await postsRepository.updatePost(id, body)
     }
 }
+
+export const postsService = new PostsService()

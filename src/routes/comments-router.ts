@@ -22,6 +22,7 @@ export const commentContentValidation = body('content')
     .isString()
     .isLength({ min: 20, max: 300 })
 
+
 const likeValidation = body('likeStatus')
     .exists()
     .trim()
@@ -32,8 +33,8 @@ const likeValidation = body('likeStatus')
         throw new Error('likeStatus is incorrect')
     })
 
-commentsRouter.get('/:commentId',
-    async (req: RequestWithParams<{ commentId: string }>, res: Response<CommentViewModel>) => {
+class CommentsController {
+    async getComment(req: RequestWithParams<{ commentId: string }>, res: Response<CommentViewModel>) {
         const findedComment = await commentsQueryRepository.findCommentById(req.params.commentId)
         if (!findedComment) {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
@@ -41,13 +42,9 @@ commentsRouter.get('/:commentId',
         }
 
         res.send(findedComment!)
-    })
+    }
 
-commentsRouter.delete('/:commentId',
-    authMiddleware,
-    commentIdValidationMiddleware,
-    ownershipValidationMiddleware,
-    async (req: RequestWithParams<{ commentId: string }>, res: Response) => {
+    async deleteComment(req: RequestWithParams<{ commentId: string }>, res: Response) {
         const isDeleted = await commentsService.deleteComment(req.params.commentId)
         if (!isDeleted) {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
@@ -55,15 +52,9 @@ commentsRouter.delete('/:commentId',
         }
 
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
-    })
+    }
 
-commentsRouter.put('/:commentId',
-    authMiddleware,
-    commentIdValidationMiddleware,
-    ownershipValidationMiddleware,
-    commentContentValidation,
-    inputValidationMiddleware,
-    async (req: RequestWithParamsAndBody<{ commentId: string }, CommentInputModel>, res: Response<ErrorMessagesOutputModel>) => {
+    async updateComment(req: RequestWithParamsAndBody<{ commentId: string }, CommentInputModel>, res: Response<ErrorMessagesOutputModel>) {
         const isUpdated = await commentsService.updateComment(req.params.commentId, req.body.content)
         if (!isUpdated) {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
@@ -71,13 +62,36 @@ commentsRouter.put('/:commentId',
         }
 
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
-    })
+    }
+
+    async updateLikeForComment(req: RequestWithParamsAndBody<{ commentId: string }, LikeInputModel>, res: Response) {
+        res.send(200)
+    }
+}
+
+const commentsController = new CommentsController()
+
+commentsRouter.get('/:commentId',
+    commentsController.getComment)
+
+commentsRouter.delete('/:commentId',
+    authMiddleware,
+    commentIdValidationMiddleware,
+    ownershipValidationMiddleware,
+    commentsController.deleteComment)
+
+commentsRouter.put('/:commentId',
+    authMiddleware,
+    commentIdValidationMiddleware,
+    ownershipValidationMiddleware,
+    commentContentValidation,
+    inputValidationMiddleware,
+    commentsController.updateComment)
 
 commentsRouter.put('/:commentId/like-status',
     authMiddleware,
     commentIdValidationMiddleware,
     likeValidation,
     inputValidationMiddleware,
-    (req: RequestWithParamsAndBody<{ commentId: string }, LikeInputModel>, res: Response) => {
-        res.send(200)
-    })
+    commentsController.updateLikeForComment
+)
