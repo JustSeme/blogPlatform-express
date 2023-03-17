@@ -12,9 +12,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SecurityService = void 0;
 const device_db_repository_1 = require("../repositories/device-db-repository");
 class SecurityService {
+    constructor() {
+        this.deviceRepository = new device_db_repository_1.DeviceRepository();
+    }
     getActiveDevicesForUser(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const activeSessionsForUser = yield device_db_repository_1.deviceRepository.getDevicesForUser(userId);
+            const activeSessionsForUser = yield this.deviceRepository.getDevicesForUser(userId);
             if (!activeSessionsForUser) {
                 return null;
             }
@@ -29,12 +32,12 @@ class SecurityService {
     }
     removeAllSessions(userId, deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return device_db_repository_1.deviceRepository.deleteAllSessions(userId, deviceId);
+            return this.deviceRepository.deleteAllSessions(userId, deviceId);
         });
     }
     deleteDevice(deviceId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return device_db_repository_1.deviceRepository.removeSession(deviceId);
+            return this.deviceRepository.removeSession(deviceId);
         });
     }
 }

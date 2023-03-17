@@ -1,10 +1,16 @@
 import jwt, { JwtPayload } from 'jsonwebtoken'
 import { settings } from "../settings";
 import { v4 as uuid } from 'uuid';
-import { deviceRepository } from '../repositories/device-db-repository';
+import { DeviceRepository } from '../repositories/device-db-repository';
 import { DeviceAuthSessionsModel } from '../models/devices/DeviceSessionsModel';
 
 export class JwtService {
+    private deviceRepository: DeviceRepository
+
+    constructor() {
+        this.deviceRepository = new DeviceRepository()
+    }
+
     async createAccessToken(expiresTime: string, userId: string) {
         return jwt.sign({ userId }, settings.JWT_SECRET, { expiresIn: expiresTime })
     }
@@ -25,7 +31,7 @@ export class JwtService {
     async verifyToken(verifiedToken: string) {
         try {
             const result = await jwt.verify(verifiedToken, settings.JWT_SECRET) as JwtPayload
-            const issuedAtForDeviceId = await deviceRepository.getCurrentIssuedAt(result.deviceId)
+            const issuedAtForDeviceId = await this.deviceRepository.getCurrentIssuedAt(result.deviceId)
             if (issuedAtForDeviceId > result.iat!) {
                 return null
             }
@@ -46,7 +52,7 @@ export class JwtService {
         const newAccessToken = await this.createAccessToken('10s', result.userId)
         const resultOfCreatedToken = jwt.decode(newRefreshToken) as JwtPayload
 
-        const isUpdated = deviceRepository.updateSession(result.deviceId, resultOfCreatedToken.iat!, resultOfCreatedToken.exp!)
+        const isUpdated = this.deviceRepository.updateSession(result.deviceId, resultOfCreatedToken.iat!, resultOfCreatedToken.exp!)
 
         if (!isUpdated) {
             return null
@@ -67,7 +73,7 @@ export class JwtService {
 
         const newSession = new DeviceAuthSessionsModel(result.iat!, result.exp!, userId, userIp, deviceId, deviceName)
 
-        const isAdded = await deviceRepository.addSession(newSession)
+        const isAdded = await this.deviceRepository.addSession(newSession)
         if (!isAdded) {
             return null
         }
@@ -84,7 +90,7 @@ export class JwtService {
             return false
         }
 
-        const isDeleted = deviceRepository.removeSession(result.deviceId)
+        const isDeleted = this.deviceRepository.removeSession(result.deviceId)
 
         if (!isDeleted) {
             return false

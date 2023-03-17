@@ -1,7 +1,7 @@
 import { CommentDBModel } from "../models/comments/CommentDBModel";
 import { CommentsModel } from "./db";
 
-class CommentsRepository {
+export class CommentsRepository {
     async createComment(createdComment: CommentDBModel) {
         await CommentsModel.create(createdComment)
     }
@@ -16,5 +16,3 @@ class CommentsRepository {
         return result.matchedCount === 1
     }
 }
-
-export const commentsRepository = new CommentsRepository()

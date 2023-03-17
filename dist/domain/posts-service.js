@@ -14,22 +14,26 @@ const PostDBModel_1 = require("../models/posts/PostDBModel");
 const posts_db_repository_1 = require("../repositories/posts-db-repository");
 const blogs_db_repository_1 = require("../repositories/blogs-db-repository");
 class PostsService {
+    constructor() {
+        this.blogsRepository = new blogs_db_repository_1.BlogsRepository();
+        this.postsRepository = new posts_db_repository_1.PostsRepository();
+    }
     deletePosts(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield posts_db_repository_1.postsRepository.deletePosts(id);
+            return yield this.postsRepository.deletePosts(id);
         });
     }
     createPost(body, blogId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const blogById = yield blogs_db_repository_1.blogsRepository.findBlogById(blogId ? blogId : body.blogId);
+            const blogById = yield this.blogsRepository.findBlogById(blogId ? blogId : body.blogId);
             const createdPost = new PostDBModel_1.PostDBModel(body.title, body.shortDescription, body.content, blogId ? blogId : body.blogId, (blogById === null || blogById === void 0 ? void 0 : blogById.name) ? blogById === null || blogById === void 0 ? void 0 : blogById.name : 'not found');
-            yield posts_db_repository_1.postsRepository.createPost(createdPost);
+            yield this.postsRepository.createPost(createdPost);
             return createdPost;
         });
     }
     updatePost(id, body) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield posts_db_repository_1.postsRepository.updatePost(id, body);
+            return yield this.postsRepository.updatePost(id, body);
         });
     }
 }

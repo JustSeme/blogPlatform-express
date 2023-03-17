@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deviceRepository = void 0;
+exports.DeviceRepository = void 0;
 const db_1 = require("./db");
 class DeviceRepository {
     addSession(newSession) {
@@ -48,5 +48,5 @@ class DeviceRepository {
         });
     }
 }
-exports.deviceRepository = new DeviceRepository();
+exports.DeviceRepository = DeviceRepository;
 //# sourceMappingURL=device-db-repository.js.map

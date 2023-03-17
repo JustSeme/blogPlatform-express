@@ -2,7 +2,7 @@ import { PostInputModel } from '../models/posts/PostInputModel'
 import { PostDBModel } from '../models/posts/PostDBModel'
 import { PostsModel } from './db'
 
-class PostsRepository {
+export class PostsRepository {
     async deletePosts(id: string) {
         let result = await PostsModel.deleteOne({ id: id })
         return result.deletedCount === 1
@@ -17,5 +17,3 @@ class PostsRepository {
         return result.matchedCount === 1
     }
 }
-
-export const postsRepository = new PostsRepository()

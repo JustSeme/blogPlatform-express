@@ -1,9 +1,15 @@
 import { DeviceSessionsViewModel } from "../models/devices/DeviceSessionsViewModel"
-import { deviceRepository } from "../repositories/device-db-repository"
+import { DeviceRepository } from "../repositories/device-db-repository"
 
 export class SecurityService {
+    private deviceRepository: DeviceRepository
+
+    constructor() {
+        this.deviceRepository = new DeviceRepository()
+    }
+
     async getActiveDevicesForUser(userId: string) {
-        const activeSessionsForUser = await deviceRepository.getDevicesForUser(userId)
+        const activeSessionsForUser = await this.deviceRepository.getDevicesForUser(userId)
         if (!activeSessionsForUser) {
             return null
         }
@@ -18,10 +24,10 @@ export class SecurityService {
     }
 
     async removeAllSessions(userId: string, deviceId: string) { // exclude current session
-        return deviceRepository.deleteAllSessions(userId, deviceId)
+        return this.deviceRepository.deleteAllSessions(userId, deviceId)
     }
 
     async deleteDevice(deviceId: string) {
-        return deviceRepository.removeSession(deviceId)
+        return this.deviceRepository.removeSession(deviceId)
     }
 }

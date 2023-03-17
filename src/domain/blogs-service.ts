@@ -1,10 +1,16 @@
 import { BlogInputModel } from "../models/blogs/BlogInputModel";
 import { BlogViewModel } from "../models/blogs/BlogViewModel";
-import { blogsRepository } from "../repositories/blogs-db-repository";
+import { BlogsRepository } from "../repositories/blogs-db-repository";
 
 export class BlogsService {
+    private blogsRepository: BlogsRepository
+
+    constructor() {
+        this.blogsRepository = new BlogsRepository()
+    }
+
     async deleteBlog(id: string) {
-        return blogsRepository.deleteBlog(id)
+        return this.blogsRepository.deleteBlog(id)
     }
 
     async createBlog(body: BlogInputModel): Promise<BlogViewModel> {
@@ -17,12 +23,12 @@ export class BlogsService {
             isMembership: false
         }
 
-        await blogsRepository.createBlog(createdBlog)
+        await this.blogsRepository.createBlog(createdBlog)
 
         return createdBlog
     }
 
     async updateBlog(id: string, body: BlogInputModel) {
-        return await blogsRepository.updateBlog(id, body)
+        return await this.blogsRepository.updateBlog(id, body)
     }
 }

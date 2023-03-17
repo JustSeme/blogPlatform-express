@@ -1,7 +1,7 @@
 import { DeviceAuthSessionsModel } from "../models/devices/DeviceSessionsModel"
 import { DeviceAuthSessionsDBModel } from "./db"
 
-class DeviceRepository {
+export class DeviceRepository {
     async addSession(newSession: DeviceAuthSessionsModel) {
         const result = await DeviceAuthSessionsDBModel.create(newSession)
 
@@ -32,5 +32,3 @@ class DeviceRepository {
         return result!.issuedAt
     }
 }
-
-export const deviceRepository = new DeviceRepository()

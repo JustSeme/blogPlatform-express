@@ -19,6 +19,9 @@ const uuid_1 = require("uuid");
 const device_db_repository_1 = require("../repositories/device-db-repository");
 const DeviceSessionsModel_1 = require("../models/devices/DeviceSessionsModel");
 class JwtService {
+    constructor() {
+        this.deviceRepository = new device_db_repository_1.DeviceRepository();
+    }
     createAccessToken(expiresTime, userId) {
         return __awaiter(this, void 0, void 0, function* () {
             return jsonwebtoken_1.default.sign({ userId }, settings_1.settings.JWT_SECRET, { expiresIn: expiresTime });
@@ -44,7 +47,7 @@ class JwtService {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const result = yield jsonwebtoken_1.default.verify(verifiedToken, settings_1.settings.JWT_SECRET);
-                const issuedAtForDeviceId = yield device_db_repository_1.deviceRepository.getCurrentIssuedAt(result.deviceId);
+                const issuedAtForDeviceId = yield this.deviceRepository.getCurrentIssuedAt(result.deviceId);
                 if (issuedAtForDeviceId > result.iat) {
                     return null;
                 }
@@ -64,7 +67,7 @@ class JwtService {
             const newRefreshToken = yield this.createRefreshToken('20s', result.deviceId, result.userId);
             const newAccessToken = yield this.createAccessToken('10s', result.userId);
             const resultOfCreatedToken = jsonwebtoken_1.default.decode(newRefreshToken);
-            const isUpdated = device_db_repository_1.deviceRepository.updateSession(result.deviceId, resultOfCreatedToken.iat, resultOfCreatedToken.exp);
+            const isUpdated = this.deviceRepository.updateSession(result.deviceId, resultOfCreatedToken.iat, resultOfCreatedToken.exp);
             if (!isUpdated) {
                 return null;
             }
@@ -81,7 +84,7 @@ class JwtService {
             const refreshToken = yield this.createRefreshToken('20m', deviceId, userId);
             const result = jsonwebtoken_1.default.decode(refreshToken);
             const newSession = new DeviceSessionsModel_1.DeviceAuthSessionsModel(result.iat, result.exp, userId, userIp, deviceId, deviceName);
-            const isAdded = yield device_db_repository_1.deviceRepository.addSession(newSession);
+            const isAdded = yield this.deviceRepository.addSession(newSession);
             if (!isAdded) {
                 return null;
             }
@@ -97,7 +100,7 @@ class JwtService {
             if (!result) {
                 return false;
             }
-            const isDeleted = device_db_repository_1.deviceRepository.removeSession(result.deviceId);
+            const isDeleted = this.deviceRepository.removeSession(result.deviceId);
             if (!isDeleted) {
                 return false;
             }

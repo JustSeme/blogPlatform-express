@@ -13,13 +13,16 @@ exports.CommentsService = void 0;
 const CommentDBModel_1 = require("../models/comments/CommentDBModel");
 const comments_db_repository_1 = require("../repositories/comments-db-repository");
 class CommentsService {
+    constructor() {
+        this.commentsRepository = new comments_db_repository_1.CommentsRepository();
+    }
     createComment(content, commentator, postId) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!commentator) {
                 return null;
             }
             const createdComment = new CommentDBModel_1.CommentDBModel(content, postId, commentator.id, commentator.login);
-            yield comments_db_repository_1.commentsRepository.createComment(createdComment);
+            yield this.commentsRepository.createComment(createdComment);
             return {
                 id: createdComment.id,
                 content: createdComment.content,
@@ -30,12 +33,12 @@ class CommentsService {
     }
     deleteComment(commentId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield comments_db_repository_1.commentsRepository.deleteComment(commentId);
+            return yield this.commentsRepository.deleteComment(commentId);
         });
     }
     updateComment(commentId, content) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield comments_db_repository_1.commentsRepository.updateComment(commentId, content);
+            return yield this.commentsRepository.updateComment(commentId, content);
         });
     }
 }

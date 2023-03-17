@@ -2,7 +2,7 @@ import { BlogInputModel } from "../models/blogs/BlogInputModel";
 import { BlogViewModel } from "../models/blogs/BlogViewModel";
 import { BlogsModel } from "./db";
 
-class BlogsRepository {
+export class BlogsRepository {
     async deleteBlog(id: string | null) {
         let result
         if (id === null) {
@@ -28,5 +28,3 @@ class BlogsRepository {
         return await BlogsModel.findOne({ id: id }, { _id: 0, __v: 0 })
     }
 }
-
-export const blogsRepository = new BlogsRepository()

@@ -1,8 +1,14 @@
 import { CommentDBModel } from "../models/comments/CommentDBModel";
 import { UserDBModel } from "../models/users/UserDBModel";
-import { commentsRepository } from "../repositories/comments-db-repository";
+import { CommentsRepository } from "../repositories/comments-db-repository";
 
 export class CommentsService {
+    private commentsRepository: CommentsRepository
+
+    constructor() {
+        this.commentsRepository = new CommentsRepository()
+    }
+
     async createComment(content: string, commentator: UserDBModel | null, postId: string) {
         if (!commentator) {
             return null
@@ -10,7 +16,7 @@ export class CommentsService {
 
         const createdComment = new CommentDBModel(content, postId, commentator.id, commentator.login)
 
-        await commentsRepository.createComment(createdComment)
+        await this.commentsRepository.createComment(createdComment)
 
         return {
             id: createdComment.id,
@@ -21,10 +27,10 @@ export class CommentsService {
     }
 
     async deleteComment(commentId: string) {
-        return await commentsRepository.deleteComment(commentId)
+        return await this.commentsRepository.deleteComment(commentId)
     }
 
     async updateComment(commentId: string, content: string) {
-        return await commentsRepository.updateComment(commentId, content)
+        return await this.commentsRepository.updateComment(commentId, content)
     }
 }
