@@ -12,23 +12,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.jwtService = void 0;
+exports.JwtService = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const settings_1 = require("../settings");
 const uuid_1 = require("uuid");
 const device_db_repository_1 = require("../repositories/device-db-repository");
 const DeviceSessionsModel_1 = require("../models/devices/DeviceSessionsModel");
-exports.jwtService = {
+class JwtService {
     createAccessToken(expiresTime, userId) {
         return __awaiter(this, void 0, void 0, function* () {
             return jsonwebtoken_1.default.sign({ userId }, settings_1.settings.JWT_SECRET, { expiresIn: expiresTime });
         });
-    },
+    }
     createRefreshToken(expiresTime, deviceId, userId) {
         return __awaiter(this, void 0, void 0, function* () {
             return jsonwebtoken_1.default.sign({ deviceId, userId }, settings_1.settings.JWT_SECRET, { expiresIn: expiresTime });
         });
-    },
+    }
     getUserIdByToken(token) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -39,7 +39,7 @@ exports.jwtService = {
                 return null;
             }
         });
-    },
+    }
     verifyToken(verifiedToken) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -54,7 +54,7 @@ exports.jwtService = {
                 return null;
             }
         });
-    },
+    }
     refreshTokens(verifiedToken) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield this.verifyToken(verifiedToken);
@@ -73,7 +73,7 @@ exports.jwtService = {
                 newAccessToken
             };
         });
-    },
+    }
     login(userId, userIp, deviceName) {
         return __awaiter(this, void 0, void 0, function* () {
             const deviceId = (0, uuid_1.v4)();
@@ -90,7 +90,7 @@ exports.jwtService = {
                 refreshToken
             };
         });
-    },
+    }
     logout(usedToken) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield this.verifyToken(usedToken);
@@ -104,5 +104,6 @@ exports.jwtService = {
             return true;
         });
     }
-};
+}
+exports.JwtService = JwtService;
 //# sourceMappingURL=jwtService.js.map

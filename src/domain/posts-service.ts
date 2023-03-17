@@ -3,7 +3,7 @@ import { PostViewModel } from '../models/posts/PostViewModel'
 import { postsRepository } from '../repositories/posts-db-repository'
 import { blogsRepository } from '../repositories/blogs-db-repository'
 
-class PostsService {
+export class PostsService {
     async deletePosts(id: string | null) {
         return await postsRepository.deletePosts(id)
     }
@@ -35,5 +35,3 @@ class PostsService {
         return await postsRepository.updatePost(id, body)
     }
 }
-
-export const postsService = new PostsService()

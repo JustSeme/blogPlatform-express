@@ -58,5 +58,10 @@ exports.usersQueryRepository = {
             return db_1.UsersModel.findOne({ 'passwordRecovery.confirmationCode': code }).lean();
         });
     },
+    findUserByEmail(email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return db_1.UsersModel.findOne({ email: email }).lean();
+        });
+    }
 };
 //# sourceMappingURL=users-query-repository.js.map

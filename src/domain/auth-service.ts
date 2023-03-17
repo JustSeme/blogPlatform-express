@@ -1,18 +1,24 @@
 import { UserDBModel } from '../models/users/UserDBModel'
 import { UserViewModelType } from '../models/users/UsersViewModel'
-import { usersRepository } from '../repositories/users-db-repository'
+import { UsersRepository } from '../repositories/users-db-repository'
 import { v4 as uuidv4 } from 'uuid'
 import { emailManager } from '../managers/emailManager'
 import { bcryptAdapter } from '../adapters/bcryptAdapter'
 
 //transaction script
 class AuthService {
+    private usersRepository: UsersRepository
+
+    constructor() {
+        this.usersRepository = new UsersRepository()
+    }
+
     async createUser(login: string, password: string, email: string): Promise<boolean> {
         const passwordHash = await bcryptAdapter.generatePasswordHash(password, 10)
 
         const newUser = new UserDBModel(login, email, passwordHash, false)
 
-        usersRepository.createUser(newUser)
+        this.usersRepository.createUser(newUser)
 
         await emailManager.sendConfirmationCode(email, login, newUser.emailConfirmation.confirmationCode)
 
@@ -24,7 +30,7 @@ class AuthService {
 
         const newUser = new UserDBModel(login, email, passwordHash, true)
 
-        await usersRepository.createUser(newUser)
+        await this.usersRepository.createUser(newUser)
         const displayedUser: UserViewModelType = {
             id: newUser.id,
             login: newUser.login,
@@ -36,33 +42,33 @@ class AuthService {
     }
 
     async confirmEmail(code: string) {
-        const user = await usersRepository.findUserByConfirmationCode(code)
+        const user = await this.usersRepository.findUserByConfirmationCode(code)
         if (!user) return false
         if (user.emailConfirmation.isConfirmed) return false
         if (user.emailConfirmation.confirmationCode !== code) return false
         if (user.emailConfirmation.expirationDate < new Date()) return false
 
-        return await usersRepository.updateIsConfirmed(user.id)
+        return await this.usersRepository.updateIsConfirmed(user.id)
     }
 
     async resendConfirmationCode(email: string) {
-        const user = await usersRepository.findUserByEmail(email)
+        const user = await this.usersRepository.findUserByEmail(email)
         if (!user || user.emailConfirmation.isConfirmed) return false
 
         const newConfirmationCode = uuidv4()
-        await usersRepository.updateEmailConfirmationInfo(user.id, newConfirmationCode)
+        await this.usersRepository.updateEmailConfirmationInfo(user.id, newConfirmationCode)
 
         try {
             return await emailManager.sendConfirmationCode(email, user.login, newConfirmationCode)
         } catch (error) {
             console.error(error)
-            usersRepository.deleteUser(user.id)
+            this.usersRepository.deleteUser(user.id)
             return false
         }
     }
 
     async checkCredentials(loginOrEmail: string, password: string) {
-        const user = await usersRepository.findUserByLoginOrEmail(loginOrEmail)
+        const user = await this.usersRepository.findUserByLoginOrEmail(loginOrEmail)
         if (!user) return false
         if (!user.emailConfirmation.isConfirmed) return false
 
@@ -73,7 +79,7 @@ class AuthService {
     }
 
     async sendPasswordRecoveryCode(email: string) {
-        const user = await usersRepository.findUserByEmail(email)
+        const user = await this.usersRepository.findUserByEmail(email)
         if (!user) {
             return true
         }
@@ -81,7 +87,7 @@ class AuthService {
 
         await emailManager.sendPasswordRecoveryCode(user.email, user.login, passwordRecoveryCode)
 
-        const isUpdated = await usersRepository.updatePasswordConfirmationInfo(user.id, passwordRecoveryCode)
+        const isUpdated = await this.usersRepository.updatePasswordConfirmationInfo(user.id, passwordRecoveryCode)
         if (!isUpdated) {
             return false
         }
@@ -91,14 +97,14 @@ class AuthService {
     async confirmRecoveryPassword(userId: string, newPassword: string) {
         const newPasswordHash = await bcryptAdapter.generatePasswordHash(newPassword, 10)
 
-        return usersRepository.updateUserPassword(userId, newPasswordHash)
+        return this.usersRepository.updateUserPassword(userId, newPasswordHash)
     }
 
     async deleteUsers(userId: string | null) {
         if (userId) {
-            return await usersRepository.deleteUser(userId)
+            return await this.usersRepository.deleteUser(userId)
         }
-        return await usersRepository.deleteUsers()
+        return await this.usersRepository.deleteUsers()
     }
 }
 

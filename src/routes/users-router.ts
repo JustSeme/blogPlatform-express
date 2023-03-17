@@ -9,7 +9,6 @@ import { ReadUsersQuery } from "../models/users/ReadUsersQuery";
 import { UserInputModel } from "../models/users/UserInputModel";
 import { UsersWithQueryOutputModel, UserViewModelType } from "../models/users/UsersViewModel";
 import { usersQueryRepository } from "../repositories/query/users-query-repository";
-import { usersRepository } from "../repositories/users-db-repository";
 import { RequestWithBody, RequestWithParams, RequestWithQuery } from "../types/types";
 
 export const usersRouter = Router({})
@@ -44,7 +43,7 @@ export const emailValidationWithCustomSearch = body('email')
     .isString()
     .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
     .custom(async email => {
-        return usersRepository.findUserByEmail(email).then(user => {
+        return usersQueryRepository.findUserByEmail(email).then(user => {
             if (user) {
                 throw new Error('Email already in use')
             }

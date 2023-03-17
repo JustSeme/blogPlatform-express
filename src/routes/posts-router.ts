@@ -7,7 +7,7 @@ import { PostsWithQueryOutputModel, PostViewModel } from "../models/posts/PostVi
 import { RequestWithBody, RequestWithParams, RequestWithParamsAndBody, RequestWithParamsAndQuery, RequestWithQuery } from "../types/types";
 import { inputValidationMiddleware } from "../middlewares/validations/input-validation-middleware";
 import { basicAuthorizationMiddleware } from "../middlewares/auth/basic-authorizatoin-middleware";
-import { postsService } from "../domain/posts-service";
+import { PostsService } from "../domain/posts-service";
 import { postsQueryRepository } from "../repositories/query/posts-query-repository";
 import { blogsQueryRepository } from "../repositories/query/blogs-query-repository";
 import { ReadPostsQueryParams } from "../models/posts/ReadPostsQuery";
@@ -20,7 +20,7 @@ import { ReadCommentsQueryParams } from "../models/comments/ReadCommentsQuery";
 import { CommentsWithQueryOutputModel } from "../models/comments/CommentViewModel";
 import { commentsQueryRepository } from "../repositories/query/comments-query-repository";
 import { commentContentValidation } from "./comments-router";
-import { jwtService } from "../application/jwtService";
+import { JwtService } from "../application/jwtService";
 import { usersQueryRepository } from "../repositories/query/users-query-repository";
 
 export const postsRouter = Router({})
@@ -53,62 +53,57 @@ const blogIdValidation = body('blogId')
     .custom(async (value) => {
         const findedBlog = await blogsQueryRepository.findBlogById(value)
         if (!findedBlog) {
-            return Promise.reject('blog by blogId not found')
+            throw new Error('blog by blogId not found')
         }
         return true
     })
     .isLength({ min: 1, max: 100 })
 
-postsRouter.get('/', async (req: RequestWithQuery<ReadPostsQueryParams>, res: Response<PostsWithQueryOutputModel>) => {
-    const findedPosts = await postsQueryRepository.findPosts(req.query, null)
+class PostsController {
+    private jwtService: JwtService
+    private postsService: PostsService
 
-    if (!findedPosts.items.length) {
-        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
-        return
+    constructor() {
+        this.jwtService = new JwtService()
+        this.postsService = new PostsService()
     }
-    res.json(findedPosts as PostsWithQueryOutputModel)
-})
 
-postsRouter.get('/:id', async (req: RequestWithParams<{ id: string }>, res: Response<PostViewModel>) => {
-    const findedPosts = await postsQueryRepository.findPostById(req.params.id)
+    async getPosts(req: RequestWithQuery<ReadPostsQueryParams>, res: Response<PostsWithQueryOutputModel>) {
+        const findedPosts = await postsQueryRepository.findPosts(req.query, null)
 
-    if (!findedPosts) {
-        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
-        return
+        if (!findedPosts.items.length) {
+            res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+            return
+        }
+        res.json(findedPosts as PostsWithQueryOutputModel)
     }
-    res.json(findedPosts as PostViewModel)
-})
 
-postsRouter.get('/:postId/comments',
-    postIdValidationMiddleware,
-    async (req: RequestWithParamsAndQuery<{ postId: string }, ReadCommentsQueryParams>, res: Response<CommentsWithQueryOutputModel>) => {
+    async getPostById(req: RequestWithParams<{ id: string }>, res: Response<PostViewModel>) {
+        const findedPosts = await postsQueryRepository.findPostById(req.params.id)
+
+        if (!findedPosts) {
+            res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+            return
+        }
+        res.json(findedPosts as PostViewModel)
+    }
+
+    async getCommentsForPost(req: RequestWithParamsAndQuery<{ postId: string }, ReadCommentsQueryParams>, res: Response<CommentsWithQueryOutputModel>) {
         const findedComments = await commentsQueryRepository.findComments(req.query, req.params.postId)
         res.send(findedComments)
-    })
+    }
 
-postsRouter.post('/',
-    basicAuthorizationMiddleware,
-    titleValidation,
-    shortDescriptionValidation,
-    postContentValidation,
-    blogIdValidation,
-    inputValidationMiddleware,
-    async (req: RequestWithBody<PostInputModel>, res: Response<PostViewModel | ErrorMessagesOutputModel>) => {
-        const createdPost = await postsService.createPost(req.body, null)
+    async createPost(req: RequestWithBody<PostInputModel>, res: Response<PostViewModel | ErrorMessagesOutputModel>) {
+        const createdPost = await this.postsService.createPost(req.body, null)
 
         res
             .status(HTTP_STATUSES.CREATED_201)
             .send(createdPost)
-    })
+    }
 
-postsRouter.post('/:postId/comments',
-    authMiddleware,
-    postIdValidationMiddleware,
-    commentContentValidation,
-    inputValidationMiddleware,
-    async (req: RequestWithParamsAndBody<{ postId: string }, CommentInputModel>, res: Response<CommentViewModel | ErrorMessagesOutputModel>) => {
+    async createCommentForPost(req: RequestWithParamsAndBody<{ postId: string }, CommentInputModel>, res: Response<CommentViewModel | ErrorMessagesOutputModel>) {
         const token = req.headers.authorization!.split(' ')[1]
-        const userId = await jwtService.getUserIdByToken(token)
+        const userId = await this.jwtService.getUserIdByToken(token)
         const commentator = await usersQueryRepository.findUserById(userId)
 
         const createdComment = await commentsService.createComment(req.body.content, commentator, req.params.postId)
@@ -120,7 +115,54 @@ postsRouter.post('/:postId/comments',
         res
             .status(HTTP_STATUSES.CREATED_201)
             .send(createdComment)
-    })
+    }
+
+    async updatePost(req: RequestWithParamsAndBody<{ id: string }, PostInputModel>, res: Response<PostViewModel | ErrorMessagesOutputModel>) {
+        const isUpdated = await this.postsService.updatePost(req.params.id, req.body)
+        if (!isUpdated) {
+            res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+            return
+        }
+
+        res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
+    }
+
+    async deletePost(req: RequestWithParams<{ id: string }>, res: Response<ErrorMessagesOutputModel>) {
+        const isDeleted = await this.postsService.deletePosts(req.params.id)
+        if (isDeleted) {
+            res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
+            return
+        }
+
+        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+    }
+}
+
+const postsController = new PostsController()
+
+postsRouter.get('/', postsController.getPosts)
+
+postsRouter.get('/:id', postsController.getPostById)
+
+postsRouter.get('/:postId/comments',
+    postIdValidationMiddleware,
+    postsController.getCommentsForPost)
+
+postsRouter.post('/',
+    basicAuthorizationMiddleware,
+    titleValidation,
+    shortDescriptionValidation,
+    postContentValidation,
+    blogIdValidation,
+    inputValidationMiddleware,
+    postsController.createPost)
+
+postsRouter.post('/:postId/comments',
+    authMiddleware,
+    postIdValidationMiddleware,
+    commentContentValidation,
+    inputValidationMiddleware,
+    postsController.createCommentForPost)
 
 postsRouter.put('/:id',
     basicAuthorizationMiddleware,
@@ -129,24 +171,8 @@ postsRouter.put('/:id',
     postContentValidation,
     blogIdValidation,
     inputValidationMiddleware,
-    async (req: RequestWithParamsAndBody<{ id: string }, PostInputModel>, res: Response<PostViewModel | ErrorMessagesOutputModel>) => {
-        const isUpdated = await postsService.updatePost(req.params.id, req.body)
-        if (!isUpdated) {
-            res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
-            return
-        }
-
-        res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
-    })
+    postsController.updatePost)
 
 postsRouter.delete('/:id',
     basicAuthorizationMiddleware,
-    async (req: RequestWithParams<{ id: string }>, res: Response<ErrorMessagesOutputModel>) => {
-        const isDeleted = await postsService.deletePosts(req.params.id)
-        if (isDeleted) {
-            res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
-            return
-        }
-
-        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
-    })
+    postsController.deletePost)

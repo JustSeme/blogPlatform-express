@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.usersRepository = void 0;
+exports.UsersRepository = void 0;
 const date_fns_1 = require("date-fns");
 const db_1 = require("./db");
 //transaaction script
@@ -93,5 +93,5 @@ class UsersRepository {
         });
     }
 }
-exports.usersRepository = new UsersRepository();
+exports.UsersRepository = UsersRepository;
 //# sourceMappingURL=users-db-repository.js.map

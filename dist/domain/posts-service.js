@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postsService = void 0;
+exports.PostsService = void 0;
 const posts_db_repository_1 = require("../repositories/posts-db-repository");
 const blogs_db_repository_1 = require("../repositories/blogs-db-repository");
 class PostsService {
@@ -45,5 +45,5 @@ class PostsService {
         });
     }
 }
-exports.postsService = new PostsService();
+exports.PostsService = PostsService;
 //# sourceMappingURL=posts-service.js.map

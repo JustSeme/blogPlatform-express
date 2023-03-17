@@ -52,4 +52,8 @@ export const usersQueryRepository = {
     async findUserByRecoveryPasswordCode(code: string) {
         return UsersModel.findOne({ 'passwordRecovery.confirmationCode': code }).lean()
     },
+
+    async findUserByEmail(email: string) {
+        return UsersModel.findOne({ email: email }).lean()
+    }
 }

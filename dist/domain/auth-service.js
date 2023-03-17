@@ -17,11 +17,14 @@ const emailManager_1 = require("../managers/emailManager");
 const bcryptAdapter_1 = require("../adapters/bcryptAdapter");
 //transaction script
 class AuthService {
+    constructor() {
+        this.usersRepository = new users_db_repository_1.UsersRepository();
+    }
     createUser(login, password, email) {
         return __awaiter(this, void 0, void 0, function* () {
             const passwordHash = yield bcryptAdapter_1.bcryptAdapter.generatePasswordHash(password, 10);
             const newUser = new UserDBModel_1.UserDBModel(login, email, passwordHash, false);
-            users_db_repository_1.usersRepository.createUser(newUser);
+            this.usersRepository.createUser(newUser);
             yield emailManager_1.emailManager.sendConfirmationCode(email, login, newUser.emailConfirmation.confirmationCode);
             return true;
         });
@@ -30,7 +33,7 @@ class AuthService {
         return __awaiter(this, void 0, void 0, function* () {
             const passwordHash = yield bcryptAdapter_1.bcryptAdapter.generatePasswordHash(password, 10);
             const newUser = new UserDBModel_1.UserDBModel(login, email, passwordHash, true);
-            yield users_db_repository_1.usersRepository.createUser(newUser);
+            yield this.usersRepository.createUser(newUser);
             const displayedUser = {
                 id: newUser.id,
                 login: newUser.login,
@@ -42,7 +45,7 @@ class AuthService {
     }
     confirmEmail(code) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield users_db_repository_1.usersRepository.findUserByConfirmationCode(code);
+            const user = yield this.usersRepository.findUserByConfirmationCode(code);
             if (!user)
                 return false;
             if (user.emailConfirmation.isConfirmed)
@@ -51,29 +54,29 @@ class AuthService {
                 return false;
             if (user.emailConfirmation.expirationDate < new Date())
                 return false;
-            return yield users_db_repository_1.usersRepository.updateIsConfirmed(user.id);
+            return yield this.usersRepository.updateIsConfirmed(user.id);
         });
     }
     resendConfirmationCode(email) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield users_db_repository_1.usersRepository.findUserByEmail(email);
+            const user = yield this.usersRepository.findUserByEmail(email);
             if (!user || user.emailConfirmation.isConfirmed)
                 return false;
             const newConfirmationCode = (0, uuid_1.v4)();
-            yield users_db_repository_1.usersRepository.updateEmailConfirmationInfo(user.id, newConfirmationCode);
+            yield this.usersRepository.updateEmailConfirmationInfo(user.id, newConfirmationCode);
             try {
                 return yield emailManager_1.emailManager.sendConfirmationCode(email, user.login, newConfirmationCode);
             }
             catch (error) {
                 console.error(error);
-                users_db_repository_1.usersRepository.deleteUser(user.id);
+                this.usersRepository.deleteUser(user.id);
                 return false;
             }
         });
     }
     checkCredentials(loginOrEmail, password) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield users_db_repository_1.usersRepository.findUserByLoginOrEmail(loginOrEmail);
+            const user = yield this.usersRepository.findUserByLoginOrEmail(loginOrEmail);
             if (!user)
                 return false;
             if (!user.emailConfirmation.isConfirmed)
@@ -86,13 +89,13 @@ class AuthService {
     }
     sendPasswordRecoveryCode(email) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield users_db_repository_1.usersRepository.findUserByEmail(email);
+            const user = yield this.usersRepository.findUserByEmail(email);
             if (!user) {
                 return true;
             }
             const passwordRecoveryCode = (0, uuid_1.v4)();
             yield emailManager_1.emailManager.sendPasswordRecoveryCode(user.email, user.login, passwordRecoveryCode);
-            const isUpdated = yield users_db_repository_1.usersRepository.updatePasswordConfirmationInfo(user.id, passwordRecoveryCode);
+            const isUpdated = yield this.usersRepository.updatePasswordConfirmationInfo(user.id, passwordRecoveryCode);
             if (!isUpdated) {
                 return false;
             }
@@ -102,15 +105,15 @@ class AuthService {
     confirmRecoveryPassword(userId, newPassword) {
         return __awaiter(this, void 0, void 0, function* () {
             const newPasswordHash = yield bcryptAdapter_1.bcryptAdapter.generatePasswordHash(newPassword, 10);
-            return users_db_repository_1.usersRepository.updateUserPassword(userId, newPasswordHash);
+            return this.usersRepository.updateUserPassword(userId, newPasswordHash);
         });
     }
     deleteUsers(userId) {
         return __awaiter(this, void 0, void 0, function* () {
             if (userId) {
-                return yield users_db_repository_1.usersRepository.deleteUser(userId);
+                return yield this.usersRepository.deleteUser(userId);
             }
-            return yield users_db_repository_1.usersRepository.deleteUsers();
+            return yield this.usersRepository.deleteUsers();
         });
     }
 }

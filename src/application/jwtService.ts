@@ -4,14 +4,14 @@ import { v4 as uuid } from 'uuid';
 import { deviceRepository } from '../repositories/device-db-repository';
 import { DeviceAuthSessionsModel } from '../models/devices/DeviceSessionsModel';
 
-export const jwtService = {
+export class JwtService {
     async createAccessToken(expiresTime: string, userId: string) {
         return jwt.sign({ userId }, settings.JWT_SECRET, { expiresIn: expiresTime })
-    },
+    }
 
     async createRefreshToken(expiresTime: string, deviceId: string, userId: string) {
         return jwt.sign({ deviceId, userId }, settings.JWT_SECRET, { expiresIn: expiresTime })
-    },
+    }
 
     async getUserIdByToken(token: string) {
         try {
@@ -20,7 +20,7 @@ export const jwtService = {
         } catch (err) {
             return null
         }
-    },
+    }
 
     async verifyToken(verifiedToken: string) {
         try {
@@ -34,7 +34,7 @@ export const jwtService = {
         } catch (err) {
             return null
         }
-    },
+    }
 
     async refreshTokens(verifiedToken: string) {
         const result = await this.verifyToken(verifiedToken)
@@ -56,7 +56,7 @@ export const jwtService = {
             newRefreshToken,
             newAccessToken
         }
-    },
+    }
 
     async login(userId: string, userIp: string, deviceName: string) {
         const deviceId = uuid()
@@ -76,7 +76,7 @@ export const jwtService = {
             accessToken,
             refreshToken
         }
-    },
+    }
 
     async logout(usedToken: string) {
         const result = await this.verifyToken(usedToken)

@@ -3,7 +3,7 @@ import { UserDBModel } from "../models/users/UserDBModel";
 import { UsersModel } from "./db";
 
 //transaaction script
-class UsersRepository {
+export class UsersRepository {
     async createUser(newUser: UserDBModel) {
         await new UsersModel(newUser).save()
     }
@@ -73,5 +73,3 @@ class UsersRepository {
         return UsersModel.findOne({ $or: [{ login: loginOrEmail }, { email: loginOrEmail }] })
     }
 }
-
-export const usersRepository = new UsersRepository()

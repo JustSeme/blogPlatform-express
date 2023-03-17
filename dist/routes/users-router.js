@@ -17,7 +17,6 @@ const auth_service_1 = require("../domain/auth-service");
 const basic_authorizatoin_middleware_1 = require("../middlewares/auth/basic-authorizatoin-middleware");
 const input_validation_middleware_1 = require("../middlewares/validations/input-validation-middleware");
 const users_query_repository_1 = require("../repositories/query/users-query-repository");
-const users_db_repository_1 = require("../repositories/users-db-repository");
 exports.usersRouter = (0, express_1.Router)({});
 exports.loginValidation = (0, express_validator_1.body)('login')
     .exists()
@@ -46,7 +45,7 @@ exports.emailValidationWithCustomSearch = (0, express_validator_1.body)('email')
     .isString()
     .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
     .custom((email) => __awaiter(void 0, void 0, void 0, function* () {
-    return users_db_repository_1.usersRepository.findUserByEmail(email).then(user => {
+    return users_query_repository_1.usersQueryRepository.findUserByEmail(email).then(user => {
         if (user) {
             throw new Error('Email already in use');
         }
