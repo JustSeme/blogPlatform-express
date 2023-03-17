@@ -80,7 +80,7 @@ class SecurityController {
     }
 }
 const securityController = new SecurityController();
-exports.securityRouter.get('/devices', securityController.getDevices);
-exports.securityRouter.delete('/devices', securityController.deleteDevices);
-exports.securityRouter.delete('/devices/:deviceId', securityController.deleteDeviceById);
+exports.securityRouter.get('/devices', securityController.getDevices.bind(securityController));
+exports.securityRouter.delete('/devices', securityController.deleteDevices.bind(securityController));
+exports.securityRouter.delete('/devices/:deviceId', securityController.deleteDeviceById.bind(securityController));
 //# sourceMappingURL=security-router.js.map

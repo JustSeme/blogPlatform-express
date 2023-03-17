@@ -134,9 +134,9 @@ class PostsController {
 const postsController = new PostsController();
 exports.postsRouter.get('/', postsController.getPosts);
 exports.postsRouter.get('/:id', postsController.getPostById);
-exports.postsRouter.get('/:postId/comments', postId_validation_middleware_1.postIdValidationMiddleware, postsController.getCommentsForPost);
+exports.postsRouter.get('/:postId/comments', postId_validation_middleware_1.postIdValidationMiddleware, postsController.getCommentsForPost.bind(postsController));
 exports.postsRouter.post('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, exports.titleValidation, exports.shortDescriptionValidation, exports.postContentValidation, blogIdValidation, input_validation_middleware_1.inputValidationMiddleware, postsController.createPost.bind(postsController));
-exports.postsRouter.post('/:postId/comments', auth_middleware_1.authMiddleware, postId_validation_middleware_1.postIdValidationMiddleware, comments_router_1.commentContentValidation, input_validation_middleware_1.inputValidationMiddleware, postsController.createCommentForPost);
-exports.postsRouter.put('/:id', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, exports.titleValidation, exports.shortDescriptionValidation, exports.postContentValidation, blogIdValidation, input_validation_middleware_1.inputValidationMiddleware, postsController.updatePost);
-exports.postsRouter.delete('/:id', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, postsController.deletePost);
+exports.postsRouter.post('/:postId/comments', auth_middleware_1.authMiddleware, postId_validation_middleware_1.postIdValidationMiddleware, comments_router_1.commentContentValidation, input_validation_middleware_1.inputValidationMiddleware, postsController.createCommentForPost.bind(postsController));
+exports.postsRouter.put('/:id', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, exports.titleValidation, exports.shortDescriptionValidation, exports.postContentValidation, blogIdValidation, input_validation_middleware_1.inputValidationMiddleware, postsController.updatePost.bind(postsController));
+exports.postsRouter.delete('/:id', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, postsController.deletePost.bind(postsController));
 //# sourceMappingURL=posts-router.js.map

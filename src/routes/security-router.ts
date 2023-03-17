@@ -81,8 +81,8 @@ class SecurityController {
 
 const securityController = new SecurityController()
 
-securityRouter.get('/devices', securityController.getDevices)
+securityRouter.get('/devices', securityController.getDevices.bind(securityController))
 
-securityRouter.delete('/devices', securityController.deleteDevices)
+securityRouter.delete('/devices', securityController.deleteDevices.bind(securityController))
 
-securityRouter.delete('/devices/:deviceId', securityController.deleteDeviceById)
+securityRouter.delete('/devices/:deviceId', securityController.deleteDeviceById.bind(securityController))

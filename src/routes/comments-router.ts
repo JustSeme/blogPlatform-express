@@ -72,13 +72,13 @@ class CommentsController {
 const commentsController = new CommentsController()
 
 commentsRouter.get('/:commentId',
-    commentsController.getComment)
+    commentsController.getComment.bind(commentsController))
 
 commentsRouter.delete('/:commentId',
     authMiddleware,
     commentIdValidationMiddleware,
     ownershipValidationMiddleware,
-    commentsController.deleteComment)
+    commentsController.deleteComment.bind(commentsController))
 
 commentsRouter.put('/:commentId',
     authMiddleware,
@@ -86,12 +86,12 @@ commentsRouter.put('/:commentId',
     ownershipValidationMiddleware,
     commentContentValidation,
     inputValidationMiddleware,
-    commentsController.updateComment)
+    commentsController.updateComment.bind(commentsController))
 
 commentsRouter.put('/:commentId/like-status',
     authMiddleware,
     commentIdValidationMiddleware,
     likeValidation,
     inputValidationMiddleware,
-    commentsController.updateLikeForComment
+    commentsController.updateLikeForComment.bind(commentsController)
 )

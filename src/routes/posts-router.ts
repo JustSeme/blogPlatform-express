@@ -146,7 +146,7 @@ postsRouter.get('/:id', postsController.getPostById)
 
 postsRouter.get('/:postId/comments',
     postIdValidationMiddleware,
-    postsController.getCommentsForPost)
+    postsController.getCommentsForPost.bind(postsController))
 
 postsRouter.post('/',
     basicAuthorizationMiddleware,
@@ -162,7 +162,7 @@ postsRouter.post('/:postId/comments',
     postIdValidationMiddleware,
     commentContentValidation,
     inputValidationMiddleware,
-    postsController.createCommentForPost)
+    postsController.createCommentForPost.bind(postsController))
 
 postsRouter.put('/:id',
     basicAuthorizationMiddleware,
@@ -171,8 +171,8 @@ postsRouter.put('/:id',
     postContentValidation,
     blogIdValidation,
     inputValidationMiddleware,
-    postsController.updatePost)
+    postsController.updatePost.bind(postsController))
 
 postsRouter.delete('/:id',
     basicAuthorizationMiddleware,
-    postsController.deletePost)
+    postsController.deletePost.bind(postsController))

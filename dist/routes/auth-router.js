@@ -173,13 +173,13 @@ class AuthController {
     }
 }
 const authController = new AuthController();
-exports.authRouter.post('/login', rate_limit_middleware_1.rateLimitMiddleware, loginOrEmailValidation, users_router_1.passwordValidation, input_validation_middleware_1.inputValidationMiddleware, authController.login);
-exports.authRouter.post('/refresh-token', authController.refreshTokens);
-exports.authRouter.post('/logout', authController.logout);
-exports.authRouter.post('/registration', rate_limit_middleware_1.rateLimitMiddleware, users_router_1.loginValidation, users_router_1.passwordValidation, users_router_1.emailValidationWithCustomSearch, input_validation_middleware_1.inputValidationMiddleware, authController.registration);
-exports.authRouter.post('/registration-confirmation', rate_limit_middleware_1.rateLimitMiddleware, authController.registrationConfirm);
-exports.authRouter.post('/registration-email-resending', rate_limit_middleware_1.rateLimitMiddleware, emailValidation, input_validation_middleware_1.inputValidationMiddleware, authController.resendEmail);
-exports.authRouter.post('/password-recovery', rate_limit_middleware_1.rateLimitMiddleware, emailValidation, input_validation_middleware_1.inputValidationMiddleware, authController.recoveryPassword);
-exports.authRouter.post('/new-password', rate_limit_middleware_1.rateLimitMiddleware, newPasswordValidation, input_validation_middleware_1.inputValidationMiddleware, authController.generateNewPassword);
-exports.authRouter.get('/me', auth_middleware_1.authMiddleware, authController.sendUserInfo);
+exports.authRouter.post('/login', rate_limit_middleware_1.rateLimitMiddleware, loginOrEmailValidation, users_router_1.passwordValidation, input_validation_middleware_1.inputValidationMiddleware, authController.login.bind(authController));
+exports.authRouter.post('/refresh-token', authController.refreshTokens.bind(authController));
+exports.authRouter.post('/logout', authController.logout.bind(authController));
+exports.authRouter.post('/registration', rate_limit_middleware_1.rateLimitMiddleware, users_router_1.loginValidation, users_router_1.passwordValidation, users_router_1.emailValidationWithCustomSearch, input_validation_middleware_1.inputValidationMiddleware, authController.registration.bind(authController));
+exports.authRouter.post('/registration-confirmation', rate_limit_middleware_1.rateLimitMiddleware, authController.registrationConfirm.bind(authController));
+exports.authRouter.post('/registration-email-resending', rate_limit_middleware_1.rateLimitMiddleware, emailValidation, input_validation_middleware_1.inputValidationMiddleware, authController.resendEmail.bind(authController));
+exports.authRouter.post('/password-recovery', rate_limit_middleware_1.rateLimitMiddleware, emailValidation, input_validation_middleware_1.inputValidationMiddleware, authController.recoveryPassword.bind(authController));
+exports.authRouter.post('/new-password', rate_limit_middleware_1.rateLimitMiddleware, newPasswordValidation, input_validation_middleware_1.inputValidationMiddleware, authController.generateNewPassword.bind(authController));
+exports.authRouter.get('/me', auth_middleware_1.authMiddleware, authController.sendUserInfo.bind(authController));
 //# sourceMappingURL=auth-router.js.map

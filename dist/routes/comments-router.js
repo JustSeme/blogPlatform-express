@@ -73,8 +73,8 @@ class CommentsController {
     }
 }
 const commentsController = new CommentsController();
-exports.commentsRouter.get('/:commentId', commentsController.getComment);
-exports.commentsRouter.delete('/:commentId', auth_middleware_1.authMiddleware, commentId_validation_middleware_1.commentIdValidationMiddleware, ownership_validation_middleware_1.ownershipValidationMiddleware, commentsController.deleteComment);
-exports.commentsRouter.put('/:commentId', auth_middleware_1.authMiddleware, commentId_validation_middleware_1.commentIdValidationMiddleware, ownership_validation_middleware_1.ownershipValidationMiddleware, exports.commentContentValidation, input_validation_middleware_1.inputValidationMiddleware, commentsController.updateComment);
-exports.commentsRouter.put('/:commentId/like-status', auth_middleware_1.authMiddleware, commentId_validation_middleware_1.commentIdValidationMiddleware, likeValidation, input_validation_middleware_1.inputValidationMiddleware, commentsController.updateLikeForComment);
+exports.commentsRouter.get('/:commentId', commentsController.getComment.bind(commentsController));
+exports.commentsRouter.delete('/:commentId', auth_middleware_1.authMiddleware, commentId_validation_middleware_1.commentIdValidationMiddleware, ownership_validation_middleware_1.ownershipValidationMiddleware, commentsController.deleteComment.bind(commentsController));
+exports.commentsRouter.put('/:commentId', auth_middleware_1.authMiddleware, commentId_validation_middleware_1.commentIdValidationMiddleware, ownership_validation_middleware_1.ownershipValidationMiddleware, exports.commentContentValidation, input_validation_middleware_1.inputValidationMiddleware, commentsController.updateComment.bind(commentsController));
+exports.commentsRouter.put('/:commentId/like-status', auth_middleware_1.authMiddleware, commentId_validation_middleware_1.commentIdValidationMiddleware, likeValidation, input_validation_middleware_1.inputValidationMiddleware, commentsController.updateLikeForComment.bind(commentsController));
 //# sourceMappingURL=comments-router.js.map

@@ -85,12 +85,12 @@ usersRouter.post('/',
     passwordValidation,
     emailValidationWithCustomSearch,
     inputValidationMiddleware,
-    usersController.createUser)
+    usersController.createUser.bind(usersController))
 
 usersRouter.delete('/:id',
     basicAuthorizationMiddleware,
-    usersController.deleteUser)
+    usersController.deleteUser.bind(usersController))
 
 usersRouter.get('/',
     basicAuthorizationMiddleware,
-    usersController.getUsers)
+    usersController.getUsers.bind(usersController))

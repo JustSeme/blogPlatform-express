@@ -80,7 +80,7 @@ class UsersController {
     }
 }
 const usersController = new UsersController();
-exports.usersRouter.post('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, exports.loginValidation, exports.passwordValidation, exports.emailValidationWithCustomSearch, input_validation_middleware_1.inputValidationMiddleware, usersController.createUser);
-exports.usersRouter.delete('/:id', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, usersController.deleteUser);
-exports.usersRouter.get('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, usersController.getUsers);
+exports.usersRouter.post('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, exports.loginValidation, exports.passwordValidation, exports.emailValidationWithCustomSearch, input_validation_middleware_1.inputValidationMiddleware, usersController.createUser.bind(usersController));
+exports.usersRouter.delete('/:id', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, usersController.deleteUser.bind(usersController));
+exports.usersRouter.get('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, usersController.getUsers.bind(usersController));
 //# sourceMappingURL=users-router.js.map
