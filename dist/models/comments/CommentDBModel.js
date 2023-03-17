@@ -12,6 +12,11 @@ class CommentDBModel {
             userId,
             userLogin
         };
+        this.likesInfo = {
+            likesCount: 0,
+            dislikesCount: 0,
+            myStatus: 'None'
+        };
     }
 }
 exports.CommentDBModel = CommentDBModel;

@@ -1,7 +1,7 @@
 import { DeviceAuthSessionsModel } from '../models/devices/DeviceSessionsModel';
 import { BlogViewModel } from '../models/blogs/BlogViewModel';
 import { CommentDBModel } from '../models/comments/CommentDBModel';
-import { PostViewModel } from '../models/posts/PostViewModel';
+import { PostDBModel } from '../models/posts/PostViewModel';
 import { UserDBModel } from '../models/users/UserDBModel';
 import { settings } from '../settings';
 import { AttemptsDBModel } from '../models/auth/AttemptsDBModel';
@@ -15,7 +15,7 @@ import { attemptsSchema } from './schemas/attemptsSchema';
 
 let mongoURI = settings.mongoURI
 
-export const PostsModel = mongoose.model<PostViewModel>('posts', postsSchema)
+export const PostsModel = mongoose.model<PostDBModel>('posts', postsSchema)
 export const BlogsModel = mongoose.model<BlogViewModel>('blogs', blogsSchema)
 export const UsersModel = mongoose.model<UserDBModel>('users', usersSchema)
 export const CommentsModel = mongoose.model<CommentDBModel>('comments', commentsSchema)

@@ -1,5 +1,5 @@
 import { PostInputModel } from '../models/posts/PostInputModel'
-import { PostViewModel } from '../models/posts/PostViewModel'
+import { PostDBModel } from '../models/posts/PostViewModel'
 import { postsRepository } from '../repositories/posts-db-repository'
 import { blogsRepository } from '../repositories/blogs-db-repository'
 
@@ -8,10 +8,10 @@ export class PostsService {
         return await postsRepository.deletePosts(id)
     }
 
-    async createPost(body: PostInputModel, blogId: string | null): Promise<PostViewModel> {
+    async createPost(body: PostInputModel, blogId: string | null): Promise<PostDBModel> {
         const blogById = await blogsRepository.findBlogById(blogId ? blogId : body.blogId)
 
-        const createdPost: PostViewModel = {
+        const createdPost: PostDBModel = {
             id: Date.now().toString(),
             title: body.title,
             shortDescription: body.shortDescription,
@@ -19,11 +19,6 @@ export class PostsService {
             blogId: blogId ? blogId : body.blogId,
             blogName: blogById?.name ? blogById?.name : 'not found',
             createdAt: new Date().toISOString(),
-            likesInfo: {
-                likesCount: 0,
-                dislikesCount: 0,
-                myStatus: 'None'
-            }
         }
 
         await postsRepository.createPost(createdPost)

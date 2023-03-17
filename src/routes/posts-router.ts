@@ -3,7 +3,7 @@ import { body } from "express-validator";
 import { HTTP_STATUSES } from "../settings";
 import { ErrorMessagesOutputModel } from "../models/ErrorMessagesOutputModel";
 import { PostInputModel } from "../models/posts/PostInputModel";
-import { PostsWithQueryOutputModel, PostViewModel } from "../models/posts/PostViewModel";
+import { PostsWithQueryOutputModel, PostDBModel } from "../models/posts/PostViewModel";
 import { RequestWithBody, RequestWithParams, RequestWithParamsAndBody, RequestWithParamsAndQuery, RequestWithQuery } from "../types/types";
 import { inputValidationMiddleware } from "../middlewares/validations/input-validation-middleware";
 import { basicAuthorizationMiddleware } from "../middlewares/auth/basic-authorizatoin-middleware";
@@ -78,14 +78,14 @@ class PostsController {
         res.json(findedPosts as PostsWithQueryOutputModel)
     }
 
-    async getPostById(req: RequestWithParams<{ id: string }>, res: Response<PostViewModel>) {
+    async getPostById(req: RequestWithParams<{ id: string }>, res: Response<PostDBModel>) {
         const findedPosts = await postsQueryRepository.findPostById(req.params.id)
 
         if (!findedPosts) {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
             return
         }
-        res.json(findedPosts as PostViewModel)
+        res.json(findedPosts as PostDBModel)
     }
 
     async getCommentsForPost(req: RequestWithParamsAndQuery<{ postId: string }, ReadCommentsQueryParams>, res: Response<CommentsWithQueryOutputModel>) {
@@ -93,7 +93,7 @@ class PostsController {
         res.send(findedComments)
     }
 
-    async createPost(req: RequestWithBody<PostInputModel>, res: Response<PostViewModel | ErrorMessagesOutputModel>) {
+    async createPost(req: RequestWithBody<PostInputModel>, res: Response<PostDBModel | ErrorMessagesOutputModel>) {
         const createdPost = await this.postsService.createPost(req.body, null)
 
         res
@@ -117,7 +117,7 @@ class PostsController {
             .send(createdComment)
     }
 
-    async updatePost(req: RequestWithParamsAndBody<{ id: string }, PostInputModel>, res: Response<PostViewModel | ErrorMessagesOutputModel>) {
+    async updatePost(req: RequestWithParamsAndBody<{ id: string }, PostInputModel>, res: Response<PostDBModel | ErrorMessagesOutputModel>) {
         const isUpdated = await this.postsService.updatePost(req.params.id, req.body)
         if (!isUpdated) {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
@@ -155,7 +155,7 @@ postsRouter.post('/',
     postContentValidation,
     blogIdValidation,
     inputValidationMiddleware,
-    postsController.createPost)
+    postsController.createPost.bind(postsController))
 
 postsRouter.post('/:postId/comments',
     authMiddleware,

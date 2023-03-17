@@ -1,5 +1,5 @@
 import { PostsModel } from "../db";
-import { PostsWithQueryOutputModel, PostViewModel } from "../../models/posts/PostViewModel";
+import { PostsWithQueryOutputModel, PostDBModel } from "../../models/posts/PostViewModel";
 import { ReadPostsQueryParams } from "../../models/posts/ReadPostsQuery";
 
 export const postsQueryRepository = {
@@ -27,7 +27,7 @@ export const postsQueryRepository = {
         }
     },
 
-    async findPostById(id: string): Promise<PostViewModel | null> {
+    async findPostById(id: string): Promise<PostDBModel | null> {
         return await PostsModel.findOne({ id: id }, { _id: 0, __v: 0 }).lean()
     }
 }

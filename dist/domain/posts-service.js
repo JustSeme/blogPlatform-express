@@ -29,11 +29,6 @@ class PostsService {
                 blogId: blogId ? blogId : body.blogId,
                 blogName: (blogById === null || blogById === void 0 ? void 0 : blogById.name) ? blogById === null || blogById === void 0 ? void 0 : blogById.name : 'not found',
                 createdAt: new Date().toISOString(),
-                likesInfo: {
-                    likesCount: 0,
-                    dislikesCount: 0,
-                    myStatus: 'None'
-                }
             };
             yield posts_db_repository_1.postsRepository.createPost(createdPost);
             return createdPost;

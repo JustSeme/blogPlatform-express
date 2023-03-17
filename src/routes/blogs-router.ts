@@ -12,7 +12,7 @@ import { blogsQueryRepository } from "../repositories/query/blogs-query-reposito
 import { BlogsWithQueryOutputModel } from '../models/blogs/BlogViewModel'
 import { RequestWithQuery } from '../types/types'
 import { postContentValidation, shortDescriptionValidation, titleValidation } from "./posts-router";
-import { PostsWithQueryOutputModel, PostViewModel } from "../models/posts/PostViewModel";
+import { PostsWithQueryOutputModel, PostDBModel } from "../models/posts/PostViewModel";
 import { postsQueryRepository } from "../repositories/query/posts-query-repository";
 import { PostInputModel } from "../models/posts/PostInputModel";
 import { postsService } from "../domain/posts-service";
@@ -107,7 +107,7 @@ blogsRouter.post('/:blogId/posts',
     blogIdValidationMiddleware,
     blogIdValidation,
     inputValidationMiddleware,
-    async (req: RequestWithParamsAndBody<{ blogId: string }, PostInputModel>, res: Response<PostViewModel>) => {
+    async (req: RequestWithParamsAndBody<{ blogId: string }, PostInputModel>, res: Response<PostDBModel>) => {
         const createdPost = await postsService.createPost(req.body, req.params.blogId)
 
         res

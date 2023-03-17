@@ -1,5 +1,5 @@
 import { PostInputModel } from '../models/posts/PostInputModel'
-import { PostViewModel } from '../models/posts/PostViewModel'
+import { PostDBModel } from '../models/posts/PostViewModel'
 import { PostsModel } from './db'
 
 class PostsRepository {
@@ -14,7 +14,7 @@ class PostsRepository {
         return result.deletedCount === 1
     }
 
-    async createPost(createdPost: PostViewModel) {
+    async createPost(createdPost: PostDBModel) {
         await PostsModel.create(createdPost)
     }
 

@@ -1,4 +1,4 @@
-export type PostViewModel = {
+export type PostDBModel = {
     id: string,
     title: string,
     shortDescription: string,
@@ -6,7 +6,6 @@ export type PostViewModel = {
     blogId: string,
     blogName: string,
     createdAt: string,
-    likesInfo: LikesInfoType
 }
 
 export type PostsWithQueryOutputModel = {
@@ -14,11 +13,5 @@ export type PostsWithQueryOutputModel = {
     page: number
     pageSize: number
     totalCount: number
-    items: PostViewModel[]
-}
-
-type LikesInfoType = {
-    likesCount: number,
-    dislikesCount: number,
-    myStatus: 'None' | 'Like' | 'Dislike'
+    items: PostDBModel[]
 }
