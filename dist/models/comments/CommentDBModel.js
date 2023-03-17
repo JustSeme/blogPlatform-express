@@ -13,9 +13,8 @@ class CommentDBModel {
             userLogin
         };
         this.likesInfo = {
-            likesCount: 0,
-            dislikesCount: 0,
-            myStatus: 'None'
+            likes: [],
+            dislikes: []
         };
     }
 }

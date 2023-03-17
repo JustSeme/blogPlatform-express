@@ -71,7 +71,7 @@ class CommentsController {
     }
 
     async updateLikeForComment(req: RequestWithParamsAndBody<{ commentId: string }, LikeInputModel>, res: Response) {
-        res.send(200)
+        this.commentsService
     }
 }
 

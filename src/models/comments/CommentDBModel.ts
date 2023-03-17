@@ -20,9 +20,8 @@ export class CommentDBModel {
             userLogin
         }
         this.likesInfo = {
-            likesCount: 0,
-            dislikesCount: 0,
-            myStatus: 'None'
+            likes: [],
+            dislikes: []
         }
     }
 
@@ -35,7 +34,11 @@ type CommentatorInfoType = {
 }
 
 type LikesInfoType = {
-    likesCount: number,
-    dislikesCount: number,
-    myStatus: 'None' | 'Like' | 'Dislike'
+    likes: LikeObjectType[],
+    dislikes: LikeObjectType[]
+}
+
+export type LikeObjectType = {
+    userId: string
+    createdAt: string
 }

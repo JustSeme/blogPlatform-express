@@ -41,6 +41,34 @@ class CommentsService {
             return yield this.commentsRepository.updateComment(commentId, content);
         });
     }
+    updateLike(userId, commentId, status) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const updatingComment = yield this.commentsRepository.getCommentById(commentId);
+            if (!updatingComment) {
+                return false;
+            }
+            const likeData = {
+                userId,
+                createdAt: new Date().toISOString()
+            };
+            if (status === 'Like') {
+                const likesArray = updatingComment.likesInfo.likes;
+                const isAlreadyLiked = likesArray.findIndex((like) => like.userId === userId) > 0;
+                if (isAlreadyLiked)
+                    return false;
+                this.commentsRepository.setLike(likeData, commentId);
+                return true;
+            }
+            if (status === 'Dislike') {
+                const dislikesArray = updatingComment.likesInfo.dislikes;
+                const isAlreadyDisliked = dislikesArray.findIndex((dislike) => dislike.userId === userId) > 0;
+                if (isAlreadyDisliked)
+                    return false;
+                this.commentsRepository.setDislike(likeData, commentId);
+                return true;
+            }
+        });
+    }
 }
 exports.CommentsService = CommentsService;
 //# sourceMappingURL=comments-service.js.map

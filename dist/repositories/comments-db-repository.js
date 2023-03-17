@@ -29,6 +29,31 @@ class CommentsRepository {
             return result.matchedCount === 1;
         });
     }
+    getCommentById(commentId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return db_1.CommentsModel.findOne({ id: commentId });
+        });
+    }
+    setLike(likeData, commentId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const likedComment = yield db_1.CommentsModel.findOne({ id: commentId });
+            if (!likedComment)
+                return false;
+            likedComment.likesInfo.likes.push(likeData);
+            yield likedComment.save();
+            return true;
+        });
+    }
+    setDislike(likeData, commentId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const dislikedComment = yield db_1.CommentsModel.findOne({ id: commentId });
+            if (!dislikedComment)
+                return false;
+            dislikedComment.likesInfo.dislikes.push(likeData);
+            yield dislikedComment.save();
+            return true;
+        });
+    }
 }
 exports.CommentsRepository = CommentsRepository;
 //# sourceMappingURL=comments-db-repository.js.map

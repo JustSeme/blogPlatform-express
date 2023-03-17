@@ -14,5 +14,10 @@ exports.commentsSchema = new mongoose_1.default.Schema({
     },
     createdAt: { type: String, required: true },
     postId: { type: String, required: true },
+    likesInfo: {
+        likesCount: { type: Number, required: true },
+        dislikesCount: { type: Number, required: true },
+        myStatus: { type: String, required: true }
+    }
 });
 //# sourceMappingURL=commentsSchema.js.map

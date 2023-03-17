@@ -11,8 +11,6 @@ describe('/comments', () => {
     beforeAll(async () => {
         await request(app)
             .delete(`/homeworks/testing/all-data`)
-
-        await server.close()
     })
 
     afterEach(async () => {

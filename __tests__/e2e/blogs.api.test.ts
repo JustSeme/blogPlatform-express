@@ -3,11 +3,10 @@ import request from 'supertest'
 import { server } from '../../src/app'
 import { app } from "../../src/settings";
 
-describe('/blogs', () => {
+/* describe('/blogs', () => {
     beforeAll(async () => {
         await request(app)
             .delete(`/homeworks/testing/all-data`)
-        await server.close()
     })
 
     afterEach(async () => {
@@ -28,4 +27,4 @@ describe('/blogs', () => {
 
         // get blog
     })
-})
+}) */

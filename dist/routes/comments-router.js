@@ -71,7 +71,7 @@ class CommentsController {
     }
     updateLikeForComment(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            res.send(200);
+            this.commentsService;
         });
     }
 }
