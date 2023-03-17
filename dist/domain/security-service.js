@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.securityService = void 0;
+exports.SecurityService = void 0;
 const device_db_repository_1 = require("../repositories/device-db-repository");
 class SecurityService {
     getActiveDevicesForUser(userId) {
@@ -38,5 +38,5 @@ class SecurityService {
         });
     }
 }
-exports.securityService = new SecurityService();
+exports.SecurityService = SecurityService;
 //# sourceMappingURL=security-service.js.map

@@ -9,7 +9,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postsService = exports.PostsService = void 0;
+exports.PostsService = void 0;
+const PostDBModel_1 = require("../models/posts/PostDBModel");
 const posts_db_repository_1 = require("../repositories/posts-db-repository");
 const blogs_db_repository_1 = require("../repositories/blogs-db-repository");
 class PostsService {
@@ -21,15 +22,7 @@ class PostsService {
     createPost(body, blogId) {
         return __awaiter(this, void 0, void 0, function* () {
             const blogById = yield blogs_db_repository_1.blogsRepository.findBlogById(blogId ? blogId : body.blogId);
-            const createdPost = {
-                id: Date.now().toString(),
-                title: body.title,
-                shortDescription: body.shortDescription,
-                content: body.content,
-                blogId: blogId ? blogId : body.blogId,
-                blogName: (blogById === null || blogById === void 0 ? void 0 : blogById.name) ? blogById === null || blogById === void 0 ? void 0 : blogById.name : 'not found',
-                createdAt: new Date().toISOString(),
-            };
+            const createdPost = new PostDBModel_1.PostDBModel(body.title, body.shortDescription, body.content, blogId ? blogId : body.blogId, (blogById === null || blogById === void 0 ? void 0 : blogById.name) ? blogById === null || blogById === void 0 ? void 0 : blogById.name : 'not found');
             yield posts_db_repository_1.postsRepository.createPost(createdPost);
             return createdPost;
         });
@@ -41,6 +34,4 @@ class PostsService {
     }
 }
 exports.PostsService = PostsService;
-//Оставил это чтобы не делать костыли для /testing-delete-all-data
-exports.postsService = new PostsService();
 //# sourceMappingURL=posts-service.js.map

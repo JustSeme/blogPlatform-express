@@ -20,10 +20,6 @@ class AttemptsRepository {
         const result = await AttemptsModel.deleteMany({ clientIp, requestedUrl })
         return result.deletedCount > 0
     }
-
-    async clearAllAttempts() {
-        return AttemptsModel.deleteMany({})
-    }
 }
 
 export const attemptsRepository = new AttemptsRepository()

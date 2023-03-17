@@ -52,9 +52,12 @@ exports.emailValidationWithCustomSearch = (0, express_validator_1.body)('email')
     });
 }));
 class UsersController {
+    constructor() {
+        this.authService = new auth_service_1.AuthService();
+    }
     createUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const createdUser = yield auth_service_1.authService.createUserWithBasicAuth(req.body.login, req.body.password, req.body.email);
+            const createdUser = yield this.authService.createUserWithBasicAuth(req.body.login, req.body.password, req.body.email);
             if (!createdUser) {
                 res.sendStatus(settings_1.HTTP_STATUSES.BAD_REQUEST_400);
                 return;
@@ -70,7 +73,7 @@ class UsersController {
     }
     deleteUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const isDeleted = yield auth_service_1.authService.deleteUsers(req.params.id);
+            const isDeleted = yield this.authService.deleteUsers(req.params.id);
             if (!isDeleted) {
                 res.sendStatus(settings_1.HTTP_STATUSES.NOT_FOUND_404);
                 return;

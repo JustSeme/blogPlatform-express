@@ -6,7 +6,7 @@ import { emailManager } from '../managers/emailManager'
 import { bcryptAdapter } from '../adapters/bcryptAdapter'
 
 //transaction script
-class AuthService {
+export class AuthService {
     private usersRepository: UsersRepository
 
     constructor() {
@@ -100,12 +100,7 @@ class AuthService {
         return this.usersRepository.updateUserPassword(userId, newPasswordHash)
     }
 
-    async deleteUsers(userId: string | null) {
-        if (userId) {
-            return await this.usersRepository.deleteUser(userId)
-        }
-        return await this.usersRepository.deleteUsers()
+    async deleteUsers(userId: string) {
+        return this.usersRepository.deleteUser(userId)
     }
 }
-
-export const authService = new AuthService()

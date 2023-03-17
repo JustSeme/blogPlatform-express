@@ -2,7 +2,7 @@ import { CommentDBModel } from "../models/comments/CommentDBModel";
 import { UserDBModel } from "../models/users/UserDBModel";
 import { commentsRepository } from "../repositories/comments-db-repository";
 
-class CommentsService {
+export class CommentsService {
     async createComment(content: string, commentator: UserDBModel | null, postId: string) {
         if (!commentator) {
             return null
@@ -28,5 +28,3 @@ class CommentsService {
         return await commentsRepository.updateComment(commentId, content)
     }
 }
-
-export const commentsService = new CommentsService()

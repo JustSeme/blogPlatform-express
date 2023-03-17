@@ -14,12 +14,7 @@ const db_1 = require("./db");
 class PostsRepository {
     deletePosts(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            let result;
-            if (id === null) {
-                result = yield db_1.PostsModel.deleteMany({});
-                return result.deletedCount > 0;
-            }
-            result = yield db_1.PostsModel.deleteOne({ id: id });
+            let result = yield db_1.PostsModel.deleteOne({ id: id });
             return result.deletedCount === 1;
         });
     }

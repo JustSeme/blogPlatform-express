@@ -2,7 +2,7 @@ import { Request, Response, Router } from "express";
 import { JwtPayload } from "jsonwebtoken";
 import { HTTP_STATUSES } from '../settings'
 import { JwtService } from "../application/jwtService";
-import { securityService } from "../domain/security-service";
+import { SecurityService } from "../domain/security-service";
 import { DeviceSessionsViewModel } from "../models/devices/DeviceSessionsViewModel";
 import { deviceQueryRepository } from "../repositories/query/device-query-repository";
 import { RequestWithParams } from "../types/types";
@@ -11,9 +11,11 @@ export const securityRouter = Router({})
 
 class SecurityController {
     private jwtService: JwtService
+    private securityService: SecurityService
 
     constructor() {
         this.jwtService = new JwtService()
+        this.securityService = new SecurityService()
     }
 
     async getDevices(req: Request, res: Response<DeviceSessionsViewModel[]>) {
@@ -30,7 +32,7 @@ class SecurityController {
             return
         }
 
-        const activeDevicesForUser = await securityService.getActiveDevicesForUser(result.userId)
+        const activeDevicesForUser = await this.securityService.getActiveDevicesForUser(result.userId)
         if (!activeDevicesForUser) {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
             return
@@ -47,7 +49,7 @@ class SecurityController {
             return
         }
 
-        const isDeleted = await securityService.removeAllSessions(result.userId, result.deviceId) // exclude current
+        const isDeleted = await this.securityService.removeAllSessions(result.userId, result.deviceId) // exclude current
         if (!isDeleted) {
             res.sendStatus(HTTP_STATUSES.NOT_IMPLEMENTED_501)
             return
@@ -74,7 +76,7 @@ class SecurityController {
             return
         }
 
-        await securityService.deleteDevice(req.params.deviceId)
+        await this.securityService.deleteDevice(req.params.deviceId)
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
     }
 }

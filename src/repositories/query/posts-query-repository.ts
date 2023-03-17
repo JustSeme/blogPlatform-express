@@ -1,5 +1,5 @@
 import { PostsModel } from "../db";
-import { PostsWithQueryOutputModel, PostDBModel } from "../../models/posts/PostViewModel";
+import { PostsWithQueryOutputModel, PostDBModel } from "../../models/posts/PostDBModel";
 import { ReadPostsQueryParams } from "../../models/posts/ReadPostsQuery";
 
 export const postsQueryRepository = {

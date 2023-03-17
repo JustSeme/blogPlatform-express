@@ -3,7 +3,7 @@ import { body } from "express-validator";
 import { HTTP_STATUSES } from "../settings";
 import { ErrorMessagesOutputModel } from "../models/ErrorMessagesOutputModel";
 import { PostInputModel } from "../models/posts/PostInputModel";
-import { PostsWithQueryOutputModel, PostDBModel } from "../models/posts/PostViewModel";
+import { PostsWithQueryOutputModel, PostDBModel } from "../models/posts/PostDBModel";
 import { RequestWithBody, RequestWithParams, RequestWithParamsAndBody, RequestWithParamsAndQuery, RequestWithQuery } from "../types/types";
 import { inputValidationMiddleware } from "../middlewares/validations/input-validation-middleware";
 import { basicAuthorizationMiddleware } from "../middlewares/auth/basic-authorizatoin-middleware";
@@ -14,7 +14,7 @@ import { ReadPostsQueryParams } from "../models/posts/ReadPostsQuery";
 import { authMiddleware } from "../middlewares/auth/auth-middleware";
 import { CommentInputModel } from "../models/comments/CommentInputModel";
 import { CommentViewModel } from "../models/comments/CommentViewModel";
-import { commentsService } from "../domain/comments-service";
+import { CommentsService } from "../domain/comments-service";
 import { postIdValidationMiddleware } from "../middlewares/validations/postId-validation-middleware";
 import { ReadCommentsQueryParams } from "../models/comments/ReadCommentsQuery";
 import { CommentsWithQueryOutputModel } from "../models/comments/CommentViewModel";
@@ -62,10 +62,12 @@ const blogIdValidation = body('blogId')
 class PostsController {
     private jwtService: JwtService
     private postsService: PostsService
+    private commentsService: CommentsService
 
     constructor() {
         this.jwtService = new JwtService()
         this.postsService = new PostsService()
+        this.commentsService = new CommentsService()
     }
 
     async getPosts(req: RequestWithQuery<ReadPostsQueryParams>, res: Response<PostsWithQueryOutputModel>) {
@@ -106,7 +108,7 @@ class PostsController {
         const userId = await this.jwtService.getUserIdByToken(token)
         const commentator = await usersQueryRepository.findUserById(userId)
 
-        const createdComment = await commentsService.createComment(req.body.content, commentator, req.params.postId)
+        const createdComment = await this.commentsService.createComment(req.body.content, commentator, req.params.postId)
         if (!createdComment) {
             res.sendStatus(HTTP_STATUSES.NOT_IMPLEMENTED_501)
             return

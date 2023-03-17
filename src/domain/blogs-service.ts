@@ -2,8 +2,8 @@ import { BlogInputModel } from "../models/blogs/BlogInputModel";
 import { BlogViewModel } from "../models/blogs/BlogViewModel";
 import { blogsRepository } from "../repositories/blogs-db-repository";
 
-class BlogsService {
-    async deleteBlog(id: string | null) {
+export class BlogsService {
+    async deleteBlog(id: string) {
         return blogsRepository.deleteBlog(id)
     }
 
@@ -26,5 +26,3 @@ class BlogsService {
         return await blogsRepository.updateBlog(id, body)
     }
 }
-
-export const blogsService = new BlogsService()

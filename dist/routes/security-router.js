@@ -19,6 +19,7 @@ exports.securityRouter = (0, express_1.Router)({});
 class SecurityController {
     constructor() {
         this.jwtService = new jwtService_1.JwtService();
+        this.securityService = new security_service_1.SecurityService();
     }
     getDevices(req, res) {
         var _a;
@@ -33,7 +34,7 @@ class SecurityController {
                 res.sendStatus(settings_1.HTTP_STATUSES.UNAUTHORIZED_401);
                 return;
             }
-            const activeDevicesForUser = yield security_service_1.securityService.getActiveDevicesForUser(result.userId);
+            const activeDevicesForUser = yield this.securityService.getActiveDevicesForUser(result.userId);
             if (!activeDevicesForUser) {
                 res.sendStatus(settings_1.HTTP_STATUSES.NOT_FOUND_404);
                 return;
@@ -49,7 +50,7 @@ class SecurityController {
                 res.sendStatus(settings_1.HTTP_STATUSES.UNAUTHORIZED_401);
                 return;
             }
-            const isDeleted = yield security_service_1.securityService.removeAllSessions(result.userId, result.deviceId); // exclude current
+            const isDeleted = yield this.securityService.removeAllSessions(result.userId, result.deviceId); // exclude current
             if (!isDeleted) {
                 res.sendStatus(settings_1.HTTP_STATUSES.NOT_IMPLEMENTED_501);
                 return;
@@ -74,7 +75,7 @@ class SecurityController {
                 res.sendStatus(settings_1.HTTP_STATUSES.FORBIDDEN_403);
                 return;
             }
-            yield security_service_1.securityService.deleteDevice(req.params.deviceId);
+            yield this.securityService.deleteDevice(req.params.deviceId);
             res.sendStatus(settings_1.HTTP_STATUSES.NO_CONTENT_204);
         });
     }

@@ -1,25 +1,23 @@
 import { PostInputModel } from '../models/posts/PostInputModel'
-import { PostDBModel } from '../models/posts/PostViewModel'
+import { PostDBModel } from '../models/posts/PostDBModel'
 import { postsRepository } from '../repositories/posts-db-repository'
 import { blogsRepository } from '../repositories/blogs-db-repository'
 
 export class PostsService {
-    async deletePosts(id: string | null) {
+    async deletePosts(id: string) {
         return await postsRepository.deletePosts(id)
     }
 
     async createPost(body: PostInputModel, blogId: string | null): Promise<PostDBModel> {
         const blogById = await blogsRepository.findBlogById(blogId ? blogId : body.blogId)
 
-        const createdPost: PostDBModel = {
-            id: Date.now().toString(),
-            title: body.title,
-            shortDescription: body.shortDescription,
-            content: body.content,
-            blogId: blogId ? blogId : body.blogId,
-            blogName: blogById?.name ? blogById?.name : 'not found',
-            createdAt: new Date().toISOString(),
-        }
+        const createdPost: PostDBModel = new PostDBModel(
+            body.title,
+            body.shortDescription,
+            body.content,
+            blogId ? blogId : body.blogId,
+            blogById?.name ? blogById?.name : 'not found',
+        )
 
         await postsRepository.createPost(createdPost)
 
@@ -30,7 +28,3 @@ export class PostsService {
         return await postsRepository.updatePost(id, body)
     }
 }
-
-
-//Оставил это чтобы не делать костыли для /testing-delete-all-data
-export const postsService = new PostsService()

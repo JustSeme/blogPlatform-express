@@ -6,12 +6,9 @@ import { blogsRouter } from './routes/blogs-router'
 import { postsRouter } from './routes/posts-router'
 import { usersRouter } from './routes/users-router'
 import { authRouter } from './routes/auth-router'
-import { postsService } from './domain/posts-service'
-import { blogsService } from './domain/blogs-service'
-import { authService } from './domain/auth-service'
 import { commentsRouter } from './routes/comments-router'
 import { securityRouter } from './routes/security-router'
-import { attemptsRepository } from './repositories/attempts-db-repository'
+import { AttemptsModel, BlogsModel, PostsModel, UsersModel } from "./repositories/db"
 
 const username = "justSeme"
 const password = "RMMXpX1hUlXqbKED"
@@ -66,9 +63,9 @@ app.delete('/homework01/testing/all-data', async (req: Request, res: Response) =
 })
 
 app.delete('/homeworks/testing/all-data', async (req: Request, res: Response) => {
-    await postsService.deletePosts(null)
-    await blogsService.deleteBlog(null)
-    await authService.deleteUsers(null)
-    await attemptsRepository.clearAllAttempts()
+    await PostsModel.deleteMany({})
+    await BlogsModel.deleteMany({})
+    await UsersModel.deleteMany({})
+    await AttemptsModel.deleteMany({})
     res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
 })

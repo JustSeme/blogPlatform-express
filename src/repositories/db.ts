@@ -1,7 +1,7 @@
 import { DeviceAuthSessionsModel } from '../models/devices/DeviceSessionsModel';
 import { BlogViewModel } from '../models/blogs/BlogViewModel';
 import { CommentDBModel } from '../models/comments/CommentDBModel';
-import { PostDBModel } from '../models/posts/PostViewModel';
+import { PostDBModel } from '../models/posts/PostDBModel';
 import { UserDBModel } from '../models/users/UserDBModel';
 import { settings } from '../settings';
 import { AttemptsDBModel } from '../models/auth/AttemptsDBModel';

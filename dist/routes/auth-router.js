@@ -42,10 +42,11 @@ const newPasswordValidation = (0, express_validator_1.body)('newPassword')
 class AuthController {
     constructor() {
         this.jwtService = new jwtService_1.JwtService();
+        this.authService = new auth_service_1.AuthService();
     }
     login(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield auth_service_1.authService.checkCredentials(req.body.loginOrEmail, req.body.password);
+            const user = yield this.authService.checkCredentials(req.body.loginOrEmail, req.body.password);
             if (!user) {
                 res.sendStatus(settings_1.HTTP_STATUSES.UNAUTHORIZED_401);
                 return;
@@ -89,7 +90,7 @@ class AuthController {
     }
     registration(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const isCreated = yield auth_service_1.authService.createUser(req.body.login, req.body.password, req.body.email);
+            const isCreated = yield this.authService.createUser(req.body.login, req.body.password, req.body.email);
             if (!isCreated) {
                 res.sendStatus(settings_1.HTTP_STATUSES.BAD_REQUEST_400);
                 return;
@@ -99,7 +100,7 @@ class AuthController {
     }
     registrationConfirm(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const isConfirmed = yield auth_service_1.authService.confirmEmail(req.body.code);
+            const isConfirmed = yield this.authService.confirmEmail(req.body.code);
             if (!isConfirmed) {
                 res
                     .status(settings_1.HTTP_STATUSES.BAD_REQUEST_400)
@@ -116,7 +117,7 @@ class AuthController {
     }
     resendEmail(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield auth_service_1.authService.resendConfirmationCode(req.body.email);
+            const result = yield this.authService.resendConfirmationCode(req.body.email);
             if (!result) {
                 res
                     .status(settings_1.HTTP_STATUSES.BAD_REQUEST_400)
@@ -133,7 +134,7 @@ class AuthController {
     }
     recoveryPassword(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const isRecovering = yield auth_service_1.authService.sendPasswordRecoveryCode(req.body.email);
+            const isRecovering = yield this.authService.sendPasswordRecoveryCode(req.body.email);
             if (!isRecovering) {
                 res.sendStatus(settings_1.HTTP_STATUSES.NOT_IMPLEMENTED_501);
                 return;
@@ -151,7 +152,7 @@ class AuthController {
                 });
                 return;
             }
-            const isConfirmed = yield auth_service_1.authService.confirmRecoveryPassword(user.id, req.body.newPassword);
+            const isConfirmed = yield this.authService.confirmRecoveryPassword(user.id, req.body.newPassword);
             if (!isConfirmed) {
                 res.sendStatus(settings_1.HTTP_STATUSES.NOT_IMPLEMENTED_501);
                 return;

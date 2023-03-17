@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.commentsService = void 0;
+exports.CommentsService = void 0;
 const CommentDBModel_1 = require("../models/comments/CommentDBModel");
 const comments_db_repository_1 = require("../repositories/comments-db-repository");
 class CommentsService {
@@ -39,5 +39,5 @@ class CommentsService {
         });
     }
 }
-exports.commentsService = new CommentsService();
+exports.CommentsService = CommentsService;
 //# sourceMappingURL=comments-service.js.map

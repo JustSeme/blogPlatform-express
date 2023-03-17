@@ -26,12 +26,6 @@ class UsersRepository {
             return result.deletedCount === 1;
         });
     }
-    deleteUsers() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.UsersModel.deleteMany({});
-            return result.deletedCount > 0;
-        });
-    }
     updateIsConfirmed(id) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield db_1.UsersModel.updateOne({ id: id }, { $set: { 'emailConfirmation.isConfirmed': true } });

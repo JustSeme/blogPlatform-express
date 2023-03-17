@@ -36,6 +36,9 @@ const likeValidation = (0, express_validator_1.body)('likeStatus')
     throw new Error('likeStatus is incorrect');
 });
 class CommentsController {
+    constructor() {
+        this.commentsService = new comments_service_1.CommentsService();
+    }
     getComment(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const findedComment = yield comments_query_repository_1.commentsQueryRepository.findCommentById(req.params.commentId);
@@ -48,7 +51,7 @@ class CommentsController {
     }
     deleteComment(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const isDeleted = yield comments_service_1.commentsService.deleteComment(req.params.commentId);
+            const isDeleted = yield this.commentsService.deleteComment(req.params.commentId);
             if (!isDeleted) {
                 res.sendStatus(settings_1.HTTP_STATUSES.NOT_FOUND_404);
                 return;
@@ -58,7 +61,7 @@ class CommentsController {
     }
     updateComment(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const isUpdated = yield comments_service_1.commentsService.updateComment(req.params.commentId, req.body.content);
+            const isUpdated = yield this.commentsService.updateComment(req.params.commentId, req.body.content);
             if (!isUpdated) {
                 res.sendStatus(settings_1.HTTP_STATUSES.NOT_FOUND_404);
                 return;

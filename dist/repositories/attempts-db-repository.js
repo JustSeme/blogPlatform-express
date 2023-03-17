@@ -35,11 +35,6 @@ class AttemptsRepository {
             return result.deletedCount > 0;
         });
     }
-    clearAllAttempts() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return db_1.AttemptsModel.deleteMany({});
-        });
-    }
 }
 exports.attemptsRepository = new AttemptsRepository();
 //# sourceMappingURL=attempts-db-repository.js.map

@@ -2,7 +2,7 @@ import { Request, Response, Router } from "express";
 import { body } from "express-validator";
 import { HTTP_STATUSES } from '../settings'
 import { JwtService } from "../application/jwtService";
-import { authService } from "../domain/auth-service";
+import { AuthService } from "../domain/auth-service";
 import { authMiddleware } from "../middlewares/auth/auth-middleware";
 import { rateLimitMiddleware } from "../middlewares/auth/rate-limit-middleware";
 import { inputValidationMiddleware } from "../middlewares/validations/input-validation-middleware";
@@ -40,13 +40,15 @@ const newPasswordValidation = body('newPassword')
 
 class AuthController {
     private jwtService: JwtService
+    private authService: AuthService
 
     constructor() {
         this.jwtService = new JwtService()
+        this.authService = new AuthService()
     }
 
     async login(req: RequestWithBody<LoginInputModel>, res: Response<ErrorMessagesOutputModel | { accessToken: string }>) {
-        const user = await authService.checkCredentials(req.body.loginOrEmail, req.body.password)
+        const user = await this.authService.checkCredentials(req.body.loginOrEmail, req.body.password)
         if (!user) {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
             return
@@ -92,7 +94,7 @@ class AuthController {
     }
 
     async registration(req: RequestWithBody<UserInputModel>, res: Response<ErrorMessagesOutputModel>) {
-        const isCreated = await authService.createUser(req.body.login, req.body.password, req.body.email)
+        const isCreated = await this.authService.createUser(req.body.login, req.body.password, req.body.email)
         if (!isCreated) {
             res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
             return
@@ -101,7 +103,7 @@ class AuthController {
     }
 
     async registrationConfirm(req: RequestWithBody<{ code: string }>, res: Response<ErrorMessagesOutputModel>) {
-        const isConfirmed = await authService.confirmEmail(req.body.code)
+        const isConfirmed = await this.authService.confirmEmail(req.body.code)
         if (!isConfirmed) {
             res
                 .status(HTTP_STATUSES.BAD_REQUEST_400)
@@ -117,7 +119,7 @@ class AuthController {
     }
 
     async resendEmail(req: RequestWithBody<{ email: string }>, res: Response<ErrorMessagesOutputModel>) {
-        const result = await authService.resendConfirmationCode(req.body.email)
+        const result = await this.authService.resendConfirmationCode(req.body.email)
         if (!result) {
             res
                 .status(HTTP_STATUSES.BAD_REQUEST_400)
@@ -133,7 +135,7 @@ class AuthController {
     }
 
     async recoveryPassword(req: RequestWithBody<{ email: string }>, res: Response) {
-        const isRecovering = await authService.sendPasswordRecoveryCode(req.body.email)
+        const isRecovering = await this.authService.sendPasswordRecoveryCode(req.body.email)
         if (!isRecovering) {
             res.sendStatus(HTTP_STATUSES.NOT_IMPLEMENTED_501)
             return
@@ -152,7 +154,7 @@ class AuthController {
             return
         }
 
-        const isConfirmed = await authService.confirmRecoveryPassword(user.id, req.body.newPassword)
+        const isConfirmed = await this.authService.confirmRecoveryPassword(user.id, req.body.newPassword)
         if (!isConfirmed) {
             res.sendStatus(HTTP_STATUSES.NOT_IMPLEMENTED_501)
             return

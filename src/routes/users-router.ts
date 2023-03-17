@@ -1,7 +1,7 @@
 import { Router, Response } from "express";
 import { body } from "express-validator";
 import { HTTP_STATUSES } from '../settings'
-import { authService } from "../domain/auth-service";
+import { AuthService } from "../domain/auth-service";
 import { basicAuthorizationMiddleware } from "../middlewares/auth/basic-authorizatoin-middleware";
 import { inputValidationMiddleware } from "../middlewares/validations/input-validation-middleware";
 import { ErrorMessagesOutputModel } from "../models/ErrorMessagesOutputModel";
@@ -51,8 +51,14 @@ export const emailValidationWithCustomSearch = body('email')
     })
 
 class UsersController {
+    private authService: AuthService
+
+    constructor() {
+        this.authService = new AuthService()
+    }
+
     async createUser(req: RequestWithBody<UserInputModel>, res: Response<UserViewModelType | ErrorMessagesOutputModel>) {
-        const createdUser = await authService.createUserWithBasicAuth(req.body.login, req.body.password, req.body.email)
+        const createdUser = await this.authService.createUserWithBasicAuth(req.body.login, req.body.password, req.body.email)
         if (!createdUser) {
             res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
             return
@@ -68,7 +74,7 @@ class UsersController {
     }
 
     async deleteUser(req: RequestWithParams<{ id: string }>, res: Response) {
-        const isDeleted = await authService.deleteUsers(req.params.id)
+        const isDeleted = await this.authService.deleteUsers(req.params.id)
         if (!isDeleted) {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
             return

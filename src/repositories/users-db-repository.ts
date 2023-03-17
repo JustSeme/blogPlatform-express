@@ -14,11 +14,6 @@ export class UsersRepository {
         return result.deletedCount === 1
     }
 
-    async deleteUsers(): Promise<boolean> {
-        const result = await UsersModel.deleteMany({})
-        return result.deletedCount > 0
-    }
-
     async updateIsConfirmed(id: string) {
         const result = await UsersModel.updateOne({ id: id }, { $set: { 'emailConfirmation.isConfirmed': true } })
         return result.matchedCount === 1

@@ -1,7 +1,7 @@
 import { DeviceSessionsViewModel } from "../models/devices/DeviceSessionsViewModel"
 import { deviceRepository } from "../repositories/device-db-repository"
 
-class SecurityService {
+export class SecurityService {
     async getActiveDevicesForUser(userId: string) {
         const activeSessionsForUser = await deviceRepository.getDevicesForUser(userId)
         if (!activeSessionsForUser) {
@@ -25,5 +25,3 @@ class SecurityService {
         return deviceRepository.removeSession(deviceId)
     }
 }
-
-export const securityService = new SecurityService()

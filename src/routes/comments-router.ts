@@ -1,7 +1,7 @@
 import { Router, Response } from "express";
 import { body } from "express-validator";
 import { HTTP_STATUSES } from "../settings";
-import { commentsService } from "../domain/comments-service";
+import { CommentsService } from "../domain/comments-service";
 import { authMiddleware } from "../middlewares/auth/auth-middleware";
 import { commentIdValidationMiddleware } from "../middlewares/validations/commentId-validation-middleware";
 import { inputValidationMiddleware } from "../middlewares/validations/input-validation-middleware";
@@ -34,6 +34,12 @@ const likeValidation = body('likeStatus')
     })
 
 class CommentsController {
+    private commentsService: CommentsService
+
+    constructor() {
+        this.commentsService = new CommentsService()
+    }
+
     async getComment(req: RequestWithParams<{ commentId: string }>, res: Response<CommentViewModel>) {
         const findedComment = await commentsQueryRepository.findCommentById(req.params.commentId)
         if (!findedComment) {
@@ -45,7 +51,7 @@ class CommentsController {
     }
 
     async deleteComment(req: RequestWithParams<{ commentId: string }>, res: Response) {
-        const isDeleted = await commentsService.deleteComment(req.params.commentId)
+        const isDeleted = await this.commentsService.deleteComment(req.params.commentId)
         if (!isDeleted) {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
             return
@@ -55,7 +61,7 @@ class CommentsController {
     }
 
     async updateComment(req: RequestWithParamsAndBody<{ commentId: string }, CommentInputModel>, res: Response<ErrorMessagesOutputModel>) {
-        const isUpdated = await commentsService.updateComment(req.params.commentId, req.body.content)
+        const isUpdated = await this.commentsService.updateComment(req.params.commentId, req.body.content)
         if (!isUpdated) {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
             return

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.authService = void 0;
+exports.AuthService = void 0;
 const UserDBModel_1 = require("../models/users/UserDBModel");
 const users_db_repository_1 = require("../repositories/users-db-repository");
 const uuid_1 = require("uuid");
@@ -110,12 +110,9 @@ class AuthService {
     }
     deleteUsers(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (userId) {
-                return yield this.usersRepository.deleteUser(userId);
-            }
-            return yield this.usersRepository.deleteUsers();
+            return this.usersRepository.deleteUser(userId);
         });
     }
 }
-exports.authService = new AuthService();
+exports.AuthService = AuthService;
 //# sourceMappingURL=auth-service.js.map

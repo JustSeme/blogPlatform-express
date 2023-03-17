@@ -1,16 +1,10 @@
 import { PostInputModel } from '../models/posts/PostInputModel'
-import { PostDBModel } from '../models/posts/PostViewModel'
+import { PostDBModel } from '../models/posts/PostDBModel'
 import { PostsModel } from './db'
 
 class PostsRepository {
-    async deletePosts(id: string | null) {
-        let result
-        if (id === null) {
-            result = await PostsModel.deleteMany({})
-            return result.deletedCount > 0
-        }
-
-        result = await PostsModel.deleteOne({ id: id })
+    async deletePosts(id: string) {
+        let result = await PostsModel.deleteOne({ id: id })
         return result.deletedCount === 1
     }
 

@@ -60,6 +60,7 @@ class PostsController {
     constructor() {
         this.jwtService = new jwtService_1.JwtService();
         this.postsService = new posts_service_1.PostsService();
+        this.commentsService = new comments_service_1.CommentsService();
     }
     getPosts(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -100,7 +101,7 @@ class PostsController {
             const token = req.headers.authorization.split(' ')[1];
             const userId = yield this.jwtService.getUserIdByToken(token);
             const commentator = yield users_query_repository_1.usersQueryRepository.findUserById(userId);
-            const createdComment = yield comments_service_1.commentsService.createComment(req.body.content, commentator, req.params.postId);
+            const createdComment = yield this.commentsService.createComment(req.body.content, commentator, req.params.postId);
             if (!createdComment) {
                 res.sendStatus(settings_1.HTTP_STATUSES.NOT_IMPLEMENTED_501);
                 return;
