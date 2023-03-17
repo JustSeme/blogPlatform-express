@@ -35,3 +35,7 @@ export class PostsService {
         return await postsRepository.updatePost(id, body)
     }
 }
+
+
+//Оставил это чтобы не делать костыли для /testing-delete-all-data
+export const postsService = new PostsService()

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PostsService = void 0;
+exports.postsService = exports.PostsService = void 0;
 const posts_db_repository_1 = require("../repositories/posts-db-repository");
 const blogs_db_repository_1 = require("../repositories/blogs-db-repository");
 class PostsService {
@@ -46,4 +46,6 @@ class PostsService {
     }
 }
 exports.PostsService = PostsService;
+//Оставил это чтобы не делать костыли для /testing-delete-all-data
+exports.postsService = new PostsService();
 //# sourceMappingURL=posts-service.js.map
