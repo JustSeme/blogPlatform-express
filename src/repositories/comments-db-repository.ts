@@ -41,13 +41,24 @@ export class CommentsRepository {
         return true
     }
 
-    /* async setNoneLike(userId: string, commentId: string, status: LikeType) {
+    async setNoneLike(userId: string, commentId: string) {
         const likedComment = await CommentsModel.findOne({ id: commentId })
         if (!likedComment) return false
 
-        if (status === 'Like') {
-            likedComment.likesInfo.likes!.findIndex
+        const likeIndex = likedComment.likesInfo.likes.findIndex((like) => like.userId === userId)
+        if (likeIndex > 0) {
+            likedComment.likesInfo.likes.splice(likeIndex, 1)
+
+            likedComment.save()
+            return true
         }
 
-    } */
+        const dislikeIndex = likedComment.likesInfo.dislikes.findIndex((dislike) => dislike.userId === userId)
+        if (dislikeIndex > 0) {
+            likedComment.likesInfo.likes.splice(dislikeIndex, 1)
+
+            likedComment.save()
+            return true
+        }
+    }
 }

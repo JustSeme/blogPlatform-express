@@ -71,7 +71,8 @@ class CommentsController {
     }
     updateLikeForComment(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.commentsService;
+            const accessToken = req.headers.authorization.split(' ')[1];
+            this.commentsService.updateLike(accessToken, req.params.commentId, req.body.likeStatus);
         });
     }
 }

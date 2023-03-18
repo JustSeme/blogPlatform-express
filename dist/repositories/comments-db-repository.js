@@ -54,6 +54,25 @@ class CommentsRepository {
             return true;
         });
     }
+    setNoneLike(userId, commentId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const likedComment = yield db_1.CommentsModel.findOne({ id: commentId });
+            if (!likedComment)
+                return false;
+            const likeIndex = likedComment.likesInfo.likes.findIndex((like) => like.userId === userId);
+            if (likeIndex > 0) {
+                likedComment.likesInfo.likes.splice(likeIndex, 1);
+                likedComment.save();
+                return true;
+            }
+            const dislikeIndex = likedComment.likesInfo.dislikes.findIndex((dislike) => dislike.userId === userId);
+            if (dislikeIndex > 0) {
+                likedComment.likesInfo.likes.splice(dislikeIndex, 1);
+                likedComment.save();
+                return true;
+            }
+        });
+    }
 }
 exports.CommentsRepository = CommentsRepository;
 //# sourceMappingURL=comments-db-repository.js.map

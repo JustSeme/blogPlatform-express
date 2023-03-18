@@ -1,31 +1,22 @@
 import { NextFunction, Request, Response } from "express";
 import { HTTP_STATUSES } from "../../settings"
-import { JwtService } from "../../application/jwtService";
+import { jwtService } from "../../application/jwtService";
 
-class AuthMiddleware {
-    private jwtService: JwtService
 
-    constructor() {
-        this.jwtService = new JwtService()
+export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.headers.authorization) {
+        res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
+        return
     }
 
-    async authMiddleware(req: Request, res: Response, next: NextFunction) {
-        if (!req.headers.authorization) {
-            res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
-            return
-        }
+    const token = req.headers.authorization.split(' ')[1]
 
-        const token = req.headers.authorization.split(' ')[1]
+    const userId = await jwtService.getUserIdByToken(token)
 
-        const userId = await this.jwtService.getUserIdByToken(token)
-
-        if (!userId) {
-            res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
-            return
-        }
-
-        next()
+    if (!userId) {
+        res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
+        return
     }
+
+    next()
 }
-
-export const authMiddleware = new AuthMiddleware().authMiddleware

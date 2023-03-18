@@ -18,6 +18,11 @@ export const commentsQueryRepository = {
         const sortDirectionNumber = sortDirection === 'asc' ? 1 : -1
         let resultedComments = await CommentsModel.find(filter, { _id: 0, postId: 0, __v: 0 }).skip(skipCount).limit(+pageSize).sort({ [sortBy]: sortDirectionNumber }).lean()
 
+        const displayedComments = resultedComments.map((comment) => {
+        })
+
+        //here should be a function that ask user like status for this comment
+
         return {
             pagesCount: pagesCount,
             page: +pageNumber,

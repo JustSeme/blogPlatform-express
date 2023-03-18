@@ -10,11 +10,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CommentsService = void 0;
+const jwtService_1 = require("../application/jwtService");
 const CommentDBModel_1 = require("../models/comments/CommentDBModel");
 const comments_db_repository_1 = require("../repositories/comments-db-repository");
 class CommentsService {
     constructor() {
         this.commentsRepository = new comments_db_repository_1.CommentsRepository();
+        this.jwtService = new jwtService_1.JwtService();
     }
     createComment(content, commentator, postId) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -41,12 +43,16 @@ class CommentsService {
             return yield this.commentsRepository.updateComment(commentId, content);
         });
     }
-    updateLike(userId, commentId, status) {
+    updateLike(accessToken, commentId, status) {
         return __awaiter(this, void 0, void 0, function* () {
             const updatingComment = yield this.commentsRepository.getCommentById(commentId);
             if (!updatingComment) {
                 return false;
             }
+            const jwtResult = yield this.jwtService.verifyToken(accessToken);
+            if (!jwtResult)
+                return false;
+            const userId = jwtResult.userId;
             const likeData = {
                 userId,
                 createdAt: new Date().toISOString()
@@ -56,17 +62,16 @@ class CommentsService {
                 const isAlreadyLiked = likesArray.findIndex((like) => like.userId === userId) > 0;
                 if (isAlreadyLiked)
                     return false;
-                this.commentsRepository.setLike(likeData, commentId);
-                return true;
+                return this.commentsRepository.setLike(likeData, commentId);
             }
             if (status === 'Dislike') {
                 const dislikesArray = updatingComment.likesInfo.dislikes;
                 const isAlreadyDisliked = dislikesArray.findIndex((dislike) => dislike.userId === userId) > 0;
                 if (isAlreadyDisliked)
                     return false;
-                this.commentsRepository.setDislike(likeData, commentId);
-                return true;
+                return this.commentsRepository.setDislike(likeData, commentId);
             }
+            return this.commentsRepository.setNoneLike(userId, commentId);
         });
     }
 }

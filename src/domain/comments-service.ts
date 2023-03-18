@@ -1,3 +1,4 @@
+import { JwtService } from "../application/jwtService";
 import { CommentDBModel, LikeObjectType } from "../models/comments/CommentDBModel";
 import { LikeType } from "../models/comments/LikeInputModel";
 import { UserDBModel } from "../models/users/UserDBModel";
@@ -5,9 +6,11 @@ import { CommentsRepository } from "../repositories/comments-db-repository";
 
 export class CommentsService {
     private commentsRepository: CommentsRepository
+    private jwtService: JwtService
 
     constructor() {
         this.commentsRepository = new CommentsRepository()
+        this.jwtService = new JwtService()
     }
 
     async createComment(content: string, commentator: UserDBModel | null, postId: string) {
@@ -35,11 +38,17 @@ export class CommentsService {
         return await this.commentsRepository.updateComment(commentId, content)
     }
 
-    async updateLike(userId: string, commentId: string, status: LikeType) {
+    async updateLike(accessToken: string, commentId: string, status: LikeType) {
         const updatingComment = await this.commentsRepository.getCommentById(commentId)
         if (!updatingComment) {
             return false
         }
+
+        const jwtResult = await this.jwtService.verifyToken(accessToken)
+        if (!jwtResult) return false
+
+        const userId = jwtResult.userId
+
         const likeData: LikeObjectType = {
             userId,
             createdAt: new Date().toISOString()
@@ -51,8 +60,7 @@ export class CommentsService {
             const isAlreadyLiked = likesArray!.findIndex((like) => like.userId === userId) > 0
             if (isAlreadyLiked) return false
 
-            this.commentsRepository.setLike(likeData, commentId)
-            return true
+            return this.commentsRepository.setLike(likeData, commentId)
         }
 
         if (status === 'Dislike') {
@@ -61,8 +69,9 @@ export class CommentsService {
             const isAlreadyDisliked = dislikesArray!.findIndex((dislike) => dislike.userId === userId) > 0
             if (isAlreadyDisliked) return false
 
-            this.commentsRepository.setDislike(likeData, commentId)
-            return true
+            return this.commentsRepository.setDislike(likeData, commentId)
         }
+
+        return this.commentsRepository.setNoneLike(userId, commentId)
     }
 }

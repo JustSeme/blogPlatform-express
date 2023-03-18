@@ -98,3 +98,5 @@ export class JwtService {
         return true
     }
 }
+
+export const jwtService = new JwtService()

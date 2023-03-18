@@ -12,25 +12,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.authMiddleware = void 0;
 const settings_1 = require("../../settings");
 const jwtService_1 = require("../../application/jwtService");
-class AuthMiddleware {
-    constructor() {
-        this.jwtService = new jwtService_1.JwtService();
+const authMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!req.headers.authorization) {
+        res.sendStatus(settings_1.HTTP_STATUSES.UNAUTHORIZED_401);
+        return;
     }
-    authMiddleware(req, res, next) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (!req.headers.authorization) {
-                res.sendStatus(settings_1.HTTP_STATUSES.UNAUTHORIZED_401);
-                return;
-            }
-            const token = req.headers.authorization.split(' ')[1];
-            const userId = yield this.jwtService.getUserIdByToken(token);
-            if (!userId) {
-                res.sendStatus(settings_1.HTTP_STATUSES.UNAUTHORIZED_401);
-                return;
-            }
-            next();
-        });
+    const token = req.headers.authorization.split(' ')[1];
+    const userId = yield jwtService_1.jwtService.getUserIdByToken(token);
+    if (!userId) {
+        res.sendStatus(settings_1.HTTP_STATUSES.UNAUTHORIZED_401);
+        return;
     }
-}
-exports.authMiddleware = new AuthMiddleware().authMiddleware;
+    next();
+});
+exports.authMiddleware = authMiddleware;
 //# sourceMappingURL=auth-middleware.js.map
