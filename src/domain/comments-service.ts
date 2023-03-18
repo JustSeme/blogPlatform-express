@@ -44,7 +44,9 @@ export class CommentsService {
             return false
         }
 
-        const jwtResult = await this.jwtService.verifyToken(accessToken)
+        const jwtResult = await this.jwtService.verifyRefreshToken(accessToken)
+        console.log('jwtresult', jwtResult);
+
         if (!jwtResult) return false
 
         const userId = jwtResult.userId

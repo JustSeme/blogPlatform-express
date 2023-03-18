@@ -49,7 +49,8 @@ class CommentsService {
             if (!updatingComment) {
                 return false;
             }
-            const jwtResult = yield this.jwtService.verifyToken(accessToken);
+            const jwtResult = yield this.jwtService.verifyRefreshToken(accessToken);
+            console.log('jwtresult', jwtResult);
             if (!jwtResult)
                 return false;
             const userId = jwtResult.userId;

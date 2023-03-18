@@ -19,13 +19,13 @@ class SecurityController {
     }
 
     async getDevices(req: Request, res: Response<DeviceSessionsViewModel[]>) {
-        if (!req.cookies) {
+        if (!req.cookies || !req.cookies.refreshToken) {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
             return
         }
         const refreshToken = req.cookies?.refreshToken
 
-        const result = await this.jwtService.verifyToken(refreshToken) as JwtPayload
+        const result = await this.jwtService.verifyRefreshToken(refreshToken) as JwtPayload
 
         if (!result) {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
@@ -43,7 +43,7 @@ class SecurityController {
 
     async deleteDevices(req: Request, res: Response) { // exclude current
         const refreshToken = req.cookies.refreshToken
-        const result = await this.jwtService.verifyToken(refreshToken) as JwtPayload
+        const result = await this.jwtService.verifyRefreshToken(refreshToken) as JwtPayload
         if (!result) {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
             return
@@ -59,7 +59,7 @@ class SecurityController {
 
     async deleteDeviceById(req: RequestWithParams<{ deviceId: string }>, res: Response) {
         const refreshToken = req.cookies.refreshToken
-        const result = await this.jwtService.verifyToken(refreshToken) as JwtPayload
+        const result = await this.jwtService.verifyRefreshToken(refreshToken) as JwtPayload
         if (!result) {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
             return

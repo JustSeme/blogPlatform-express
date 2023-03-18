@@ -32,7 +32,9 @@ exports.settings = {
     JWT_SECRET: process.env.JWT_SECRET || 'super_secret',
     PORT: process.env.PORT || 3000,
     GMAIL_LOGIN: process.env.GMAIL_LOGIN || 'kepxep69@gmail.com',
-    GMAIL_APP_PASSWORD: process.env.GMAIL_APP_PASSWORD || 'gpllbohdhqcrdvnh'
+    GMAIL_APP_PASSWORD: process.env.GMAIL_APP_PASSWORD || 'gpllbohdhqcrdvnh',
+    ACCESS_TOKEN_EXPIRE_TIME: '5min',
+    REFRESH_TOKEN_EXPIRE_TIME: '20min',
 };
 exports.baseURL = '/homeworks/';
 exports.HTTP_STATUSES = {

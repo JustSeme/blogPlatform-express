@@ -73,7 +73,7 @@ class CommentsController {
     async updateLikeForComment(req: RequestWithParamsAndBody<{ commentId: string }, LikeInputModel>, res: Response) {
         const accessToken = req.headers.authorization!.split(' ')[1]
 
-        const isUpdated = this.commentsService.updateLike(accessToken, req.params.commentId, req.body.likeStatus)
+        const isUpdated = await this.commentsService.updateLike(accessToken, req.params.commentId, req.body.likeStatus)
         if (!isUpdated) {
             res.sendStatus(HTTP_STATUSES.NOT_IMPLEMENTED_501)
             return

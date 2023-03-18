@@ -11,8 +11,11 @@ export const commentsSchema = new mongoose.Schema<CommentDBModel>({
     createdAt: { type: String, required: true },
     postId: { type: String, required: true },
     likesInfo: {
-        likesCount: { type: Number, required: true },
-        dislikesCount: { type: Number, required: true },
-        myStatus: { type: String, required: true }
+        likes: [
+            { userId: String, createdAt: String }
+        ],
+        dislikes: [
+            { userId: String, createdAt: String }
+        ]
     }
 })

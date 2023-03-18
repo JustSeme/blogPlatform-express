@@ -72,7 +72,12 @@ class CommentsController {
     updateLikeForComment(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const accessToken = req.headers.authorization.split(' ')[1];
-            this.commentsService.updateLike(accessToken, req.params.commentId, req.body.likeStatus);
+            const isUpdated = yield this.commentsService.updateLike(accessToken, req.params.commentId, req.body.likeStatus);
+            if (!isUpdated) {
+                res.sendStatus(settings_1.HTTP_STATUSES.NOT_IMPLEMENTED_501);
+                return;
+            }
+            res.sendStatus(settings_1.HTTP_STATUSES.NO_CONTENT_204);
         });
     }
 }

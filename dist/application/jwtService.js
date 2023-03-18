@@ -43,7 +43,7 @@ class JwtService {
             }
         });
     }
-    verifyToken(verifiedToken) {
+    verifyRefreshToken(verifiedToken) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const result = yield jsonwebtoken_1.default.verify(verifiedToken, settings_1.settings.JWT_SECRET);
@@ -58,14 +58,25 @@ class JwtService {
             }
         });
     }
+    verifyAccessToken(verifiedToken) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield jsonwebtoken_1.default.verify(verifiedToken, settings_1.settings.JWT_SECRET);
+                return result;
+            }
+            catch (err) {
+                return null;
+            }
+        });
+    }
     refreshTokens(verifiedToken) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield this.verifyToken(verifiedToken);
+            const result = yield this.verifyRefreshToken(verifiedToken);
             if (!result) {
                 return null;
             }
-            const newRefreshToken = yield this.createRefreshToken('20s', result.deviceId, result.userId);
-            const newAccessToken = yield this.createAccessToken('10s', result.userId);
+            const newRefreshToken = yield this.createRefreshToken(settings_1.settings.ACCESS_TOKEN_EXPIRE_TIME, result.deviceId, result.userId);
+            const newAccessToken = yield this.createAccessToken(settings_1.settings.REFRESH_TOKEN_EXPIRE_TIME, result.userId);
             const resultOfCreatedToken = jsonwebtoken_1.default.decode(newRefreshToken);
             const isUpdated = this.deviceRepository.updateSession(result.deviceId, resultOfCreatedToken.iat, resultOfCreatedToken.exp);
             if (!isUpdated) {
@@ -80,9 +91,10 @@ class JwtService {
     login(userId, userIp, deviceName) {
         return __awaiter(this, void 0, void 0, function* () {
             const deviceId = (0, uuid_1.v4)();
-            const accessToken = yield this.createAccessToken('5m', userId);
-            const refreshToken = yield this.createRefreshToken('20m', deviceId, userId);
+            const accessToken = yield this.createAccessToken(settings_1.settings.ACCESS_TOKEN_EXPIRE_TIME, userId);
+            const refreshToken = yield this.createRefreshToken(settings_1.settings.REFRESH_TOKEN_EXPIRE_TIME, deviceId, userId);
             const result = jsonwebtoken_1.default.decode(refreshToken);
+            //Спросить, где лучше добавлять новую активную сессию (Здесь, при логине, это как-то неявно)
             const newSession = new DeviceSessionsModel_1.DeviceAuthSessionsModel(result.iat, result.exp, userId, userIp, deviceId, deviceName);
             const isAdded = yield this.deviceRepository.addSession(newSession);
             if (!isAdded) {
@@ -96,7 +108,7 @@ class JwtService {
     }
     logout(usedToken) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield this.verifyToken(usedToken);
+            const result = yield this.verifyRefreshToken(usedToken);
             if (!result) {
                 return false;
             }

@@ -4,7 +4,6 @@ import { DeviceAuthSessionsDBModel } from "./db"
 export class DeviceRepository {
     async addSession(newSession: DeviceAuthSessionsModel) {
         const result = await DeviceAuthSessionsDBModel.create(newSession)
-
         return result ? true : false
     }
 
@@ -28,7 +27,7 @@ export class DeviceRepository {
     }
 
     async getCurrentIssuedAt(deviceId: string) {
-        const result = await DeviceAuthSessionsDBModel.findOne({ 'deviceInfo.deviceId': deviceId }).lean()
+        const result = await DeviceAuthSessionsDBModel.findOne({ 'deviceInfo.deviceId': deviceId })
         return result!.issuedAt
     }
 }

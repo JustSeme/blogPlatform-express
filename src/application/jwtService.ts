@@ -28,9 +28,10 @@ export class JwtService {
         }
     }
 
-    async verifyToken(verifiedToken: string) {
+    async verifyRefreshToken(verifiedToken: string) {
         try {
             const result = await jwt.verify(verifiedToken, settings.JWT_SECRET) as JwtPayload
+
             const issuedAtForDeviceId = await this.deviceRepository.getCurrentIssuedAt(result.deviceId)
             if (issuedAtForDeviceId > result.iat!) {
                 return null
@@ -42,14 +43,23 @@ export class JwtService {
         }
     }
 
+    async verifyAccessToken(verifiedToken: string) {
+        try {
+            const result = await jwt.verify(verifiedToken, settings.JWT_SECRET) as JwtPayload
+            return result
+        } catch (err) {
+            return null
+        }
+    }
+
     async refreshTokens(verifiedToken: string) {
-        const result = await this.verifyToken(verifiedToken)
+        const result = await this.verifyRefreshToken(verifiedToken)
         if (!result) {
             return null
         }
 
-        const newRefreshToken = await this.createRefreshToken('20s', result.deviceId, result.userId)
-        const newAccessToken = await this.createAccessToken('10s', result.userId)
+        const newRefreshToken = await this.createRefreshToken(settings.ACCESS_TOKEN_EXPIRE_TIME, result.deviceId, result.userId)
+        const newAccessToken = await this.createAccessToken(settings.REFRESH_TOKEN_EXPIRE_TIME, result.userId)
         const resultOfCreatedToken = jwt.decode(newRefreshToken) as JwtPayload
 
         const isUpdated = this.deviceRepository.updateSession(result.deviceId, resultOfCreatedToken.iat!, resultOfCreatedToken.exp!)
@@ -67,10 +77,11 @@ export class JwtService {
     async login(userId: string, userIp: string, deviceName: string) {
         const deviceId = uuid()
 
-        const accessToken = await this.createAccessToken('5m', userId)
-        const refreshToken = await this.createRefreshToken('20m', deviceId, userId)
+        const accessToken = await this.createAccessToken(settings.ACCESS_TOKEN_EXPIRE_TIME, userId)
+        const refreshToken = await this.createRefreshToken(settings.REFRESH_TOKEN_EXPIRE_TIME, deviceId, userId)
         const result = jwt.decode(refreshToken) as JwtPayload
 
+        //Спросить, где лучше добавлять новую активную сессию (Здесь, при логине, это как-то неявно)
         const newSession = new DeviceAuthSessionsModel(result.iat!, result.exp!, userId, userIp, deviceId, deviceName)
 
         const isAdded = await this.deviceRepository.addSession(newSession)
@@ -85,7 +96,7 @@ export class JwtService {
     }
 
     async logout(usedToken: string) {
-        const result = await this.verifyToken(usedToken)
+        const result = await this.verifyRefreshToken(usedToken)
         if (!result) {
             return false
         }
