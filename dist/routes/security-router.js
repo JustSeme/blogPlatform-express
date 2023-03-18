@@ -22,13 +22,8 @@ class SecurityController {
         this.securityService = new security_service_1.SecurityService();
     }
     getDevices(req, res) {
-        var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            if (!req.cookies || !req.cookies.refreshToken) {
-                res.sendStatus(settings_1.HTTP_STATUSES.UNAUTHORIZED_401);
-                return;
-            }
-            const refreshToken = (_a = req.cookies) === null || _a === void 0 ? void 0 : _a.refreshToken;
+            const refreshToken = req.cookies.refreshToken;
             const result = yield this.jwtService.verifyRefreshToken(refreshToken);
             if (!result) {
                 res.sendStatus(settings_1.HTTP_STATUSES.UNAUTHORIZED_401);
