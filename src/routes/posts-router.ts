@@ -91,7 +91,9 @@ class PostsController {
     }
 
     async getCommentsForPost(req: RequestWithParamsAndQuery<{ postId: string }, ReadCommentsQueryParams>, res: Response<CommentsWithQueryOutputModel>) {
-        const findedComments = await commentsQueryRepository.findComments(req.query, req.params.postId)
+        const accessToken = req.headers.authorization ? req.headers.authorization.split(' ')[1] : null
+
+        const findedComments = await this.commentsService.getComments(req.query, req.params.postId, accessToken)
         res.send(findedComments)
     }
 

@@ -40,7 +40,8 @@ class CommentsController {
     }
     getComment(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const findedComment = yield this.commentsService.getCommentById(req.params.commentId);
+            const accessToken = req.headers.authorization ? req.headers.authorization.split(' ')[1] : null;
+            const findedComment = yield this.commentsService.getCommentById(req.params.commentId, accessToken);
             if (!findedComment) {
                 res.sendStatus(settings_1.HTTP_STATUSES.NOT_FOUND_404);
                 return;

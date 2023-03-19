@@ -79,26 +79,59 @@ export class CommentsService {
         return this.commentsRepository.setNoneLike(userId, commentId)
     }
 
-    async getComments(queryParams: ReadCommentsQueryParams, postId: string): Promise<CommentsWithQueryOutputModel> {
-        const commentsQueryData = this.commentsRepository.getComments(queryParams, postId)
+    async getComments(queryParams: ReadCommentsQueryParams, postId: string, accessToken: string | null): Promise<CommentsWithQueryOutputModel> {
+        const commentsDBQueryData = await this.commentsRepository.getComments(queryParams, postId)
+        const commentsViewQueryData: CommentsWithQueryOutputModel = { ...commentsDBQueryData, items: [] }
 
-        return commentsQueryData
+        const displayedComments = await this.transformLikeInfo(commentsDBQueryData.items, accessToken)
+
+        commentsViewQueryData.items = displayedComments
+        return commentsViewQueryData
     }
 
-    async getCommentById(commentId: string) {
+    async getCommentById(commentId: string, accessToken: string | null) {
         const recivedComment = await this.commentsRepository.getCommentById(commentId)
-        const displayedComment: CommentViewModel = await this.transformLikeInfo([recivedComment])
-        return displayedComment
+        const displayedComment: CommentViewModel[] = await this.transformLikeInfo([recivedComment], accessToken)
+        return displayedComment[0]
     }
 
-    async transformLikeInfo(commentsArray: CommentDBModel[]) {
-        const convertedComments = commentsArray.map((comment: any) => {
-            const likesInfoData = comment.likesInfo
+    async transformLikeInfo(commentsArray: CommentDBModel[], accessToken: string | null): Promise<CommentViewModel[]> {
+        let userId: string
+        if (accessToken) {
+            const jwtResult = await this.jwtService.verifyAccessToken(accessToken)
+            userId = jwtResult ? jwtResult.userId : null
+        }
 
-            delete comment.likesInfo.likes
-            delete comment.likesInfo.dislikes
-            comment.likesInfo.likesCount = likesInfoData.likes.length
-            comment.likesInfo.dislikesCount = likesInfoData.dislikes.length
+        const convertedComments = commentsArray.map((comment: CommentDBModel) => {
+            const likesInfoData = comment.likesInfo
+            const convertedComment: CommentViewModel = {
+                id: comment.id,
+                content: comment.content,
+                commentatorInfo: { ...comment.commentatorInfo },
+                createdAt: comment.createdAt,
+                likesInfo: {
+                    likesCount: 0,
+                    dislikesCount: 0,
+                    myStatus: 'None'
+                }
+            }
+
+            if (!userId) {
+                convertedComment.likesInfo.myStatus = 'None'
+            }
+            // check that comment was liked current user
+            if (likesInfoData.likes.some((el: LikeObjectType) => el.userId === userId)) {
+                convertedComment.likesInfo.myStatus = 'Like'
+            }
+            //check that comment was disliked current user
+            if (likesInfoData.dislikes.some((el: LikeObjectType) => el.userId === userId)) {
+                convertedComment.likesInfo.myStatus = 'Dislike'
+            }
+
+            convertedComment.likesInfo.likesCount = likesInfoData.likes.length
+            convertedComment.likesInfo.dislikesCount = likesInfoData.dislikes.length
+
+            return convertedComment
         })
 
         return convertedComments

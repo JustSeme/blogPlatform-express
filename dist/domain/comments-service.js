@@ -75,27 +75,56 @@ class CommentsService {
             return this.commentsRepository.setNoneLike(userId, commentId);
         });
     }
-    getComments(queryParams, postId) {
+    getComments(queryParams, postId, accessToken) {
         return __awaiter(this, void 0, void 0, function* () {
-            const commentsQueryData = this.commentsRepository.getComments(queryParams, postId);
-            return commentsQueryData;
+            const commentsDBQueryData = yield this.commentsRepository.getComments(queryParams, postId);
+            const commentsViewQueryData = Object.assign(Object.assign({}, commentsDBQueryData), { items: [] });
+            const displayedComments = yield this.transformLikeInfo(commentsDBQueryData.items, accessToken);
+            commentsViewQueryData.items = displayedComments;
+            return commentsViewQueryData;
         });
     }
-    getCommentById(commentId) {
+    getCommentById(commentId, accessToken) {
         return __awaiter(this, void 0, void 0, function* () {
             const recivedComment = yield this.commentsRepository.getCommentById(commentId);
-            const displayedComment = yield this.transformLikeInfo([recivedComment]);
-            return displayedComment;
+            const displayedComment = yield this.transformLikeInfo([recivedComment], accessToken);
+            return displayedComment[0];
         });
     }
-    transformLikeInfo(commentsArray) {
+    transformLikeInfo(commentsArray, accessToken) {
         return __awaiter(this, void 0, void 0, function* () {
+            let userId;
+            if (accessToken) {
+                const jwtResult = yield this.jwtService.verifyAccessToken(accessToken);
+                userId = jwtResult ? jwtResult.userId : null;
+            }
             const convertedComments = commentsArray.map((comment) => {
                 const likesInfoData = comment.likesInfo;
-                delete comment.likesInfo.likes;
-                delete comment.likesInfo.dislikes;
-                comment.likesInfo.likesCount = likesInfoData.likes.length;
-                comment.likesInfo.dislikesCount = likesInfoData.dislikes.length;
+                const convertedComment = {
+                    id: comment.id,
+                    content: comment.content,
+                    commentatorInfo: Object.assign({}, comment.commentatorInfo),
+                    createdAt: comment.createdAt,
+                    likesInfo: {
+                        likesCount: 0,
+                        dislikesCount: 0,
+                        myStatus: 'None'
+                    }
+                };
+                if (!userId) {
+                    convertedComment.likesInfo.myStatus = 'None';
+                }
+                // check that comment was liked current user
+                if (likesInfoData.likes.some((el) => el.userId === userId)) {
+                    convertedComment.likesInfo.myStatus = 'Like';
+                }
+                //check that comment was disliked current user
+                if (likesInfoData.dislikes.some((el) => el.userId === userId)) {
+                    convertedComment.likesInfo.myStatus = 'Dislike';
+                }
+                convertedComment.likesInfo.likesCount = likesInfoData.likes.length;
+                convertedComment.likesInfo.dislikesCount = likesInfoData.dislikes.length;
+                return convertedComment;
             });
             return convertedComments;
         });
