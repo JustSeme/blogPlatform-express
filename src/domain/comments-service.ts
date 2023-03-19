@@ -127,8 +127,6 @@ export class CommentsService {
                 convertedComment.likesInfo.myStatus = 'Dislike'
             }
 
-
-
             convertedComment.likesInfo.likesCount = likesInfoData.likes.length
             convertedComment.likesInfo.dislikesCount = likesInfoData.dislikes.length
 
