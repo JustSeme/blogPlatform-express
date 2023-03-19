@@ -75,6 +75,31 @@ class CommentsService {
             return this.commentsRepository.setNoneLike(userId, commentId);
         });
     }
+    getComments(queryParams, postId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const commentsQueryData = this.commentsRepository.getComments(queryParams, postId);
+            return commentsQueryData;
+        });
+    }
+    getCommentById(commentId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const recivedComment = yield this.commentsRepository.getCommentById(commentId);
+            const displayedComment = yield this.transformLikeInfo([recivedComment]);
+            return displayedComment;
+        });
+    }
+    transformLikeInfo(commentsArray) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const convertedComments = commentsArray.map((comment) => {
+                const likesInfoData = comment.likesInfo;
+                delete comment.likesInfo.likes;
+                delete comment.likesInfo.dislikes;
+                comment.likesInfo.likesCount = likesInfoData.likes.length;
+                comment.likesInfo.dislikesCount = likesInfoData.dislikes.length;
+            });
+            return convertedComments;
+        });
+    }
 }
 exports.CommentsService = CommentsService;
 //# sourceMappingURL=comments-service.js.map

@@ -29,9 +29,29 @@ class CommentsRepository {
             return result.matchedCount === 1;
         });
     }
+    getComments(queryParams, postId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { sortDirection = 'desc', sortBy = 'createdAt', pageNumber = 1, pageSize = 10 } = queryParams;
+            const filter = {
+                postId: postId
+            };
+            const totalCount = yield db_1.CommentsModel.count(filter);
+            const pagesCount = Math.ceil(totalCount / +pageSize);
+            const skipCount = (+pageNumber - 1) * +pageSize;
+            const sortDirectionNumber = sortDirection === 'asc' ? 1 : -1;
+            let resultedComments = yield db_1.CommentsModel.find(filter, { _id: 0, postId: 0, __v: 0 }).skip(skipCount).limit(+pageSize).sort({ [sortBy]: sortDirectionNumber }).lean();
+            return {
+                pagesCount: pagesCount,
+                page: +pageNumber,
+                pageSize: +pageSize,
+                totalCount: totalCount,
+                items: resultedComments
+            };
+        });
+    }
     getCommentById(commentId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.CommentsModel.findOne({ id: commentId });
+            return db_1.CommentsModel.findOne({ id: commentId }).lean();
         });
     }
     setLike(likeData, commentId) {

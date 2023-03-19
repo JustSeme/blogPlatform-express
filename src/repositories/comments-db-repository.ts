@@ -1,5 +1,6 @@
 import { CommentDBModel, LikeObjectType } from "../models/comments/CommentDBModel";
-import { LikeType } from "../models/comments/LikeInputModel";
+import { CommentsWithQueryOutputModel } from "../models/comments/CommentViewModel";
+import { ReadCommentsQueryParams } from "../models/comments/ReadCommentsQuery";
 import { CommentsModel } from "./db";
 
 export class CommentsRepository {
@@ -17,8 +18,32 @@ export class CommentsRepository {
         return result.matchedCount === 1
     }
 
+    async getComments(queryParams: ReadCommentsQueryParams, postId: string) {
+        const { sortDirection = 'desc', sortBy = 'createdAt', pageNumber = 1, pageSize = 10 } = queryParams
+
+        const filter: any = {
+            postId: postId
+        }
+
+        const totalCount = await CommentsModel.count(filter)
+        const pagesCount = Math.ceil(totalCount / +pageSize)
+
+        const skipCount = (+pageNumber - 1) * +pageSize
+
+        const sortDirectionNumber = sortDirection === 'asc' ? 1 : -1
+        let resultedComments = await CommentsModel.find(filter, { _id: 0, postId: 0, __v: 0 }).skip(skipCount).limit(+pageSize).sort({ [sortBy]: sortDirectionNumber }).lean()
+
+        return {
+            pagesCount: pagesCount,
+            page: +pageNumber,
+            pageSize: +pageSize,
+            totalCount: totalCount,
+            items: resultedComments
+        }
+    }
+
     async getCommentById(commentId: string) {
-        return CommentsModel.findOne({ id: commentId })
+        return CommentsModel.findOne({ id: commentId }).lean()
     }
 
     async setLike(likeData: LikeObjectType, commentId: string) {

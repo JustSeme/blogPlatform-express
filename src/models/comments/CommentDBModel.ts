@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid'
+import { LikeType } from './LikeInputModel'
 
 export class CommentDBModel {
     public id: string
@@ -21,7 +22,7 @@ export class CommentDBModel {
         }
         this.likesInfo = {
             likes: [],
-            dislikes: []
+            dislikes: [],
         }
     }
 
@@ -35,7 +36,7 @@ type CommentatorInfoType = {
 
 type LikesInfoType = {
     likes: LikeObjectType[],
-    dislikes: LikeObjectType[]
+    dislikes: LikeObjectType[],
 }
 
 export type LikeObjectType = {

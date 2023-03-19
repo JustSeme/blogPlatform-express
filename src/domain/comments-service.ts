@@ -1,6 +1,8 @@
 import { JwtService } from "../application/jwtService";
 import { CommentDBModel, LikeObjectType } from "../models/comments/CommentDBModel";
+import { CommentsWithQueryOutputModel, CommentViewModel } from "../models/comments/CommentViewModel";
 import { LikeType } from "../models/comments/LikeInputModel";
+import { ReadCommentsQueryParams } from "../models/comments/ReadCommentsQuery";
 import { UserDBModel } from "../models/users/UserDBModel";
 import { CommentsRepository } from "../repositories/comments-db-repository";
 
@@ -75,5 +77,30 @@ export class CommentsService {
         //Сделать чтобы если стоит лайк, то убирался дизлайк
 
         return this.commentsRepository.setNoneLike(userId, commentId)
+    }
+
+    async getComments(queryParams: ReadCommentsQueryParams, postId: string): Promise<CommentsWithQueryOutputModel> {
+        const commentsQueryData = this.commentsRepository.getComments(queryParams, postId)
+
+        return commentsQueryData
+    }
+
+    async getCommentById(commentId: string) {
+        const recivedComment = await this.commentsRepository.getCommentById(commentId)
+        const displayedComment: CommentViewModel = await this.transformLikeInfo([recivedComment])
+        return displayedComment
+    }
+
+    async transformLikeInfo(commentsArray: CommentDBModel[]) {
+        const convertedComments = commentsArray.map((comment: any) => {
+            const likesInfoData = comment.likesInfo
+
+            delete comment.likesInfo.likes
+            delete comment.likesInfo.dislikes
+            comment.likesInfo.likesCount = likesInfoData.likes.length
+            comment.likesInfo.dislikesCount = likesInfoData.dislikes.length
+        })
+
+        return convertedComments
     }
 }

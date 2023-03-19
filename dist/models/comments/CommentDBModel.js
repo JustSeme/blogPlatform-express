@@ -14,7 +14,7 @@ class CommentDBModel {
         };
         this.likesInfo = {
             likes: [],
-            dislikes: []
+            dislikes: [],
         };
     }
 }

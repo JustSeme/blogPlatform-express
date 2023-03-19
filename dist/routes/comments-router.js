@@ -18,7 +18,6 @@ const auth_middleware_1 = require("../middlewares/auth/auth-middleware");
 const commentId_validation_middleware_1 = require("../middlewares/validations/commentId-validation-middleware");
 const input_validation_middleware_1 = require("../middlewares/validations/input-validation-middleware");
 const ownership_validation_middleware_1 = require("../middlewares/validations/ownership-validation-middleware");
-const comments_query_repository_1 = require("../repositories/query/comments-query-repository");
 exports.commentsRouter = (0, express_1.Router)({});
 exports.commentContentValidation = (0, express_validator_1.body)('content')
     .exists()
@@ -41,7 +40,7 @@ class CommentsController {
     }
     getComment(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const findedComment = yield comments_query_repository_1.commentsQueryRepository.findCommentById(req.params.commentId);
+            const findedComment = yield this.commentsService.getCommentById(req.params.commentId);
             if (!findedComment) {
                 res.sendStatus(settings_1.HTTP_STATUSES.NOT_FOUND_404);
                 return;

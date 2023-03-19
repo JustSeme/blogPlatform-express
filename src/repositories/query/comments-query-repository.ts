@@ -3,7 +3,7 @@ import { ReadCommentsQueryParams } from "../../models/comments/ReadCommentsQuery
 import { CommentsModel } from "../db"
 
 export const commentsQueryRepository = {
-    async findComments(queryParams: ReadCommentsQueryParams, postId: string): Promise<CommentsWithQueryOutputModel> {
+    /* async findComments(queryParams: ReadCommentsQueryParams, postId: string): Promise<CommentsWithQueryOutputModel> {
         const { sortDirection = 'desc', sortBy = 'createdAt', pageNumber = 1, pageSize = 10 } = queryParams
 
         const filter: any = {
@@ -18,13 +18,6 @@ export const commentsQueryRepository = {
         const sortDirectionNumber = sortDirection === 'asc' ? 1 : -1
         let resultedComments = await CommentsModel.find(filter, { _id: 0, postId: 0, __v: 0 }).skip(skipCount).limit(+pageSize).sort({ [sortBy]: sortDirectionNumber }).lean()
 
-        console.log(resultedComments);
-
-        /* const displayedComments = resultedComments.map((comment) => {
-        }) */
-
-        //here should be a function that ask user like status for this comment
-
         return {
             pagesCount: pagesCount,
             page: +pageNumber,
@@ -36,5 +29,5 @@ export const commentsQueryRepository = {
 
     async findCommentById(commentId: string) {
         return CommentsModel.findOne({ id: commentId }, { _id: 0, postId: 0, __v: 0 }).lean()
-    }
+    } */
 }
