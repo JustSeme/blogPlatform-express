@@ -25,9 +25,9 @@ export const commentsQueryRepository = {
             totalCount: totalCount,
             items: resultedComments
         }
-    },
+    }, */
 
     async findCommentById(commentId: string) {
         return CommentsModel.findOne({ id: commentId }, { _id: 0, postId: 0, __v: 0 }).lean()
-    } */
+    }
 }

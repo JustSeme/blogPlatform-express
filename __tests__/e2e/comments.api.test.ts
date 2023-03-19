@@ -12,12 +12,12 @@ describe('/comments', () => {
         await request(app)
             .delete(`/homeworks/testing/all-data`)
     })
-    let counter = 0
+    let counter = 1
 
     afterEach(async () => {
         await server.close()
-        counter++
         console.log(counter);
+        counter++
 
     })
 
@@ -197,8 +197,10 @@ describe('/comments', () => {
             })
             .expect(HTTP_STATUSES.NO_CONTENT_204)
 
+
         const likedCommentData = await request(app)
             .get(`${baseURL}comments/${createdCommentId}`)
+            .set('Authorization', `Bearer ${recievedAccessToken}`)
             .expect(HTTP_STATUSES.OK_200)
 
         expect(likedCommentData.body.likesInfo.likesCount).toEqual(1)

@@ -28,7 +28,12 @@ export class CommentsService {
             id: createdComment.id,
             content: createdComment.content,
             commentatorInfo: { ...createdComment.commentatorInfo },
-            createdAt: createdComment.createdAt
+            createdAt: createdComment.createdAt,
+            likesInfo: {
+                likesCount: 0,
+                dislikesCount: 0,
+                myStatus: 'None' as LikeType
+            }
         }
     }
 
@@ -74,7 +79,7 @@ export class CommentsService {
             return this.commentsRepository.setDislike(likeData, commentId)
         }
 
-        //Сделать чтобы если стоит лайк, то убирался дизлайк
+        //Сделать чтобы если приходит лайк, то убирался дизлайк
 
         return this.commentsRepository.setNoneLike(userId, commentId)
     }
@@ -91,12 +96,16 @@ export class CommentsService {
 
     async getCommentById(commentId: string, accessToken: string | null) {
         const recivedComment = await this.commentsRepository.getCommentById(commentId)
+        if (!recivedComment) {
+            return false
+        }
+
         const displayedComment: CommentViewModel[] = await this.transformLikeInfo([recivedComment], accessToken)
         return displayedComment[0]
     }
 
     async transformLikeInfo(commentsArray: CommentDBModel[], accessToken: string | null): Promise<CommentViewModel[]> {
-        let userId: string
+        let userId: string | null = null
         if (accessToken) {
             const jwtResult = await this.jwtService.verifyAccessToken(accessToken)
             userId = jwtResult ? jwtResult.userId : null
@@ -116,6 +125,7 @@ export class CommentsService {
                 }
             }
 
+
             if (!userId) {
                 convertedComment.likesInfo.myStatus = 'None'
             }
@@ -127,6 +137,8 @@ export class CommentsService {
             if (likesInfoData.dislikes.some((el: LikeObjectType) => el.userId === userId)) {
                 convertedComment.likesInfo.myStatus = 'Dislike'
             }
+
+
 
             convertedComment.likesInfo.likesCount = likesInfoData.likes.length
             convertedComment.likesInfo.dislikesCount = likesInfoData.dislikes.length

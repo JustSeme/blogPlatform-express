@@ -29,7 +29,12 @@ class CommentsService {
                 id: createdComment.id,
                 content: createdComment.content,
                 commentatorInfo: Object.assign({}, createdComment.commentatorInfo),
-                createdAt: createdComment.createdAt
+                createdAt: createdComment.createdAt,
+                likesInfo: {
+                    likesCount: 0,
+                    dislikesCount: 0,
+                    myStatus: 'None'
+                }
             };
         });
     }
@@ -71,7 +76,7 @@ class CommentsService {
                     return false;
                 return this.commentsRepository.setDislike(likeData, commentId);
             }
-            //Сделать чтобы если стоит лайк, то убирался дизлайк
+            //Сделать чтобы если приходит лайк, то убирался дизлайк
             return this.commentsRepository.setNoneLike(userId, commentId);
         });
     }
@@ -87,13 +92,16 @@ class CommentsService {
     getCommentById(commentId, accessToken) {
         return __awaiter(this, void 0, void 0, function* () {
             const recivedComment = yield this.commentsRepository.getCommentById(commentId);
+            if (!recivedComment) {
+                return false;
+            }
             const displayedComment = yield this.transformLikeInfo([recivedComment], accessToken);
             return displayedComment[0];
         });
     }
     transformLikeInfo(commentsArray, accessToken) {
         return __awaiter(this, void 0, void 0, function* () {
-            let userId;
+            let userId = null;
             if (accessToken) {
                 const jwtResult = yield this.jwtService.verifyAccessToken(accessToken);
                 userId = jwtResult ? jwtResult.userId : null;
