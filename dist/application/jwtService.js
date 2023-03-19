@@ -121,5 +121,6 @@ class JwtService {
     }
 }
 exports.JwtService = JwtService;
+// Оставил чтобы не изощряться в миддлварах
 exports.jwtService = new JwtService();
 //# sourceMappingURL=jwtService.js.map

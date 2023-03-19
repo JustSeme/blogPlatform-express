@@ -109,4 +109,5 @@ export class JwtService {
     }
 }
 
+// Оставил чтобы не изощряться в миддлварах
 export const jwtService = new JwtService()

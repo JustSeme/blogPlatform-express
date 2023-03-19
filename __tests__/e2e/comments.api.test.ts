@@ -12,9 +12,13 @@ describe('/comments', () => {
         await request(app)
             .delete(`/homeworks/testing/all-data`)
     })
+    let counter = 0
 
     afterEach(async () => {
         await server.close()
+        counter++
+        console.log(counter);
+
     })
 
     let recievedAccessToken = ''
@@ -184,7 +188,7 @@ describe('/comments', () => {
             .expect(HTTP_STATUSES.NOT_FOUND_404)
     })
 
-    it('should like created comment', async () => {
+    it('should like created comment and display correct like info', async () => {
         await request(app)
             .put(`${baseURL}comments/${createdCommentId}/like-status`)
             .set('Authorization', `Bearer ${recievedAccessToken}`)
@@ -198,6 +202,8 @@ describe('/comments', () => {
             .expect(HTTP_STATUSES.OK_200)
 
         expect(likedCommentData.body.likesInfo.likesCount).toEqual(1)
+        expect(likedCommentData.body.likesInfo.dislikesCount).toEqual(0)
+        expect(likedCommentData.body.likesInfo.myStatus).toEqual('Like')
     })
 
     it('should delete comment by id', async () => {

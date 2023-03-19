@@ -35,7 +35,7 @@ export class CommentsService {
     }
 
     async updateComment(commentId: string, content: string) {
-        return await this.commentsRepository.updateComment(commentId, content)
+        return this.commentsRepository.updateComment(commentId, content)
     }
 
     async updateLike(accessToken: string, commentId: string, status: LikeType) {
@@ -71,6 +71,8 @@ export class CommentsService {
 
             return this.commentsRepository.setDislike(likeData, commentId)
         }
+
+        //Сделать чтобы если стоит лайк, то убирался дизлайк
 
         return this.commentsRepository.setNoneLike(userId, commentId)
     }

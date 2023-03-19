@@ -13,23 +13,16 @@ exports.ownershipValidationMiddleware = void 0;
 const settings_1 = require("../../settings");
 const jwtService_1 = require("../../application/jwtService");
 const comments_query_repository_1 = require("../../repositories/query/comments-query-repository");
-class OwnershipValidationMiddleware {
-    constructor() {
-        this.jwtService = new jwtService_1.JwtService();
+const ownershipValidationMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const findedComment = yield comments_query_repository_1.commentsQueryRepository.findCommentById(req.params.commentId);
+    const commentOwnerId = findedComment === null || findedComment === void 0 ? void 0 : findedComment.commentatorInfo.userId;
+    const token = req.headers.authorization.split(' ')[1];
+    const userId = yield jwtService_1.jwtService.getUserIdByToken(token);
+    if (commentOwnerId !== userId) {
+        res.sendStatus(settings_1.HTTP_STATUSES.FORBIDDEN_403);
+        return;
     }
-    ownershipValidationMiddleware(req, res, next) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const findedComment = yield comments_query_repository_1.commentsQueryRepository.findCommentById(req.params.commentId);
-            const commentOwnerId = findedComment === null || findedComment === void 0 ? void 0 : findedComment.commentatorInfo.userId;
-            const token = req.headers.authorization.split(' ')[1];
-            const userId = yield this.jwtService.getUserIdByToken(token);
-            if (commentOwnerId !== userId) {
-                res.sendStatus(settings_1.HTTP_STATUSES.FORBIDDEN_403);
-                return;
-            }
-            next();
-        });
-    }
-}
-exports.ownershipValidationMiddleware = new OwnershipValidationMiddleware().ownershipValidationMiddleware;
+    next();
+});
+exports.ownershipValidationMiddleware = ownershipValidationMiddleware;
 //# sourceMappingURL=ownership-validation-middleware.js.map

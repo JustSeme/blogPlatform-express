@@ -40,7 +40,7 @@ class CommentsService {
     }
     updateComment(commentId, content) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.commentsRepository.updateComment(commentId, content);
+            return this.commentsRepository.updateComment(commentId, content);
         });
     }
     updateLike(accessToken, commentId, status) {
@@ -71,6 +71,7 @@ class CommentsService {
                     return false;
                 return this.commentsRepository.setDislike(likeData, commentId);
             }
+            //Сделать чтобы если стоит лайк, то убирался дизлайк
             return this.commentsRepository.setNoneLike(userId, commentId);
         });
     }
