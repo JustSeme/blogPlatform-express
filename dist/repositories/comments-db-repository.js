@@ -76,19 +76,19 @@ class CommentsRepository {
     }
     setNoneLike(userId, commentId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const likedComment = yield db_1.CommentsModel.findOne({ id: commentId });
-            if (!likedComment)
+            const editableComment = yield db_1.CommentsModel.findOne({ id: commentId });
+            if (!editableComment)
                 return false;
-            const likeIndex = likedComment.likesInfo.likes.findIndex((like) => like.userId === userId);
-            if (likeIndex > 0) {
-                likedComment.likesInfo.likes.splice(likeIndex, 1);
-                likedComment.save();
+            const likeIndex = editableComment.likesInfo.likes.findIndex((like) => like.userId === userId);
+            const dislikeIndex = editableComment.likesInfo.dislikes.findIndex((dislike) => dislike.userId === userId);
+            if (likeIndex > -1) {
+                editableComment.likesInfo.likes.splice(likeIndex, 1);
+                yield editableComment.save();
                 return true;
             }
-            const dislikeIndex = likedComment.likesInfo.dislikes.findIndex((dislike) => dislike.userId === userId);
-            if (dislikeIndex > 0) {
-                likedComment.likesInfo.likes.splice(dislikeIndex, 1);
-                likedComment.save();
+            if (dislikeIndex > -1) {
+                editableComment.likesInfo.dislikes.splice(dislikeIndex, 1);
+                yield editableComment.save();
                 return true;
             }
         });

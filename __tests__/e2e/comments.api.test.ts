@@ -12,13 +12,9 @@ describe('/comments', () => {
         await request(app)
             .delete(`/homeworks/testing/all-data`)
     })
-    let counter = 1
 
     afterEach(async () => {
         await server.close()
-        console.log(counter);
-        counter++
-
     })
 
     let recievedAccessToken = ''
@@ -188,6 +184,32 @@ describe('/comments', () => {
             .expect(HTTP_STATUSES.NOT_FOUND_404)
     })
 
+    it('shouldn\'t like created comment without authorization', async () => {
+        await request(app)
+            .put(`${baseURL}comments/${createdCommentId}/like-status`)
+            .send({
+                likeStatus: 'Like'
+            })
+            .expect(HTTP_STATUSES.UNAUTHORIZED_401)
+    })
+
+    it('shouldn\'t like created comment with incorrect input data', async () => {
+        const response = await request(app)
+            .put(`${baseURL}comments/${createdCommentId}/like-status`)
+            .set('Authorization', `Bearer ${recievedAccessToken}`)
+            .send({
+                likeStatus: 'incorrect'
+            })
+            .expect(HTTP_STATUSES.BAD_REQUEST_400)
+
+        expect(response.body).toEqual({
+            errorsMessages: [{
+                message: 'likeStatus is incorrect',
+                field: 'likeStatus'
+            }]
+        })
+    })
+
     it('should like created comment and display correct like info', async () => {
         await request(app)
             .put(`${baseURL}comments/${createdCommentId}/like-status`)
@@ -206,6 +228,46 @@ describe('/comments', () => {
         expect(likedCommentData.body.likesInfo.likesCount).toEqual(1)
         expect(likedCommentData.body.likesInfo.dislikesCount).toEqual(0)
         expect(likedCommentData.body.likesInfo.myStatus).toEqual('Like')
+    })
+
+    it('should switch Like to Dislike and display correct like info', async () => {
+        await request(app)
+            .put(`${baseURL}comments/${createdCommentId}/like-status`)
+            .set('Authorization', `Bearer ${recievedAccessToken}`)
+            .send({
+                likeStatus: 'Dislike'
+            })
+            .expect(HTTP_STATUSES.NO_CONTENT_204)
+
+
+        const likedCommentData = await request(app)
+            .get(`${baseURL}comments/${createdCommentId}`)
+            .set('Authorization', `Bearer ${recievedAccessToken}`)
+            .expect(HTTP_STATUSES.OK_200)
+
+        expect(likedCommentData.body.likesInfo.likesCount).toEqual(0)
+        expect(likedCommentData.body.likesInfo.dislikesCount).toEqual(1)
+        expect(likedCommentData.body.likesInfo.myStatus).toEqual('Dislike')
+    })
+
+    it('should set None instead of Like/Dislike and display correct like info', async () => {
+        await request(app)
+            .put(`${baseURL}comments/${createdCommentId}/like-status`)
+            .set('Authorization', `Bearer ${recievedAccessToken}`)
+            .send({
+                likeStatus: 'None'
+            })
+            .expect(HTTP_STATUSES.NO_CONTENT_204)
+
+
+        const likedCommentData = await request(app)
+            .get(`${baseURL}comments/${createdCommentId}`)
+            .set('Authorization', `Bearer ${recievedAccessToken}`)
+            .expect(HTTP_STATUSES.OK_200)
+
+        expect(likedCommentData.body.likesInfo.likesCount).toEqual(0)
+        expect(likedCommentData.body.likesInfo.dislikesCount).toEqual(0)
+        expect(likedCommentData.body.likesInfo.myStatus).toEqual('None')
     })
 
     it('should delete comment by id', async () => {

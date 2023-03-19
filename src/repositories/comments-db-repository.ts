@@ -67,22 +67,23 @@ export class CommentsRepository {
     }
 
     async setNoneLike(userId: string, commentId: string) {
-        const likedComment = await CommentsModel.findOne({ id: commentId })
-        if (!likedComment) return false
+        const editableComment = await CommentsModel.findOne({ id: commentId })
+        if (!editableComment) return false
 
-        const likeIndex = likedComment.likesInfo.likes.findIndex((like) => like.userId === userId)
-        if (likeIndex > 0) {
-            likedComment.likesInfo.likes.splice(likeIndex, 1)
+        const likeIndex = editableComment.likesInfo.likes.findIndex((like) => like.userId === userId)
+        const dislikeIndex = editableComment.likesInfo.dislikes.findIndex((dislike) => dislike.userId === userId)
 
-            likedComment.save()
+        if (likeIndex > -1) {
+            editableComment.likesInfo.likes.splice(likeIndex, 1)
+
+            await editableComment.save()
             return true
         }
 
-        const dislikeIndex = likedComment.likesInfo.dislikes.findIndex((dislike) => dislike.userId === userId)
-        if (dislikeIndex > 0) {
-            likedComment.likesInfo.likes.splice(dislikeIndex, 1)
+        if (dislikeIndex > -1) {
+            editableComment.likesInfo.dislikes.splice(dislikeIndex, 1)
 
-            likedComment.save()
+            await editableComment.save()
             return true
         }
     }

@@ -62,22 +62,14 @@ class CommentsService {
                 userId,
                 createdAt: new Date().toISOString()
             };
+            const isNoneSetted = yield this.commentsRepository.setNoneLike(userId, commentId);
             if (status === 'Like') {
-                const likesArray = updatingComment.likesInfo.likes;
-                const isAlreadyLiked = likesArray.findIndex((like) => like.userId === userId) > 0;
-                if (isAlreadyLiked)
-                    return false;
                 return this.commentsRepository.setLike(likeData, commentId);
             }
             if (status === 'Dislike') {
-                const dislikesArray = updatingComment.likesInfo.dislikes;
-                const isAlreadyDisliked = dislikesArray.findIndex((dislike) => dislike.userId === userId) > 0;
-                if (isAlreadyDisliked)
-                    return false;
                 return this.commentsRepository.setDislike(likeData, commentId);
             }
-            //Сделать чтобы если приходит лайк, то убирался дизлайк
-            return this.commentsRepository.setNoneLike(userId, commentId);
+            return isNoneSetted;
         });
     }
     getComments(queryParams, postId, accessToken) {

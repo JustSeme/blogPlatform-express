@@ -7,7 +7,7 @@
   "scripts": {
     "watch": "tsc -w",
     "dev": "nodemon --inspect ./dist/app.js",
-    "test": "jest --detectOpenHandles",
+    "test": "jest --watch --detectOpenHandles",
     "testMatch": "jest -t --watch --detectOpenHandles"
   },
   "dependencies": {
