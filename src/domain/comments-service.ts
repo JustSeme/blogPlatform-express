@@ -7,13 +7,7 @@ import { UserDBModel } from "../models/users/UserDBModel";
 import { CommentsRepository } from "../repositories/comments-db-repository";
 
 export class CommentsService {
-    private commentsRepository: CommentsRepository
-    private jwtService: JwtService
-
-    constructor() {
-        this.commentsRepository = new CommentsRepository()
-        this.jwtService = new JwtService()
-    }
+    constructor(protected jwtService: JwtService, protected commentsRepository: CommentsRepository) { }
 
     async createComment(content: string, commentator: UserDBModel | null, postId: string) {
         if (!commentator) {

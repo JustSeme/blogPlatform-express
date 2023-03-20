@@ -5,11 +5,7 @@ import { DeviceRepository } from '../repositories/device-db-repository';
 import { DeviceAuthSessionsModel } from '../models/devices/DeviceSessionsModel';
 
 export class JwtService {
-    private deviceRepository: DeviceRepository
-
-    constructor() {
-        this.deviceRepository = new DeviceRepository()
-    }
+    constructor(protected deviceRepository: DeviceRepository) { }
 
     async createAccessToken(expiresTime: string, userId: string) {
         return jwt.sign({ userId }, settings.JWT_SECRET, { expiresIn: expiresTime })
@@ -108,6 +104,3 @@ export class JwtService {
         return true
     }
 }
-
-// Оставил чтобы не изощряться в миддлварах
-export const jwtService = new JwtService()

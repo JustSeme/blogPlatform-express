@@ -12,11 +12,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.emailValidationWithCustomSearch = exports.passwordValidation = exports.loginValidation = exports.usersRouter = void 0;
 const express_1 = require("express");
 const express_validator_1 = require("express-validator");
-const settings_1 = require("../settings");
-const auth_service_1 = require("../domain/auth-service");
 const basic_authorizatoin_middleware_1 = require("../middlewares/auth/basic-authorizatoin-middleware");
 const input_validation_middleware_1 = require("../middlewares/validations/input-validation-middleware");
 const users_query_repository_1 = require("../repositories/query/users-query-repository");
+const composition_root_1 = require("../composition-root");
 exports.usersRouter = (0, express_1.Router)({});
 exports.loginValidation = (0, express_validator_1.body)('login')
     .exists()
@@ -51,39 +50,7 @@ exports.emailValidationWithCustomSearch = (0, express_validator_1.body)('email')
         }
     });
 }));
-class UsersController {
-    constructor() {
-        this.authService = new auth_service_1.AuthService();
-    }
-    createUser(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const createdUser = yield this.authService.createUserWithBasicAuth(req.body.login, req.body.password, req.body.email);
-            if (!createdUser) {
-                res.sendStatus(settings_1.HTTP_STATUSES.BAD_REQUEST_400);
-                return;
-            }
-            res.status(settings_1.HTTP_STATUSES.CREATED_201).send(createdUser);
-        });
-    }
-    getUsers(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const findedUsers = yield users_query_repository_1.usersQueryRepository.findUsers(req.query);
-            res.send(findedUsers);
-        });
-    }
-    deleteUser(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const isDeleted = yield this.authService.deleteUsers(req.params.id);
-            if (!isDeleted) {
-                res.sendStatus(settings_1.HTTP_STATUSES.NOT_FOUND_404);
-                return;
-            }
-            res.sendStatus(settings_1.HTTP_STATUSES.NO_CONTENT_204);
-        });
-    }
-}
-const usersController = new UsersController();
-exports.usersRouter.post('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, exports.loginValidation, exports.passwordValidation, exports.emailValidationWithCustomSearch, input_validation_middleware_1.inputValidationMiddleware, usersController.createUser.bind(usersController));
-exports.usersRouter.delete('/:id', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, usersController.deleteUser.bind(usersController));
-exports.usersRouter.get('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, usersController.getUsers.bind(usersController));
+exports.usersRouter.post('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, exports.loginValidation, exports.passwordValidation, exports.emailValidationWithCustomSearch, input_validation_middleware_1.inputValidationMiddleware, composition_root_1.usersController.createUser.bind(composition_root_1.usersController));
+exports.usersRouter.delete('/:id', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, composition_root_1.usersController.deleteUser.bind(composition_root_1.usersController));
+exports.usersRouter.get('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, composition_root_1.usersController.getUsers.bind(composition_root_1.usersController));
 //# sourceMappingURL=users-router.js.map

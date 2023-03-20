@@ -1,6 +1,5 @@
 import { ReadUsersQuery } from "../../models/users/ReadUsersQuery";
-import { UserDBModel } from "../../models/users/UserDBModel";
-import { UsersWithQueryOutputModel, UserViewModelType } from "../../models/users/UsersViewModel";
+import { UsersWithQueryOutputModel } from "../../models/users/UsersViewModel";
 import { UsersModel } from "../db";
 
 export const usersQueryRepository = {

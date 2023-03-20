@@ -7,11 +7,7 @@ import { bcryptAdapter } from '../adapters/bcryptAdapter'
 
 //transaction script
 export class AuthService {
-    private usersRepository: UsersRepository
-
-    constructor() {
-        this.usersRepository = new UsersRepository()
-    }
+    constructor(protected usersRepository: UsersRepository) { }
 
     async createUser(login: string, password: string, email: string): Promise<boolean> {
         const passwordHash = await bcryptAdapter.generatePasswordHash(password, 10)

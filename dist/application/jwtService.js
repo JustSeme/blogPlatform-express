@@ -12,15 +12,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.jwtService = exports.JwtService = void 0;
+exports.JwtService = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const settings_1 = require("../settings");
 const uuid_1 = require("uuid");
-const device_db_repository_1 = require("../repositories/device-db-repository");
 const DeviceSessionsModel_1 = require("../models/devices/DeviceSessionsModel");
 class JwtService {
-    constructor() {
-        this.deviceRepository = new device_db_repository_1.DeviceRepository();
+    constructor(deviceRepository) {
+        this.deviceRepository = deviceRepository;
     }
     createAccessToken(expiresTime, userId) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -121,6 +120,4 @@ class JwtService {
     }
 }
 exports.JwtService = JwtService;
-// Оставил чтобы не изощряться в миддлварах
-exports.jwtService = new JwtService();
 //# sourceMappingURL=jwtService.js.map

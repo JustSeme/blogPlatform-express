@@ -10,10 +10,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SecurityService = void 0;
-const device_db_repository_1 = require("../repositories/device-db-repository");
 class SecurityService {
-    constructor() {
-        this.deviceRepository = new device_db_repository_1.DeviceRepository();
+    constructor(deviceRepository) {
+        this.deviceRepository = deviceRepository;
     }
     getActiveDevicesForUser(userId) {
         return __awaiter(this, void 0, void 0, function* () {

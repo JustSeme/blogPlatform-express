@@ -10,13 +10,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CommentsService = void 0;
-const jwtService_1 = require("../application/jwtService");
 const CommentDBModel_1 = require("../models/comments/CommentDBModel");
-const comments_db_repository_1 = require("../repositories/comments-db-repository");
 class CommentsService {
-    constructor() {
-        this.commentsRepository = new comments_db_repository_1.CommentsRepository();
-        this.jwtService = new jwtService_1.JwtService();
+    constructor(jwtService, commentsRepository) {
+        this.jwtService = jwtService;
+        this.commentsRepository = commentsRepository;
     }
     createComment(content, commentator, postId) {
         return __awaiter(this, void 0, void 0, function* () {

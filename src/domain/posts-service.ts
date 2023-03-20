@@ -4,13 +4,7 @@ import { PostsRepository } from '../repositories/posts-db-repository'
 import { BlogsRepository } from '../repositories/blogs-db-repository'
 
 export class PostsService {
-    private blogsRepository: BlogsRepository
-    private postsRepository: PostsRepository
-
-    constructor() {
-        this.blogsRepository = new BlogsRepository()
-        this.postsRepository = new PostsRepository()
-    }
+    constructor(protected blogsRepository: BlogsRepository, protected postsRepository: PostsRepository) { }
 
     async deletePosts(id: string) {
         return await this.postsRepository.deletePosts(id)

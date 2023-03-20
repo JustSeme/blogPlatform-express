@@ -11,12 +11,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostsService = void 0;
 const PostDBModel_1 = require("../models/posts/PostDBModel");
-const posts_db_repository_1 = require("../repositories/posts-db-repository");
-const blogs_db_repository_1 = require("../repositories/blogs-db-repository");
 class PostsService {
-    constructor() {
-        this.blogsRepository = new blogs_db_repository_1.BlogsRepository();
-        this.postsRepository = new posts_db_repository_1.PostsRepository();
+    constructor(blogsRepository, postsRepository) {
+        this.blogsRepository = blogsRepository;
+        this.postsRepository = postsRepository;
     }
     deletePosts(id) {
         return __awaiter(this, void 0, void 0, function* () {

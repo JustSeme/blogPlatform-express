@@ -2,11 +2,7 @@ import { DeviceSessionsViewModel } from "../models/devices/DeviceSessionsViewMod
 import { DeviceRepository } from "../repositories/device-db-repository"
 
 export class SecurityService {
-    private deviceRepository: DeviceRepository
-
-    constructor() {
-        this.deviceRepository = new DeviceRepository()
-    }
+    constructor(protected deviceRepository: DeviceRepository) { }
 
     async getActiveDevicesForUser(userId: string) {
         const activeSessionsForUser = await this.deviceRepository.getDevicesForUser(userId)

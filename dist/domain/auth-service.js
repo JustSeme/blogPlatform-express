@@ -11,14 +11,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const UserDBModel_1 = require("../models/users/UserDBModel");
-const users_db_repository_1 = require("../repositories/users-db-repository");
 const uuid_1 = require("uuid");
 const emailManager_1 = require("../managers/emailManager");
 const bcryptAdapter_1 = require("../adapters/bcryptAdapter");
 //transaction script
 class AuthService {
-    constructor() {
-        this.usersRepository = new users_db_repository_1.UsersRepository();
+    constructor(usersRepository) {
+        this.usersRepository = usersRepository;
     }
     createUser(login, password, email) {
         return __awaiter(this, void 0, void 0, function* () {
