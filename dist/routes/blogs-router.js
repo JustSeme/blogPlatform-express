@@ -14,19 +14,19 @@ const nameValidation = (0, express_validator_1.body)('name')
     .trim()
     .notEmpty()
     .isString()
-    .isLength({ min: 1, max: 15 });
+    .isLength({ min: 3, max: 15 });
 const descriptionValidation = (0, express_validator_1.body)('description')
     .exists()
     .trim()
     .notEmpty()
     .isString()
-    .isLength({ min: 1, max: 500 });
+    .isLength({ min: 3, max: 500 });
 const websiteUrlValidation = (0, express_validator_1.body)('websiteUrl')
     .exists()
     .trim()
     .notEmpty()
     .isURL()
-    .isLength({ min: 1, max: 100 });
+    .isLength({ min: 3, max: 100 });
 const blogIdValidation = (0, express_validator_1.param)('blogId')
     .exists()
     .trim()

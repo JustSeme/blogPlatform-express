@@ -18,6 +18,40 @@ describe('/blogs', () => {
         websiteUrl: 'www.anyurl.com' // min 3 max 100 pattern ^https://([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$
     }
 
+    it('shouldn\'t create new blog without basic authorization', async () => {
+        await request(app)
+            .post(`${baseURL}blogs`)
+            .send(correctBlogBody)
+            .expect(HTTP_STATUSES.UNAUTHORIZED_401)
+
+        await request(app)
+            .get(`${baseURL}blogs`)
+            .expect(HTTP_STATUSES.NOT_FOUND_404)
+    })
+
+    const incorrectBlogBody = {
+        name: 'thisNameWasBeOver15Symbols', // min 3 max 15
+        description: 'tw', // min 3 max 500
+        websiteUrl: 'notAUrl' // min 3 max 100 pattern ^https://([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$
+    }
+
+    it('shouldn\'t create new blog with incorrect input data', async () => {
+        const errorsMessagesData = await request(app)
+            .post(`${baseURL}blogs`)
+            .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
+            .send(incorrectBlogBody)
+            .expect(HTTP_STATUSES.BAD_REQUEST_400)
+
+        expect(errorsMessagesData.body.errorsMessages.length).toEqual(3)
+        expect(errorsMessagesData.body.errorsMessages[0].field).toEqual('name')
+        expect(errorsMessagesData.body.errorsMessages[1].field).toEqual('description')
+        expect(errorsMessagesData.body.errorsMessages[2].field).toEqual('websiteUrl')
+
+        await request(app)
+            .get(`${baseURL}blogs`)
+            .expect(HTTP_STATUSES.NOT_FOUND_404)
+    })
+
     let createdBlogId = ''
     it('should create new blog with correct input data', async () => {
         const responseData = await request(app)
@@ -34,6 +68,27 @@ describe('/blogs', () => {
         expect(blogData.body.name).toEqual(correctBlogBody.name)
         expect(blogData.body.description).toEqual(correctBlogBody.description)
         expect(blogData.body.websiteUrl).toEqual(correctBlogBody.websiteUrl)
+    })
+
+    it('shouldn\'t update blog with incorrect input data', async () => {
+        const errorsMessagesData = await request(app)
+            .put(`${baseURL}blogs/${createdBlogId}`)
+            .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
+            .send(incorrectBlogBody)
+            .expect(HTTP_STATUSES.BAD_REQUEST_400)
+
+        const notUpdatedBlogData = await request(app)
+            .get(`${baseURL}blogs/${createdBlogId}`)
+            .expect(HTTP_STATUSES.OK_200)
+
+        expect(notUpdatedBlogData.body.name).toEqual(correctBlogBody.name)
+        expect(notUpdatedBlogData.body.description).toEqual(correctBlogBody.description)
+        expect(notUpdatedBlogData.body.websiteUrl).toEqual(correctBlogBody.websiteUrl)
+
+        expect(errorsMessagesData.body.errorsMessages.length).toEqual(3)
+        expect(errorsMessagesData.body.errorsMessages[0].field).toEqual('name')
+        expect(errorsMessagesData.body.errorsMessages[1].field).toEqual('description')
+        expect(errorsMessagesData.body.errorsMessages[2].field).toEqual('websiteUrl')
     })
 
     const correctBlogBodyForUpdate = {
