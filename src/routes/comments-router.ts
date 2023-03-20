@@ -1,12 +1,15 @@
 import { Router } from "express";
 import { body } from "express-validator";
-import { commentsController } from "../composition-root";
+import { container } from "../composition-root";
+import { CommentsController } from "../controllers/comments-controller";
 import { authMiddleware } from "../middlewares/auth/auth-middleware";
 import { commentIdValidationMiddleware } from "../middlewares/validations/commentId-validation-middleware";
 import { inputValidationMiddleware } from "../middlewares/validations/input-validation-middleware";
 import { ownershipValidationMiddleware } from "../middlewares/validations/ownership-validation-middleware";
 
 export const commentsRouter = Router({})
+
+const commentsController = container.resolve<CommentsController>(CommentsController)
 
 export const commentContentValidation = body('content')
     .exists()

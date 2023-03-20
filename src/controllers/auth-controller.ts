@@ -8,7 +8,9 @@ import { UserInputModel } from "../models/users/UserInputModel";
 import { usersQueryRepository } from "../repositories/query/users-query-repository";
 import { RequestWithBody } from "../types/types";
 import { Request, Response } from 'express';
+import { injectable } from 'inversify/lib/annotation/injectable';
 
+@injectable()
 export class AuthController {
     constructor(protected authService: AuthService, protected jwtService: JwtService) { }
 

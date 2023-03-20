@@ -1,6 +1,8 @@
 import { DeviceAuthSessionsModel } from "../models/devices/DeviceSessionsModel"
 import { DeviceAuthSessionsDBModel } from "./db"
+import { injectable } from 'inversify/lib/annotation/injectable';
 
+@injectable()
 export class DeviceRepository {
     async addSession(newSession: DeviceAuthSessionsModel) {
         const result = await DeviceAuthSessionsDBModel.create(newSession)

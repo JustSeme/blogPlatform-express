@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { body } from "express-validator";
-import { authController } from "../composition-root";
+import { container } from "../composition-root";
+import { AuthController } from "../controllers/auth-controller";
 import { authMiddleware } from "../middlewares/auth/auth-middleware";
 import { rateLimitMiddleware } from "../middlewares/auth/rate-limit-middleware";
 import { inputValidationMiddleware } from "../middlewares/validations/input-validation-middleware";
@@ -29,6 +30,8 @@ const newPasswordValidation = body('newPassword')
     .isLength({ min: 6, max: 20 })
 
 /* Напиши тесты */
+
+const authController = container.resolve<AuthController>(AuthController)
 
 authRouter.post('/login',
     rateLimitMiddleware,

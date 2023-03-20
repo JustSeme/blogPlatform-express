@@ -4,8 +4,10 @@ import { UsersRepository } from '../repositories/users-db-repository'
 import { v4 as uuidv4 } from 'uuid'
 import { emailManager } from '../managers/emailManager'
 import { bcryptAdapter } from '../adapters/bcryptAdapter'
+import { injectable } from 'inversify/lib/annotation/injectable'
 
 //transaction script
+@injectable()
 export class AuthService {
     constructor(protected usersRepository: UsersRepository) { }
 

@@ -6,9 +6,12 @@ import { blogsQueryRepository } from "../repositories/query/blogs-query-reposito
 import { authMiddleware } from "../middlewares/auth/auth-middleware";
 import { postIdValidationMiddleware } from "../middlewares/validations/postId-validation-middleware";
 import { commentContentValidation } from "./comments-router";
-import { postsController } from "../composition-root";
+import { PostsController } from "../controllers/posts-controller";
+import { container } from "../composition-root";
 
 export const postsRouter = Router({})
+
+const postsController = container.resolve<PostsController>(PostsController)
 
 export const titleValidation = body('title')
     .exists()

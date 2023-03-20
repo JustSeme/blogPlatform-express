@@ -1,4 +1,5 @@
 import { Response } from "express"
+import { injectable } from "inversify/lib/annotation/injectable"
 import { AuthService } from "../domain/auth-service"
 import { ErrorMessagesOutputModel } from "../models/ErrorMessagesOutputModel"
 import { ReadUsersQuery } from "../models/users/ReadUsersQuery"
@@ -8,6 +9,7 @@ import { usersQueryRepository } from "../repositories/query/users-query-reposito
 import { HTTP_STATUSES } from "../settings"
 import { RequestWithBody, RequestWithParams, RequestWithQuery } from "../types/types"
 
+@injectable()
 export class UsersController {
     constructor(protected authService: AuthService) { }
 

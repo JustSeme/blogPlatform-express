@@ -1,3 +1,4 @@
+import 'reflect-metadata'
 import { JwtService } from "./application/jwtService";
 import { AuthController } from "./controllers/auth-controller";
 import { BlogsController } from "./controllers/blogs-controller";
@@ -15,24 +16,26 @@ import { CommentsRepository } from "./repositories/comments-db-repository";
 import { DeviceRepository } from "./repositories/device-db-repository";
 import { PostsRepository } from "./repositories/posts-db-repository";
 import { UsersRepository } from "./repositories/users-db-repository";
+import { Container } from "inversify/lib/container/container";
 
-const usersRepository = new UsersRepository()
-const deviceRepository = new DeviceRepository()
-const blogsRepository = new BlogsRepository()
-const postsRepository = new PostsRepository()
-const commentsRepository = new CommentsRepository()
+export const container = new Container()
 
-const authService = new AuthService(usersRepository)
-const securityService = new SecurityService(deviceRepository)
-//оставил export чтобы не изощряться в миддлварах
-export const jwtService = new JwtService(deviceRepository)
-const postsService = new PostsService(blogsRepository, postsRepository)
-const commentsService = new CommentsService(jwtService, commentsRepository)
-const blogsService = new BlogsService(blogsRepository)
+container.bind<AuthController>(AuthController).to(AuthController)
+container.bind<UsersController>(UsersController).to(UsersController)
+container.bind<SecurityController>(SecurityController).to(SecurityController)
+container.bind<PostsController>(PostsController).to(PostsController)
+container.bind<CommentsController>(CommentsController).to(CommentsController)
+container.bind<BlogsController>(BlogsController).to(BlogsController)
 
-export const authController = new AuthController(authService, jwtService)
-export const usersController = new UsersController(authService)
-export const securityController = new SecurityController(jwtService, securityService)
-export const postsController = new PostsController(jwtService, postsService, commentsService)
-export const commentsController = new CommentsController(commentsService)
-export const blogsController = new BlogsController(blogsService, postsService) 
+container.bind<AuthService>(AuthService).to(AuthService)
+container.bind<SecurityService>(SecurityService).to(SecurityService)
+container.bind<JwtService>(JwtService).to(JwtService)
+container.bind<PostsService>(PostsService).to(PostsService)
+container.bind<CommentsService>(CommentsService).to(CommentsService)
+container.bind<BlogsService>(BlogsService).to(BlogsService)
+
+container.bind<UsersRepository>(UsersRepository).to(UsersRepository)
+container.bind<DeviceRepository>(DeviceRepository).to(DeviceRepository)
+container.bind<BlogsRepository>(BlogsRepository).to(BlogsRepository)
+container.bind<PostsRepository>(PostsRepository).to(PostsRepository)
+container.bind<CommentsRepository>(CommentsRepository).to(CommentsRepository)

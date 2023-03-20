@@ -10,15 +10,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.authMiddleware = void 0;
+const jwtService_1 = require("../../application/jwtService");
 const composition_root_1 = require("../../composition-root");
 const settings_1 = require("../../settings");
+const jwtService = composition_root_1.container.resolve(jwtService_1.JwtService);
 const authMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.headers.authorization) {
         res.sendStatus(settings_1.HTTP_STATUSES.UNAUTHORIZED_401);
         return;
     }
     const token = req.headers.authorization.split(' ')[1];
-    const userId = yield composition_root_1.jwtService.getUserIdByToken(token);
+    const userId = yield jwtService.getUserIdByToken(token);
     if (!userId) {
         res.sendStatus(settings_1.HTTP_STATUSES.UNAUTHORIZED_401);
         return;

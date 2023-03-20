@@ -1,6 +1,8 @@
 import { DeviceSessionsViewModel } from "../models/devices/DeviceSessionsViewModel"
 import { DeviceRepository } from "../repositories/device-db-repository"
+import { injectable } from 'inversify/lib/annotation/injectable';
 
+@injectable()
 export class SecurityService {
     constructor(protected deviceRepository: DeviceRepository) { }
 

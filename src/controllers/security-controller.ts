@@ -6,7 +6,9 @@ import { DeviceSessionsViewModel } from "../models/devices/DeviceSessionsViewMod
 import { deviceQueryRepository } from "../repositories/query/device-query-repository";
 import { RequestWithParams } from "../types/types";
 import { Request, Response } from "express";
+import { injectable } from 'inversify/lib/annotation/injectable';
 
+@injectable()
 export class SecurityController {
 
     constructor(protected jwtService: JwtService, protected securityService: SecurityService) { }

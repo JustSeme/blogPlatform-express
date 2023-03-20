@@ -1,8 +1,9 @@
 import { CommentDBModel, LikeObjectType } from "../models/comments/CommentDBModel";
-import { CommentsWithQueryOutputModel } from "../models/comments/CommentViewModel";
 import { ReadCommentsQueryParams } from "../models/comments/ReadCommentsQuery";
 import { CommentsModel } from "./db";
+import { injectable } from 'inversify/lib/annotation/injectable';
 
+@injectable()
 export class CommentsRepository {
     async createComment(createdComment: CommentDBModel) {
         await CommentsModel.create(createdComment)

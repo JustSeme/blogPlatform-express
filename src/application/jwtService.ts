@@ -3,7 +3,9 @@ import { settings } from "../settings";
 import { v4 as uuid } from 'uuid';
 import { DeviceRepository } from '../repositories/device-db-repository';
 import { DeviceAuthSessionsModel } from '../models/devices/DeviceSessionsModel';
+import { injectable } from 'inversify/lib/annotation/injectable';
 
+@injectable()
 export class JwtService {
     constructor(protected deviceRepository: DeviceRepository) { }
 

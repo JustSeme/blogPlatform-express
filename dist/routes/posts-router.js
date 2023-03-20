@@ -18,8 +18,10 @@ const blogs_query_repository_1 = require("../repositories/query/blogs-query-repo
 const auth_middleware_1 = require("../middlewares/auth/auth-middleware");
 const postId_validation_middleware_1 = require("../middlewares/validations/postId-validation-middleware");
 const comments_router_1 = require("./comments-router");
+const posts_controller_1 = require("../controllers/posts-controller");
 const composition_root_1 = require("../composition-root");
 exports.postsRouter = (0, express_1.Router)({});
+const postsController = composition_root_1.container.resolve(posts_controller_1.PostsController);
 exports.titleValidation = (0, express_validator_1.body)('title')
     .exists()
     .trim()
@@ -50,11 +52,11 @@ const blogIdValidation = (0, express_validator_1.body)('blogId')
     return true;
 }))
     .isLength({ min: 1, max: 100 });
-exports.postsRouter.get('/', composition_root_1.postsController.getPosts);
-exports.postsRouter.get('/:id', composition_root_1.postsController.getPostById);
-exports.postsRouter.get('/:postId/comments', postId_validation_middleware_1.postIdValidationMiddleware, composition_root_1.postsController.getCommentsForPost.bind(composition_root_1.postsController));
-exports.postsRouter.post('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, exports.titleValidation, exports.shortDescriptionValidation, exports.postContentValidation, blogIdValidation, input_validation_middleware_1.inputValidationMiddleware, composition_root_1.postsController.createPost.bind(composition_root_1.postsController));
-exports.postsRouter.post('/:postId/comments', auth_middleware_1.authMiddleware, postId_validation_middleware_1.postIdValidationMiddleware, comments_router_1.commentContentValidation, input_validation_middleware_1.inputValidationMiddleware, composition_root_1.postsController.createCommentForPost.bind(composition_root_1.postsController));
-exports.postsRouter.put('/:id', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, exports.titleValidation, exports.shortDescriptionValidation, exports.postContentValidation, blogIdValidation, input_validation_middleware_1.inputValidationMiddleware, composition_root_1.postsController.updatePost.bind(composition_root_1.postsController));
-exports.postsRouter.delete('/:id', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, composition_root_1.postsController.deletePost.bind(composition_root_1.postsController));
+exports.postsRouter.get('/', postsController.getPosts);
+exports.postsRouter.get('/:id', postsController.getPostById);
+exports.postsRouter.get('/:postId/comments', postId_validation_middleware_1.postIdValidationMiddleware, postsController.getCommentsForPost.bind(postsController));
+exports.postsRouter.post('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, exports.titleValidation, exports.shortDescriptionValidation, exports.postContentValidation, blogIdValidation, input_validation_middleware_1.inputValidationMiddleware, postsController.createPost.bind(postsController));
+exports.postsRouter.post('/:postId/comments', auth_middleware_1.authMiddleware, postId_validation_middleware_1.postIdValidationMiddleware, comments_router_1.commentContentValidation, input_validation_middleware_1.inputValidationMiddleware, postsController.createCommentForPost.bind(postsController));
+exports.postsRouter.put('/:id', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, exports.titleValidation, exports.shortDescriptionValidation, exports.postContentValidation, blogIdValidation, input_validation_middleware_1.inputValidationMiddleware, postsController.updatePost.bind(postsController));
+exports.postsRouter.delete('/:id', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, postsController.deletePost.bind(postsController));
 //# sourceMappingURL=posts-router.js.map

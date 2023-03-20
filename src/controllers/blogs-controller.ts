@@ -14,7 +14,9 @@ import { PostsService } from "../domain/posts-service";
 import { ReadBlogsQueryParams } from "../models/blogs/ReadBlogsQuery";
 import { ReadPostsQueryParams } from "../models/posts/ReadPostsQuery";
 import { Response } from 'express';
+import { injectable } from 'inversify/lib/annotation/injectable';
 
+@injectable()
 export class BlogsController {
     constructor(protected blogsService: BlogsService, protected postsService: PostsService) { }
 

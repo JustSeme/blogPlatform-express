@@ -5,7 +5,9 @@ import { LikeType } from "../models/comments/LikeInputModel";
 import { ReadCommentsQueryParams } from "../models/comments/ReadCommentsQuery";
 import { UserDBModel } from "../models/users/UserDBModel";
 import { CommentsRepository } from "../repositories/comments-db-repository";
+import { injectable } from 'inversify/lib/annotation/injectable';
 
+@injectable()
 export class CommentsService {
     constructor(protected jwtService: JwtService, protected commentsRepository: CommentsRepository) { }
 

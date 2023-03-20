@@ -1,7 +1,10 @@
 import { NextFunction, Request, Response } from "express"
 import { HTTP_STATUSES } from "../../settings"
 import { commentsQueryRepository } from "../../repositories/query/comments-query-repository"
-import { jwtService } from "../../composition-root"
+import { container } from "../../composition-root"
+import { JwtService } from "../../application/jwtService"
+
+const jwtService = container.resolve<JwtService>(JwtService)
 
 export const ownershipValidationMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     const findedComment = await commentsQueryRepository.findCommentById(req.params.commentId)

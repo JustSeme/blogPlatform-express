@@ -14,7 +14,9 @@ import { PostsService } from "../domain/posts-service";
 import { postsQueryRepository } from "../repositories/query/posts-query-repository";
 import { ReadPostsQueryParams } from "../models/posts/ReadPostsQuery";
 import { Response } from "express";
+import { injectable } from 'inversify/lib/annotation/injectable';
 
+@injectable()
 export class PostsController {
     constructor(protected jwtService: JwtService, protected postsService: PostsService, protected commentsService: CommentsService) { }
 

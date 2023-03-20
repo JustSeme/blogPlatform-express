@@ -1,7 +1,9 @@
 import { BlogInputModel } from "../models/blogs/BlogInputModel";
 import { BlogViewModel } from "../models/blogs/BlogViewModel";
 import { BlogsModel } from "./db";
+import { injectable } from 'inversify/lib/annotation/injectable';
 
+@injectable()
 export class BlogsRepository {
     async deleteBlog(id: string | null) {
         let result

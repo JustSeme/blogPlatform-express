@@ -12,11 +12,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.emailValidationWithCustomSearch = exports.passwordValidation = exports.loginValidation = exports.usersRouter = void 0;
 const express_1 = require("express");
 const express_validator_1 = require("express-validator");
+const composition_root_1 = require("../composition-root");
+const users_controller_1 = require("../controllers/users-controller");
 const basic_authorizatoin_middleware_1 = require("../middlewares/auth/basic-authorizatoin-middleware");
 const input_validation_middleware_1 = require("../middlewares/validations/input-validation-middleware");
 const users_query_repository_1 = require("../repositories/query/users-query-repository");
-const composition_root_1 = require("../composition-root");
 exports.usersRouter = (0, express_1.Router)({});
+const usersController = composition_root_1.container.resolve(users_controller_1.UsersController);
 exports.loginValidation = (0, express_validator_1.body)('login')
     .exists()
     .trim()
@@ -50,7 +52,7 @@ exports.emailValidationWithCustomSearch = (0, express_validator_1.body)('email')
         }
     });
 }));
-exports.usersRouter.post('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, exports.loginValidation, exports.passwordValidation, exports.emailValidationWithCustomSearch, input_validation_middleware_1.inputValidationMiddleware, composition_root_1.usersController.createUser.bind(composition_root_1.usersController));
-exports.usersRouter.delete('/:id', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, composition_root_1.usersController.deleteUser.bind(composition_root_1.usersController));
-exports.usersRouter.get('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, composition_root_1.usersController.getUsers.bind(composition_root_1.usersController));
+exports.usersRouter.post('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, exports.loginValidation, exports.passwordValidation, exports.emailValidationWithCustomSearch, input_validation_middleware_1.inputValidationMiddleware, usersController.createUser.bind(usersController));
+exports.usersRouter.delete('/:id', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, usersController.deleteUser.bind(usersController));
+exports.usersRouter.get('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, usersController.getUsers.bind(usersController));
 //# sourceMappingURL=users-router.js.map

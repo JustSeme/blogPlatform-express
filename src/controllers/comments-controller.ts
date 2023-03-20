@@ -6,7 +6,9 @@ import { LikeInputModel } from "../models/comments/LikeInputModel";
 import { ErrorMessagesOutputModel } from "../models/ErrorMessagesOutputModel";
 import { RequestWithParams, RequestWithParamsAndBody } from "../types/types";
 import { Response } from "express";
+import { injectable } from 'inversify/lib/annotation/injectable';
 
+@injectable()
 export class CommentsController {
     constructor(protected commentsService: CommentsService) { }
 

@@ -4,9 +4,12 @@ import { inputValidationMiddleware } from "../middlewares/validations/input-vali
 import { postContentValidation, shortDescriptionValidation, titleValidation } from "./posts-router";
 import { blogIdValidationMiddleware } from "../middlewares/validations/blogId-validation-middleware";
 import { body, param } from "express-validator";
-import { blogsController } from "../composition-root";
+import { container } from "../composition-root";
+import { BlogsController } from "../controllers/blogs-controller";
 
 export const blogsRouter = Router({})
+
+const blogsController = container.resolve<BlogsController>(BlogsController)
 
 const nameValidation = body('name')
     .exists()

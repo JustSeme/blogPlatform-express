@@ -2,7 +2,9 @@ import { PostInputModel } from '../models/posts/PostInputModel'
 import { PostDBModel } from '../models/posts/PostDBModel'
 import { PostsRepository } from '../repositories/posts-db-repository'
 import { BlogsRepository } from '../repositories/blogs-db-repository'
+import { injectable } from 'inversify/lib/annotation/injectable';
 
+@injectable()
 export class PostsService {
     constructor(protected blogsRepository: BlogsRepository, protected postsRepository: PostsRepository) { }
 

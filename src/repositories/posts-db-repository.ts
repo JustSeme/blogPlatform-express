@@ -1,7 +1,9 @@
 import { PostInputModel } from '../models/posts/PostInputModel'
 import { PostDBModel } from '../models/posts/PostDBModel'
 import { PostsModel } from './db'
+import { injectable } from 'inversify/lib/annotation/injectable';
 
+@injectable()
 export class PostsRepository {
     async deletePosts(id: string) {
         let result = await PostsModel.deleteOne({ id: id })

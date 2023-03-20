@@ -1,12 +1,14 @@
 import { Router } from "express";
 import { body } from "express-validator";
+import { container } from "../composition-root";
+import { UsersController } from "../controllers/users-controller";
 import { basicAuthorizationMiddleware } from "../middlewares/auth/basic-authorizatoin-middleware";
 import { inputValidationMiddleware } from "../middlewares/validations/input-validation-middleware";
 import { usersQueryRepository } from "../repositories/query/users-query-repository";
-import { usersController } from "../composition-root";
 
 export const usersRouter = Router({})
 
+const usersController = container.resolve<UsersController>(UsersController)
 
 export const loginValidation = body('login')
     .exists()

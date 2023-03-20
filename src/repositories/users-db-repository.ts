@@ -1,8 +1,10 @@
 import { add } from "date-fns";
+import { injectable } from "inversify";
 import { UserDBModel } from "../models/users/UserDBModel";
 import { UsersModel } from "./db";
 
-//transaaction script
+//transaction script
+@injectable()
 export class UsersRepository {
     async createUser(newUser: UserDBModel) {
         await new UsersModel(newUser).save()
