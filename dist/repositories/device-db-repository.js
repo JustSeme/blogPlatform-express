@@ -16,6 +16,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DeviceRepository = void 0;
+require("reflect-metadata");
 const db_1 = require("./db");
 const injectable_1 = require("inversify/lib/annotation/injectable");
 let DeviceRepository = class DeviceRepository {

@@ -76,6 +76,7 @@ let CommentsRepository = class CommentsRepository {
             const dislikedComment = yield db_1.CommentsModel.findOne({ id: commentId });
             if (!dislikedComment)
                 return false;
+            // TODO Почитать про $push mongoose
             dislikedComment.likesInfo.dislikes.push(likeData);
             yield dislikedComment.save();
             return true;
@@ -86,6 +87,7 @@ let CommentsRepository = class CommentsRepository {
             const editableComment = yield db_1.CommentsModel.findOne({ id: commentId });
             if (!editableComment)
                 return false;
+            // TODO Почитать про $pull mongoose
             const likeIndex = editableComment.likesInfo.likes.findIndex((like) => like.userId === userId);
             const dislikeIndex = editableComment.likesInfo.dislikes.findIndex((dislike) => dislike.userId === userId);
             if (likeIndex > -1) {

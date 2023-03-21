@@ -21,18 +21,21 @@ const posts_db_repository_1 = require("./repositories/posts-db-repository");
 const users_db_repository_1 = require("./repositories/users-db-repository");
 const container_1 = require("inversify/lib/container/container");
 exports.container = new container_1.Container();
+//controllers
 exports.container.bind(auth_controller_1.AuthController).to(auth_controller_1.AuthController);
 exports.container.bind(users_controller_1.UsersController).to(users_controller_1.UsersController);
 exports.container.bind(security_controller_1.SecurityController).to(security_controller_1.SecurityController);
 exports.container.bind(posts_controller_1.PostsController).to(posts_controller_1.PostsController);
 exports.container.bind(comments_controller_1.CommentsController).to(comments_controller_1.CommentsController);
 exports.container.bind(blogs_controller_1.BlogsController).to(blogs_controller_1.BlogsController);
+//services
 exports.container.bind(auth_service_1.AuthService).to(auth_service_1.AuthService);
 exports.container.bind(security_service_1.SecurityService).to(security_service_1.SecurityService);
 exports.container.bind(jwtService_1.JwtService).to(jwtService_1.JwtService);
 exports.container.bind(posts_service_1.PostsService).to(posts_service_1.PostsService);
 exports.container.bind(comments_service_1.CommentsService).to(comments_service_1.CommentsService);
 exports.container.bind(blogs_service_1.BlogsService).to(blogs_service_1.BlogsService);
+// repositories
 exports.container.bind(users_db_repository_1.UsersRepository).to(users_db_repository_1.UsersRepository);
 exports.container.bind(device_db_repository_1.DeviceRepository).to(device_db_repository_1.DeviceRepository);
 exports.container.bind(blogs_db_repository_1.BlogsRepository).to(blogs_db_repository_1.BlogsRepository);

@@ -59,6 +59,7 @@ export class CommentsService {
 
         const isNoneSetted = await this.commentsRepository.setNoneLike(userId, commentId)
 
+        //Сделать апдейт лайка если сущность уже создана и создание если нет
         if (status === 'Like') {
             return this.commentsRepository.setLike(likeData, commentId)
         }
@@ -98,33 +99,30 @@ export class CommentsService {
 
         const convertedComments = commentsArray.map((comment: CommentDBModel) => {
             const likesInfoData = comment.likesInfo
+
+            let myStatus = 'None'
+
+            // check that comment was liked current user
+            if (likesInfoData.likes.some((el: LikeObjectType) => el.userId === userId)) {
+                myStatus = 'Like'
+            }
+
+            //check that comment was disliked current user
+            if (likesInfoData.dislikes.some((el: LikeObjectType) => el.userId === userId)) {
+                myStatus = 'Dislike'
+            }
+
             const convertedComment: CommentViewModel = {
                 id: comment.id,
                 content: comment.content,
                 commentatorInfo: { ...comment.commentatorInfo },
                 createdAt: comment.createdAt,
                 likesInfo: {
-                    likesCount: 0,
-                    dislikesCount: 0,
+                    likesCount: comment.likesInfo.likes.length,
+                    dislikesCount: comment.likesInfo.dislikes.length,
                     myStatus: 'None'
                 }
             }
-
-
-            if (!userId) {
-                convertedComment.likesInfo.myStatus = 'None'
-            }
-            // check that comment was liked current user
-            if (likesInfoData.likes.some((el: LikeObjectType) => el.userId === userId)) {
-                convertedComment.likesInfo.myStatus = 'Like'
-            }
-            //check that comment was disliked current user
-            if (likesInfoData.dislikes.some((el: LikeObjectType) => el.userId === userId)) {
-                convertedComment.likesInfo.myStatus = 'Dislike'
-            }
-
-            convertedComment.likesInfo.likesCount = likesInfoData.likes.length
-            convertedComment.likesInfo.dislikesCount = likesInfoData.dislikes.length
 
             return convertedComment
         })

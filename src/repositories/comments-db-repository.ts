@@ -61,6 +61,8 @@ export class CommentsRepository {
         const dislikedComment = await CommentsModel.findOne({ id: commentId })
         if (!dislikedComment) return false
 
+        // TODO Почитать про $push mongoose
+
         dislikedComment.likesInfo.dislikes!.push(likeData)
 
         await dislikedComment.save()
@@ -71,6 +73,7 @@ export class CommentsRepository {
         const editableComment = await CommentsModel.findOne({ id: commentId })
         if (!editableComment) return false
 
+        // TODO Почитать про $pull mongoose
         const likeIndex = editableComment.likesInfo.likes.findIndex((like) => like.userId === userId)
         const dislikeIndex = editableComment.likesInfo.dislikes.findIndex((dislike) => dislike.userId === userId)
 

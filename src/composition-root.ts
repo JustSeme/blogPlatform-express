@@ -20,6 +20,7 @@ import { Container } from "inversify/lib/container/container";
 
 export const container = new Container()
 
+//controllers
 container.bind<AuthController>(AuthController).to(AuthController)
 container.bind<UsersController>(UsersController).to(UsersController)
 container.bind<SecurityController>(SecurityController).to(SecurityController)
@@ -27,6 +28,7 @@ container.bind<PostsController>(PostsController).to(PostsController)
 container.bind<CommentsController>(CommentsController).to(CommentsController)
 container.bind<BlogsController>(BlogsController).to(BlogsController)
 
+//services
 container.bind<AuthService>(AuthService).to(AuthService)
 container.bind<SecurityService>(SecurityService).to(SecurityService)
 container.bind<JwtService>(JwtService).to(JwtService)
@@ -34,6 +36,7 @@ container.bind<PostsService>(PostsService).to(PostsService)
 container.bind<CommentsService>(CommentsService).to(CommentsService)
 container.bind<BlogsService>(BlogsService).to(BlogsService)
 
+// repositories
 container.bind<UsersRepository>(UsersRepository).to(UsersRepository)
 container.bind<DeviceRepository>(DeviceRepository).to(DeviceRepository)
 container.bind<BlogsRepository>(BlogsRepository).to(BlogsRepository)

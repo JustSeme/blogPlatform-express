@@ -6,7 +6,6 @@ import { HTTP_STATUSES } from "../../settings"
 const jwtService = container.resolve<JwtService>(JwtService)
 
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-
     if (!req.headers.authorization) {
         res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
         return
