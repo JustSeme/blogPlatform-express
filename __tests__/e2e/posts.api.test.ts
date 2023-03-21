@@ -57,6 +57,34 @@ describe('/posts', () => {
         blogId = createdBlogData.body.id
     })
 
+    it('shouldn\'t create post without basic auth', async () => {
+        await request(app)
+            .post(`${baseURL}posts`)
+            .send(incorrectPostBody)
+            .expect(HTTP_STATUSES.UNAUTHORIZED_401)
+    })
+
+    const incorrectPostBody = {
+        title: 'this title will be a over 30 symbols', // min 3 max 30
+        shortDescription: 'in', // min: 3, max: 100 
+        content: 'co', // min: 3, max: 1000 
+        blogId: 'notABlogId'
+    }
+
+    it('shouldn\'t create post with incorrect input data', async () => {
+        const errorsMessagesData = await request(app)
+            .post(`${baseURL}posts`)
+            .set('Authorization', `Basic YWRtaW46cXdlcnR5`)
+            .send(incorrectPostBody)
+            .expect(HTTP_STATUSES.BAD_REQUEST_400)
+
+        expect(errorsMessagesData.body.errorsMessages[0].field).toEqual('title')
+        expect(errorsMessagesData.body.errorsMessages[1].field).toEqual('shortDescription')
+        expect(errorsMessagesData.body.errorsMessages[2].field).toEqual('content')
+        expect(errorsMessagesData.body.errorsMessages[3].field).toEqual('blogId')
+        expect(errorsMessagesData.body.errorsMessages[3].message).toEqual('blog by blogId not found')
+    })
+
     const correctPostBody: PostInputModel = {
         title: 'correctTitle', // min 3 max 30
         shortDescription: 'correct description', // min: 3, max: 100 
@@ -85,7 +113,43 @@ describe('/posts', () => {
         expect(gettedPostData.body.shortDescription).toEqual(correctPostBody.shortDescription)
         expect(gettedPostData.body.content).toEqual(correctPostBody.content)
         expect(gettedPostData.body.blogId).toEqual(correctPostBody.blogId)
+    })
 
+    it('shouldn\'t update created post with incorrect input data', async () => {
+        const errorsMessagesData = await request(app)
+            .put(`${baseURL}posts/${createdPostId}`)
+            .set('Authorization', `Basic YWRtaW46cXdlcnR5`)
+            .send(incorrectPostBody)
+            .expect(HTTP_STATUSES.BAD_REQUEST_400)
+
+        expect(errorsMessagesData.body.errorsMessages[0].field).toEqual('title')
+        expect(errorsMessagesData.body.errorsMessages[1].field).toEqual('shortDescription')
+        expect(errorsMessagesData.body.errorsMessages[2].field).toEqual('content')
+        expect(errorsMessagesData.body.errorsMessages[3].field).toEqual('blogId')
+        expect(errorsMessagesData.body.errorsMessages[3].message).toEqual('blog by blogId not found')
+
+        const updatedPostData = await request(app)
+            .get(`${baseURL}posts/${createdPostId}`)
+            .expect(HTTP_STATUSES.OK_200)
+
+        expect(updatedPostData.body.title).toEqual(correctPostBody.title)
+        expect(updatedPostData.body.shortDescription).toEqual(correctPostBody.shortDescription)
+        expect(updatedPostData.body.content).toEqual(correctPostBody.content)
+    })
+
+    it('shouldn\'t update created post without basic auth', async () => {
+        await request(app)
+            .put(`${baseURL}posts/${createdPostId}`)
+            .send(correctUpdatePostBody)
+            .expect(HTTP_STATUSES.UNAUTHORIZED_401)
+
+        const updatedPostData = await request(app)
+            .get(`${baseURL}posts/${createdPostId}`)
+            .expect(HTTP_STATUSES.OK_200)
+
+        expect(updatedPostData.body.title).toEqual(correctPostBody.title)
+        expect(updatedPostData.body.shortDescription).toEqual(correctPostBody.shortDescription)
+        expect(updatedPostData.body.content).toEqual(correctPostBody.content)
     })
 
     const correctUpdatePostBody: PostInputModel = {
@@ -128,6 +192,27 @@ describe('/posts', () => {
 
         expect(recievedCreatedCommentsData.body.items.length).toEqual(1)
         expect(recievedCreatedCommentsData.body.items[0].content).toEqual(correctCommentBody.content)
+    })
+
+    it('shouldn\'t delete post without basic auth', async () => {
+        await request(app)
+            .delete(`${baseURL}posts/${createdPostId}`)
+            .expect(HTTP_STATUSES.UNAUTHORIZED_401)
+
+        await request(app)
+            .get(`${baseURL}posts/${createdPostId}`)
+            .expect(HTTP_STATUSES.OK_200)
+    })
+
+    it('shouldn\'t delete post with incorrect postId', async () => {
+        await request(app)
+            .delete(`${baseURL}posts/12345`)
+            .set('Authorization', `Basic YWRtaW46cXdlcnR5`)
+            .expect(HTTP_STATUSES.NOT_FOUND_404)
+
+        await request(app)
+            .get(`${baseURL}posts/${createdPostId}`)
+            .expect(HTTP_STATUSES.OK_200)
     })
 
     it('should delete post', async () => {

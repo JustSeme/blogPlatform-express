@@ -17,7 +17,7 @@ export const inputValidationMiddleware = (req: Request, res: Response, next: Nex
                 field: key
             }
         });
-        res.status(status).json({ errorsMessages: errorsMessages });
+        res.status(status).send({ errorsMessages: errorsMessages });
         return
     }
     next()

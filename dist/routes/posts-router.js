@@ -27,18 +27,18 @@ exports.titleValidation = (0, express_validator_1.body)('title')
     .trim()
     .notEmpty()
     .isString()
-    .isLength({ min: 1, max: 30 });
+    .isLength({ min: 3, max: 30 });
 exports.shortDescriptionValidation = (0, express_validator_1.body)('shortDescription')
     .exists()
     .trim()
     .notEmpty()
-    .isLength({ min: 1, max: 100 });
+    .isLength({ min: 3, max: 100 });
 exports.postContentValidation = (0, express_validator_1.body)('content')
     .exists()
     .trim()
     .notEmpty()
     .isString()
-    .isLength({ min: 1, max: 1000 });
+    .isLength({ min: 3, max: 1000 });
 const blogIdValidation = (0, express_validator_1.body)('blogId')
     .exists()
     .trim()
