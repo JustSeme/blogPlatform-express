@@ -3,9 +3,9 @@ import { HTTP_STATUSES } from "../../settings"
 import { postsQueryRepository } from "../../repositories/query/posts-query-repository"
 
 export const postIdValidationMiddleware = async (req: any, res: Response, next: NextFunction) => {
-    const commentedPost = await postsQueryRepository.findPostById(req.params.postId)
+    const finded = await postsQueryRepository.findPostById(req.params.postId)
 
-    if (!commentedPost) {
+    if (!finded) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
         return
     }

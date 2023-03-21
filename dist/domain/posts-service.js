@@ -46,6 +46,11 @@ let PostsService = class PostsService {
             return yield this.postsRepository.updatePost(id, body);
         });
     }
+    updateLike(accessToken, commentId, status) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return true;
+        });
+    }
 };
 PostsService = __decorate([
     (0, injectable_1.injectable)(),

@@ -3,6 +3,7 @@ import { PostDBModel } from '../models/posts/PostDBModel'
 import { PostsRepository } from '../repositories/posts-db-repository'
 import { BlogsRepository } from '../repositories/blogs-db-repository'
 import { injectable } from 'inversify/lib/annotation/injectable';
+import { LikeType } from '../models/comments/LikeInputModel';
 
 @injectable()
 export class PostsService {
@@ -30,5 +31,10 @@ export class PostsService {
 
     async updatePost(id: string, body: PostInputModel) {
         return await this.postsRepository.updatePost(id, body)
+    }
+
+    async updateLike(accessToken: string, commentId: string, status: LikeType) {
+
+        return true
     }
 }

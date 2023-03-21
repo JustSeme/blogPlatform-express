@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.commentContentValidation = exports.commentsRouter = void 0;
+exports.likeValidation = exports.commentContentValidation = exports.commentsRouter = void 0;
 const express_1 = require("express");
 const express_validator_1 = require("express-validator");
 const composition_root_1 = require("../composition-root");
@@ -17,7 +17,7 @@ exports.commentContentValidation = (0, express_validator_1.body)('content')
     .notEmpty()
     .isString()
     .isLength({ min: 20, max: 300 });
-const likeValidation = (0, express_validator_1.body)('likeStatus')
+exports.likeValidation = (0, express_validator_1.body)('likeStatus')
     .exists()
     .trim()
     .custom(value => {
@@ -29,5 +29,5 @@ const likeValidation = (0, express_validator_1.body)('likeStatus')
 exports.commentsRouter.get('/:commentId', commentsController.getComment.bind(commentsController));
 exports.commentsRouter.delete('/:commentId', auth_middleware_1.authMiddleware, commentId_validation_middleware_1.commentIdValidationMiddleware, ownership_validation_middleware_1.ownershipValidationMiddleware, commentsController.deleteComment.bind(commentsController));
 exports.commentsRouter.put('/:commentId', auth_middleware_1.authMiddleware, commentId_validation_middleware_1.commentIdValidationMiddleware, ownership_validation_middleware_1.ownershipValidationMiddleware, exports.commentContentValidation, input_validation_middleware_1.inputValidationMiddleware, commentsController.updateComment.bind(commentsController));
-exports.commentsRouter.put('/:commentId/like-status', auth_middleware_1.authMiddleware, commentId_validation_middleware_1.commentIdValidationMiddleware, likeValidation, input_validation_middleware_1.inputValidationMiddleware, commentsController.updateLikeForComment.bind(commentsController));
+exports.commentsRouter.put('/:commentId/like-status', auth_middleware_1.authMiddleware, commentId_validation_middleware_1.commentIdValidationMiddleware, exports.likeValidation, input_validation_middleware_1.inputValidationMiddleware, commentsController.updateLikeStatus.bind(commentsController));
 //# sourceMappingURL=comments-router.js.map

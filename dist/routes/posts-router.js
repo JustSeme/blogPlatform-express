@@ -59,4 +59,5 @@ exports.postsRouter.post('/', basic_authorizatoin_middleware_1.basicAuthorizatio
 exports.postsRouter.post('/:postId/comments', auth_middleware_1.authMiddleware, postId_validation_middleware_1.postIdValidationMiddleware, comments_router_1.commentContentValidation, input_validation_middleware_1.inputValidationMiddleware, postsController.createCommentForPost.bind(postsController));
 exports.postsRouter.put('/:id', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, exports.titleValidation, exports.shortDescriptionValidation, exports.postContentValidation, blogIdValidation, input_validation_middleware_1.inputValidationMiddleware, postsController.updatePost.bind(postsController));
 exports.postsRouter.delete('/:id', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, postsController.deletePost.bind(postsController));
+exports.postsRouter.put('/:commentId/like-status', auth_middleware_1.authMiddleware, postId_validation_middleware_1.postIdValidationMiddleware, comments_router_1.likeValidation, input_validation_middleware_1.inputValidationMiddleware, postsController.updateLikeStatus.bind(postsController));
 //# sourceMappingURL=posts-router.js.map

@@ -59,7 +59,6 @@ export class CommentsService {
 
         const isNoneSetted = await this.commentsRepository.setNoneLike(userId, commentId)
 
-        //Сделать апдейт лайка если сущность уже создана и создание если нет
         if (status === 'Like') {
             return this.commentsRepository.setLike(likeData, commentId)
         }
@@ -100,7 +99,7 @@ export class CommentsService {
         const convertedComments = commentsArray.map((comment: CommentDBModel) => {
             const likesInfoData = comment.likesInfo
 
-            let myStatus = 'None'
+            let myStatus: LikeType = 'None'
 
             // check that comment was liked current user
             if (likesInfoData.likes.some((el: LikeObjectType) => el.userId === userId)) {
@@ -120,7 +119,7 @@ export class CommentsService {
                 likesInfo: {
                     likesCount: comment.likesInfo.likes.length,
                     dislikesCount: comment.likesInfo.dislikes.length,
-                    myStatus: 'None'
+                    myStatus: myStatus
                 }
             }
 

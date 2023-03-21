@@ -19,7 +19,7 @@ export const commentContentValidation = body('content')
     .isLength({ min: 20, max: 300 })
 
 
-const likeValidation = body('likeStatus')
+export const likeValidation = body('likeStatus')
     .exists()
     .trim()
     .custom(value => {
@@ -51,5 +51,5 @@ commentsRouter.put('/:commentId/like-status',
     commentIdValidationMiddleware,
     likeValidation,
     inputValidationMiddleware,
-    commentsController.updateLikeForComment.bind(commentsController)
+    commentsController.updateLikeStatus.bind(commentsController)
 )

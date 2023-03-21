@@ -13,8 +13,8 @@ exports.postIdValidationMiddleware = void 0;
 const settings_1 = require("../../settings");
 const posts_query_repository_1 = require("../../repositories/query/posts-query-repository");
 const postIdValidationMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const commentedPost = yield posts_query_repository_1.postsQueryRepository.findPostById(req.params.postId);
-    if (!commentedPost) {
+    const finded = yield posts_query_repository_1.postsQueryRepository.findPostById(req.params.postId);
+    if (!finded) {
         res.sendStatus(settings_1.HTTP_STATUSES.NOT_FOUND_404);
         return;
     }

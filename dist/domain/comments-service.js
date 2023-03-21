@@ -73,7 +73,6 @@ let CommentsService = class CommentsService {
                 createdAt: new Date().toISOString()
             };
             const isNoneSetted = yield this.commentsRepository.setNoneLike(userId, commentId);
-            //Сделать апдейт лайка если сущность уже создана и создание если нет
             if (status === 'Like') {
                 return this.commentsRepository.setLike(likeData, commentId);
             }
@@ -128,7 +127,7 @@ let CommentsService = class CommentsService {
                     likesInfo: {
                         likesCount: comment.likesInfo.likes.length,
                         dislikesCount: comment.likesInfo.dislikes.length,
-                        myStatus: 'None'
+                        myStatus: myStatus
                     }
                 };
                 return convertedComment;

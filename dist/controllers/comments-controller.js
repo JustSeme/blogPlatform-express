@@ -57,7 +57,7 @@ let CommentsController = class CommentsController {
             res.sendStatus(settings_1.HTTP_STATUSES.NO_CONTENT_204);
         });
     }
-    updateLikeForComment(req, res) {
+    updateLikeStatus(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const accessToken = req.headers.authorization.split(' ')[1];
             const isUpdated = yield this.commentsService.updateLike(accessToken, req.params.commentId, req.body.likeStatus);

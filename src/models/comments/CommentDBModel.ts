@@ -1,5 +1,4 @@
 import { v4 as uuidv4 } from 'uuid'
-import { LikeType } from './LikeInputModel'
 
 export class CommentDBModel {
     public id: string

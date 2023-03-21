@@ -5,7 +5,7 @@ import { inputValidationMiddleware } from "../middlewares/validations/input-vali
 import { blogsQueryRepository } from "../repositories/query/blogs-query-repository";
 import { authMiddleware } from "../middlewares/auth/auth-middleware";
 import { postIdValidationMiddleware } from "../middlewares/validations/postId-validation-middleware";
-import { commentContentValidation } from "./comments-router";
+import { commentContentValidation, likeValidation } from "./comments-router";
 import { PostsController } from "../controllers/posts-controller";
 import { container } from "../composition-root";
 
@@ -83,3 +83,11 @@ postsRouter.put('/:id',
 postsRouter.delete('/:id',
     basicAuthorizationMiddleware,
     postsController.deletePost.bind(postsController))
+
+postsRouter.put('/:commentId/like-status',
+    authMiddleware,
+    postIdValidationMiddleware,
+    likeValidation,
+    inputValidationMiddleware,
+    postsController.updateLikeStatus.bind(postsController)
+)

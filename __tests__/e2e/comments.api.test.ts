@@ -1,11 +1,9 @@
 import request from 'supertest'
 import { server } from '../../src/app'
+import { app, HTTP_STATUSES, baseURL } from '../../src/settings'
 import { PostInputModel } from '../../src/models/posts/PostInputModel'
 import { BlogInputModel } from '../../src/models/blogs/BlogInputModel'
 import { CommentInputModel } from '../../src/models/comments/CommentInputModel'
-import { app } from '../../src/settings'
-import { HTTP_STATUSES } from '../../src/settings'
-import { baseURL } from '../../src/settings'
 
 describe('/comments', () => {
     beforeAll(async () => {

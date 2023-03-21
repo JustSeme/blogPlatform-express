@@ -51,7 +51,7 @@ export class CommentsRepository {
         const likedComment = await CommentsModel.findOne({ id: commentId })
         if (!likedComment) return false
 
-        likedComment.likesInfo.likes!.push(likeData)
+        likedComment.likesInfo.likes.push(likeData)
 
         await likedComment.save()
         return true
@@ -63,7 +63,7 @@ export class CommentsRepository {
 
         // TODO Почитать про $push mongoose
 
-        dislikedComment.likesInfo.dislikes!.push(likeData)
+        dislikedComment.likesInfo.dislikes.push(likeData)
 
         await dislikedComment.save()
         return true

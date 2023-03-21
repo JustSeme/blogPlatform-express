@@ -44,7 +44,7 @@ export class CommentsController {
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
     }
 
-    async updateLikeForComment(req: RequestWithParamsAndBody<{ commentId: string }, LikeInputModel>, res: Response) {
+    async updateLikeStatus(req: RequestWithParamsAndBody<{ commentId: string }, LikeInputModel>, res: Response) {
         const accessToken = req.headers.authorization!.split(' ')[1]
 
         const isUpdated = await this.commentsService.updateLike(accessToken, req.params.commentId, req.body.likeStatus)

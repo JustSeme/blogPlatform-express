@@ -15,6 +15,7 @@ import { postsQueryRepository } from "../repositories/query/posts-query-reposito
 import { ReadPostsQueryParams } from "../models/posts/ReadPostsQuery";
 import { Response } from "express";
 import { injectable } from 'inversify/lib/annotation/injectable';
+import { LikeInputModel } from "../models/comments/LikeInputModel";
 
 @injectable()
 export class PostsController {
@@ -77,7 +78,6 @@ export class PostsController {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
             return
         }
-
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
     }
 
@@ -89,5 +89,17 @@ export class PostsController {
         }
 
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
+    }
+
+    async updateLikeStatus(req: RequestWithParamsAndBody<{ commentId: string }, LikeInputModel>, res: Response) {
+        const accessToken = req.headers.authorization!.split(' ')[1]
+
+        const isUpdated = await this.postsService.updateLike(accessToken, req.params.commentId, req.body.likeStatus)
+        if (!isUpdated) {
+            res.sendStatus(HTTP_STATUSES.NOT_IMPLEMENTED_501)
+            return
+        }
+
+        res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
     }
 }
