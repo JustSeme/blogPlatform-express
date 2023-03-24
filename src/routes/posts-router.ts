@@ -84,7 +84,7 @@ postsRouter.delete('/:id',
     basicAuthorizationMiddleware,
     postsController.deletePost.bind(postsController))
 
-postsRouter.put('/:commentId/like-status',
+postsRouter.put('/:postId/like-status',
     authMiddleware,
     postIdValidationMiddleware,
     likeValidation,

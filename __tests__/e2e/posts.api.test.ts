@@ -2,6 +2,7 @@ import request from 'supertest'
 import { server } from '../../src/app'
 import { BlogInputModel } from '../../src/models/blogs/BlogInputModel'
 import { CommentInputModel } from '../../src/models/comments/CommentInputModel'
+import { LikeInputModel } from '../../src/models/comments/LikeInputModel'
 import { PostInputModel } from '../../src/models/posts/PostInputModel'
 import { app, HTTP_STATUSES, baseURL } from '../../src/settings'
 
@@ -22,8 +23,20 @@ describe('/posts', () => {
     }
 
     let recievedAccessToken = ''
+    let secondAccessToken = ''
+    let thirdAccessToken = ''
 
     const createUserInputData = {
+        login: 'login',
+        password: 'password',
+        email: 'email@email.ru'
+    }
+    const secondUserInputData = {
+        login: 'login',
+        password: 'password',
+        email: 'email@email.ru'
+    }
+    const thirdUserInputData = {
         login: 'login',
         password: 'password',
         email: 'email@email.ru'
@@ -44,6 +57,40 @@ describe('/posts', () => {
             })
             .expect(HTTP_STATUSES.OK_200)
         recievedAccessToken = accessTokenResponseData.body.accessToken
+    })
+
+    it('should create user and should login, getting second accessToken', async () => {
+        await request(app)
+            .post(`${baseURL}users`)
+            .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
+            .send(createUserInputData)
+            .expect(HTTP_STATUSES.CREATED_201)
+
+        const accessTokenResponseData = await request(app)
+            .post(`${baseURL}auth/login`)
+            .send({
+                loginOrEmail: createUserInputData.login,
+                password: createUserInputData.password
+            })
+            .expect(HTTP_STATUSES.OK_200)
+        secondAccessToken = accessTokenResponseData.body.accessToken
+    })
+
+    it('should create user and should login, getting the thirdd accessToken', async () => {
+        await request(app)
+            .post(`${baseURL}users`)
+            .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
+            .send(createUserInputData)
+            .expect(HTTP_STATUSES.CREATED_201)
+
+        const accessTokenResponseData = await request(app)
+            .post(`${baseURL}auth/login`)
+            .send({
+                loginOrEmail: createUserInputData.login,
+                password: createUserInputData.password
+            })
+            .expect(HTTP_STATUSES.OK_200)
+        thirdAccessToken = accessTokenResponseData.body.accessToken
     })
 
     let blogId = ''
@@ -192,6 +239,115 @@ describe('/posts', () => {
 
         expect(recievedCreatedCommentsData.body.items.length).toEqual(1)
         expect(recievedCreatedCommentsData.body.items[0].content).toEqual(correctCommentBody.content)
+    })
+
+    it('should dislike current post and display correct info', async () => {
+        const dislikeBody: LikeInputModel = {
+            likeStatus: 'Dislike'
+        }
+
+        await request(app)
+            .put(`${baseURL}posts/${createdPostId}/like-status`)
+            .set('Authorization', `Bearer ${recievedAccessToken}`)
+            .send(dislikeBody)
+            .expect(HTTP_STATUSES.NO_CONTENT_204)
+
+        const likedPostData = await request(app)
+            .get(`${baseURL}posts/${createdPostId}`)
+            .set('Authorization', `Bearer ${recievedAccessToken}`)
+            .expect(HTTP_STATUSES.OK_200)
+
+        expect(likedPostData.body.extendedLikesInfo.likesCount).toEqual(0)
+        expect(likedPostData.body.extendedLikesInfo.dislikesCount).toEqual(1)
+        expect(likedPostData.body.extendedLikesInfo.myStatus).toEqual('Dislike')
+
+        expect(likedPostData.body.extendedLikesInfo.newestLikes.length).toEqual(0)
+    })
+
+    it('should set None for current post and display correct info', async () => {
+        const noneBody: LikeInputModel = {
+            likeStatus: 'None'
+        }
+
+        await request(app)
+            .put(`${baseURL}posts/${createdPostId}/like-status`)
+            .set('Authorization', `Bearer ${recievedAccessToken}`)
+            .send(noneBody)
+            .expect(HTTP_STATUSES.NO_CONTENT_204)
+
+        const likedPostData = await request(app)
+            .get(`${baseURL}posts/${createdPostId}`)
+            .set('Authorization', `Bearer ${recievedAccessToken}`)
+            .expect(HTTP_STATUSES.OK_200)
+
+        expect(likedPostData.body.extendedLikesInfo.likesCount).toEqual(0)
+        expect(likedPostData.body.extendedLikesInfo.dislikesCount).toEqual(0)
+        expect(likedPostData.body.extendedLikesInfo.myStatus).toEqual('None')
+
+        expect(likedPostData.body.extendedLikesInfo.newestLikes.length).toEqual(0)
+    })
+    const likeBody: LikeInputModel = {
+        likeStatus: 'Like'
+    }
+
+    it('should like current post and display correct info', async () => {
+        await request(app)
+            .put(`${baseURL}posts/${createdPostId}/like-status`)
+            .set('Authorization', `Bearer ${recievedAccessToken}`)
+            .send(likeBody)
+            .expect(HTTP_STATUSES.NO_CONTENT_204)
+
+        const likedPostData = await request(app)
+            .get(`${baseURL}posts/${createdPostId}`)
+            .set('Authorization', `Bearer ${recievedAccessToken}`)
+            .expect(HTTP_STATUSES.OK_200)
+
+        expect(likedPostData.body.extendedLikesInfo.likesCount).toEqual(1)
+        expect(likedPostData.body.extendedLikesInfo.dislikesCount).toEqual(0)
+        expect(likedPostData.body.extendedLikesInfo.myStatus).toEqual('Like')
+
+        expect(likedPostData.body.extendedLikesInfo.newestLikes[0].login).toEqual(createUserInputData.login)
+    })
+
+    it('should like current post and add second like in newestLikes', async () => {
+        await request(app)
+            .put(`${baseURL}posts/${createdPostId}/like-status`)
+            .set('Authorization', `Bearer ${secondAccessToken}`)
+            .send(likeBody)
+            .expect(HTTP_STATUSES.NO_CONTENT_204)
+
+        const likedPostData = await request(app)
+            .get(`${baseURL}posts/${createdPostId}`)
+            .set('Authorization', `Bearer ${secondAccessToken}`)
+            .expect(HTTP_STATUSES.OK_200)
+
+        expect(likedPostData.body.extendedLikesInfo.likesCount).toEqual(2)
+        expect(likedPostData.body.extendedLikesInfo.dislikesCount).toEqual(0)
+        expect(likedPostData.body.extendedLikesInfo.myStatus).toEqual('Like')
+
+        expect(likedPostData.body.extendedLikesInfo.newestLikes[0].login).toEqual(createUserInputData.login)
+        expect(likedPostData.body.extendedLikesInfo.newestLikes[1].login).toEqual(secondUserInputData.login)
+    })
+
+    it('should like current post and add the third like in newestLikes', async () => {
+        await request(app)
+            .put(`${baseURL}posts/${createdPostId}/like-status`)
+            .set('Authorization', `Bearer ${thirdAccessToken}`)
+            .send(likeBody)
+            .expect(HTTP_STATUSES.NO_CONTENT_204)
+
+        const likedPostData = await request(app)
+            .get(`${baseURL}posts/${createdPostId}`)
+            .set('Authorization', `Bearer ${thirdAccessToken}`)
+            .expect(HTTP_STATUSES.OK_200)
+
+        expect(likedPostData.body.extendedLikesInfo.likesCount).toEqual(3)
+        expect(likedPostData.body.extendedLikesInfo.dislikesCount).toEqual(0)
+        expect(likedPostData.body.extendedLikesInfo.myStatus).toEqual('Like')
+
+        expect(likedPostData.body.extendedLikesInfo.newestLikes[0].login).toEqual(createUserInputData.login)
+        expect(likedPostData.body.extendedLikesInfo.newestLikes[1].login).toEqual(secondUserInputData.login)
+        expect(likedPostData.body.extendedLikesInfo.newestLikes[2].login).toEqual(thirdUserInputData.login)
     })
 
     it('shouldn\'t delete post without basic auth', async () => {
