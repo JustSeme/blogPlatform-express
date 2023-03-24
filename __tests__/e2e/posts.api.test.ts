@@ -27,17 +27,17 @@ describe('/posts', () => {
     let thirdAccessToken = ''
 
     const createUserInputData = {
-        login: 'login',
+        login: 'firstLogin',
         password: 'password',
         email: 'email@email.ru'
     }
     const secondUserInputData = {
-        login: 'login2',
+        login: 'secondLogin',
         password: 'password',
         email: 'email2@email.ru'
     }
     const thirdUserInputData = {
-        login: 'login3',
+        login: 'thirdLogin',
         password: 'password',
         email: 'email3@email.ru'
     }

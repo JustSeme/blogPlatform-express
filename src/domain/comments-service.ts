@@ -117,8 +117,8 @@ export class CommentsService {
                 commentatorInfo: { ...comment.commentatorInfo },
                 createdAt: comment.createdAt,
                 likesInfo: {
-                    likesCount: comment.likesInfo.likes.length,
-                    dislikesCount: comment.likesInfo.dislikes.length,
+                    likesCount: likesInfoData.likes.length,
+                    dislikesCount: likesInfoData.dislikes.length,
                     myStatus: myStatus
                 }
             }

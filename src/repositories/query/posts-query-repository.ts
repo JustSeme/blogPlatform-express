@@ -3,7 +3,7 @@ import { PostsWithQueryOutputModel, PostDBModel } from "../../models/posts/PostD
 import { ReadPostsQueryParams } from "../../models/posts/ReadPostsQuery";
 
 export const postsQueryRepository = {
-    async findPosts(queryParams: ReadPostsQueryParams, blogId: string | null): Promise<PostsWithQueryOutputModel> {
+    /* async findPosts(queryParams: ReadPostsQueryParams, blogId: string | null): Promise<PostsWithQueryOutputModel> {
         const { sortDirection = 'desc', sortBy = 'createdAt', pageNumber = 1, pageSize = 10 } = queryParams
 
         const filter: any = {}
@@ -29,5 +29,5 @@ export const postsQueryRepository = {
 
     async findPostById(id: string): Promise<PostDBModel | null> {
         return await PostsModel.findOne({ id: id }, { _id: 0, __v: 0 }).lean()
-    }
+    } */
 }

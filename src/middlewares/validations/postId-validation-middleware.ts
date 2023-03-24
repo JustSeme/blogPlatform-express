@@ -1,9 +1,12 @@
 import { NextFunction, Response } from "express"
 import { HTTP_STATUSES } from "../../settings"
-import { postsQueryRepository } from "../../repositories/query/posts-query-repository"
+import { container } from "../../composition-root"
+import { PostsService } from "../../domain/posts-service"
+
+const postsService = container.resolve(PostsService)
 
 export const postIdValidationMiddleware = async (req: any, res: Response, next: NextFunction) => {
-    const finded = await postsQueryRepository.findPostById(req.params.postId)
+    const finded = await postsService.findPostById(req.params.postId, null)
 
     if (!finded) {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)

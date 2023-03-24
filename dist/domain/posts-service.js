@@ -24,11 +24,32 @@ const posts_db_repository_1 = require("../repositories/posts-db-repository");
 const blogs_db_repository_1 = require("../repositories/blogs-db-repository");
 const injectable_1 = require("inversify/lib/annotation/injectable");
 const jwtService_1 = require("../application/jwtService");
+const users_db_repository_1 = require("../repositories/users-db-repository");
 let PostsService = class PostsService {
-    constructor(blogsRepository, postsRepository, jwtService) {
+    constructor(blogsRepository, postsRepository, jwtService, usersRepository) {
         this.blogsRepository = blogsRepository;
         this.postsRepository = postsRepository;
         this.jwtService = jwtService;
+        this.usersRepository = usersRepository;
+    }
+    findPosts(queryParams, blogId, accessToken) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const postsDBQueryData = yield this.postsRepository.findPosts(queryParams, blogId);
+            const postsViewQueryData = Object.assign(Object.assign({}, postsDBQueryData), { items: [] });
+            const displayedPosts = yield this.transformLikeInfo(postsDBQueryData.items, accessToken);
+            postsViewQueryData.items = displayedPosts;
+            return postsViewQueryData;
+        });
+    }
+    findPostById(postId, accessToken) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let findedPost = yield this.postsRepository.getPostById(postId);
+            if (!findedPost) {
+                return null;
+            }
+            const displayedPost = yield this.transformLikeInfo([findedPost], accessToken);
+            return displayedPost[0];
+        });
     }
     deletePosts(id) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -40,7 +61,8 @@ let PostsService = class PostsService {
             const blogById = yield this.blogsRepository.findBlogById(blogId ? blogId : body.blogId);
             const createdPost = new PostDBModel_1.PostDBModel(body.title, body.shortDescription, body.content, blogId ? blogId : body.blogId, (blogById === null || blogById === void 0 ? void 0 : blogById.name) ? blogById === null || blogById === void 0 ? void 0 : blogById.name : 'not found');
             yield this.postsRepository.createPost(createdPost);
-            return createdPost;
+            const displayedPost = yield this.transformLikeInfo([createdPost], null);
+            return displayedPost[0];
         });
     }
     updatePost(id, body) {
@@ -58,9 +80,11 @@ let PostsService = class PostsService {
             if (!jwtResult)
                 return false;
             const userId = jwtResult.userId;
+            const likedUser = yield this.usersRepository.findUserById(userId);
             const likeData = {
+                createdAt: new Date().toISOString(),
                 userId,
-                createdAt: new Date().toISOString()
+                login: likedUser.login
             };
             const likeIndex = updatablePost.extendedLikesInfo.likes.findIndex((like) => like.userId === userId);
             const dislikeIndex = updatablePost.extendedLikesInfo.dislikes.findIndex((dislike) => dislike.userId === userId);
@@ -96,10 +120,63 @@ let PostsService = class PostsService {
             }
         });
     }
+    transformLikeInfo(postsArray, accessToken) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let userId = null;
+            if (accessToken) {
+                const jwtResult = yield this.jwtService.verifyAccessToken(accessToken);
+                userId = jwtResult ? jwtResult.userId : null;
+            }
+            const convertedPosts = postsArray.map((post) => {
+                const likesInfoData = post.extendedLikesInfo;
+                let myStatus = 'None';
+                // check that post was liked current user
+                if (likesInfoData.likes.some((el) => el.userId === userId)) {
+                    myStatus = 'Like';
+                }
+                //check that post was disliked current user
+                if (likesInfoData.dislikes.some((el) => el.userId === userId)) {
+                    myStatus = 'Dislike';
+                }
+                const last3Likes = likesInfoData.likes.sort((like1, like2) => {
+                    if (like1.createdAt > like2.createdAt) {
+                        return 1;
+                    }
+                    else {
+                        return -1;
+                    }
+                }).slice(0, 2);
+                let newest3Likes = last3Likes.map((like) => {
+                    return {
+                        addedAt: like.createdAt,
+                        userId: like.userId,
+                        login: like.login
+                    };
+                });
+                const convertedPost = {
+                    id: post.id,
+                    content: post.content,
+                    title: post.title,
+                    shortDescription: post.shortDescription,
+                    blogId: post.blogId,
+                    blogName: post.blogName,
+                    createdAt: post.createdAt,
+                    extendedLikesInfo: {
+                        likesCount: likesInfoData.likes.length,
+                        dislikesCount: likesInfoData.dislikes.length,
+                        myStatus: myStatus,
+                        newestLikes: newest3Likes
+                    }
+                };
+                return convertedPost;
+            });
+            return convertedPosts;
+        });
+    }
 };
 PostsService = __decorate([
     (0, injectable_1.injectable)(),
-    __metadata("design:paramtypes", [blogs_db_repository_1.BlogsRepository, posts_db_repository_1.PostsRepository, jwtService_1.JwtService])
+    __metadata("design:paramtypes", [blogs_db_repository_1.BlogsRepository, posts_db_repository_1.PostsRepository, jwtService_1.JwtService, users_db_repository_1.UsersRepository])
 ], PostsService);
 exports.PostsService = PostsService;
 //# sourceMappingURL=posts-service.js.map

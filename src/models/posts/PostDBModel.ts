@@ -1,11 +1,12 @@
 import { v4 as uuidv4 } from "uuid"
 import { LikeObjectType } from "../comments/CommentDBModel"
+import { PostsViewModel } from "./PostViewModel"
 
 //data transfer object
 export class PostDBModel {
     public id: string
     public createdAt: string
-    public extendedLikesInfo: ExtendedLikesInfoType
+    public extendedLikesInfo: ExtendedLikesInfoDBType
 
     constructor(
         public title: string,
@@ -30,11 +31,17 @@ export type PostsWithQueryOutputModel = {
     page: number
     pageSize: number
     totalCount: number
-    items: PostDBModel[]
+    items: PostsViewModel[]
 }
 
-type ExtendedLikesInfoType = {
-    likes: LikeObjectType[],
-    dislikes: LikeObjectType[],
-    noneEntities: LikeObjectType[]
+type ExtendedLikesInfoDBType = {
+    likes: ExtendedLikeObjectType[],
+    dislikes: ExtendedLikeObjectType[],
+    noneEntities: ExtendedLikeObjectType[]
+}
+
+export type ExtendedLikeObjectType = {
+    userId: string
+    createdAt: string
+    login: string
 }

@@ -19,6 +19,32 @@ exports.PostsRepository = void 0;
 const db_1 = require("./db");
 const injectable_1 = require("inversify/lib/annotation/injectable");
 let PostsRepository = class PostsRepository {
+    findPosts(queryParams, blogId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { sortDirection = 'desc', sortBy = 'createdAt', pageNumber = 1, pageSize = 10 } = queryParams;
+            const filter = {};
+            if (blogId) {
+                filter.blogId = blogId;
+            }
+            const totalCount = yield db_1.PostsModel.count(filter);
+            const pagesCount = Math.ceil(totalCount / +pageSize);
+            const skipCount = (+pageNumber - 1) * +pageSize;
+            const sortDirectionNumber = sortDirection === 'asc' ? 1 : -1;
+            let resultedPosts = yield db_1.PostsModel.find(filter, { _id: 0, __v: 0 }).skip(skipCount).limit(+pageSize).sort({ [sortBy]: sortDirectionNumber }).lean();
+            return {
+                pagesCount: pagesCount,
+                page: +pageNumber,
+                pageSize: +pageSize,
+                totalCount: totalCount,
+                items: resultedPosts
+            };
+        });
+    }
+    getPostById(postId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return db_1.PostsModel.findOne({ id: postId }, { _id: 0, __v: 0 });
+        });
+    }
     deletePosts(id) {
         return __awaiter(this, void 0, void 0, function* () {
             let result = yield db_1.PostsModel.deleteOne({ id: id });
@@ -34,11 +60,6 @@ let PostsRepository = class PostsRepository {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield db_1.PostsModel.updateOne({ id: id }, { $set: { content: body.content, title: body.title, shortDescription: body.shortDescription, blogId: body.blogId } });
             return result.matchedCount === 1;
-        });
-    }
-    getPostById(postId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return db_1.PostsModel.findOne({ id: postId });
         });
     }
     createLike(likeData, likedPost) {

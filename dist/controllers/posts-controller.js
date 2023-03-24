@@ -24,7 +24,6 @@ const users_query_repository_1 = require("../repositories/query/users-query-repo
 const comments_service_1 = require("../domain/comments-service");
 const settings_1 = require("../settings");
 const posts_service_1 = require("../domain/posts-service");
-const posts_query_repository_1 = require("../repositories/query/posts-query-repository");
 const injectable_1 = require("inversify/lib/annotation/injectable");
 let PostsController = class PostsController {
     constructor(jwtService, postsService, commentsService) {
@@ -34,7 +33,8 @@ let PostsController = class PostsController {
     }
     getPosts(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const findedPosts = yield posts_query_repository_1.postsQueryRepository.findPosts(req.query, null);
+            const accessToken = req.headers.authorization ? req.headers.authorization.split(' ')[1] : null;
+            const findedPosts = yield this.postsService.findPosts(req.query, null, accessToken);
             if (!findedPosts.items.length) {
                 res.sendStatus(settings_1.HTTP_STATUSES.NOT_FOUND_404);
                 return;
@@ -44,7 +44,8 @@ let PostsController = class PostsController {
     }
     getPostById(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const findedPosts = yield posts_query_repository_1.postsQueryRepository.findPostById(req.params.id);
+            const accessToken = req.headers.authorization ? req.headers.authorization.split(' ')[1] : null;
+            const findedPosts = yield this.postsService.findPostById(req.params.id, accessToken);
             if (!findedPosts) {
                 res.sendStatus(settings_1.HTTP_STATUSES.NOT_FOUND_404);
                 return;

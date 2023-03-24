@@ -22,7 +22,6 @@ exports.BlogsController = void 0;
 const settings_1 = require("../settings");
 const blogs_service_1 = require("../domain/blogs-service");
 const blogs_query_repository_1 = require("../repositories/query/blogs-query-repository");
-const posts_query_repository_1 = require("../repositories/query/posts-query-repository");
 const posts_service_1 = require("../domain/posts-service");
 const injectable_1 = require("inversify/lib/annotation/injectable");
 let BlogsController = class BlogsController {
@@ -52,7 +51,8 @@ let BlogsController = class BlogsController {
     }
     getPostsForBlog(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const findedPostsForBlog = yield posts_query_repository_1.postsQueryRepository.findPosts(req.query, req.params.blogId);
+            const accessToken = req.headers.authorization ? req.headers.authorization.split(' ')[1] : null;
+            const findedPostsForBlog = yield this.postsService.findPosts(req.query, req.params.blogId, accessToken);
             if (!findedPostsForBlog.items.length) {
                 res.sendStatus(settings_1.HTTP_STATUSES.NOT_FOUND_404);
                 return;

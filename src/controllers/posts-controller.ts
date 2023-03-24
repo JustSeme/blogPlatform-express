@@ -8,37 +8,39 @@ import { CommentsService } from "../domain/comments-service";
 import { HTTP_STATUSES } from "../settings";
 import { ErrorMessagesOutputModel } from "../models/ErrorMessagesOutputModel";
 import { PostInputModel } from "../models/posts/PostInputModel";
-import { PostsWithQueryOutputModel, PostDBModel } from "../models/posts/PostDBModel";
+import { PostsWithQueryOutputModel } from "../models/posts/PostDBModel";
 import { RequestWithBody, RequestWithParams, RequestWithParamsAndBody, RequestWithParamsAndQuery, RequestWithQuery } from "../types/types";
 import { PostsService } from "../domain/posts-service";
-import { postsQueryRepository } from "../repositories/query/posts-query-repository";
 import { ReadPostsQueryParams } from "../models/posts/ReadPostsQuery";
 import { Response } from "express";
 import { injectable } from 'inversify/lib/annotation/injectable';
 import { LikeInputModel } from "../models/comments/LikeInputModel";
+import { PostsViewModel } from "../models/posts/PostViewModel";
 
 @injectable()
 export class PostsController {
     constructor(protected jwtService: JwtService, protected postsService: PostsService, protected commentsService: CommentsService) { }
 
     async getPosts(req: RequestWithQuery<ReadPostsQueryParams>, res: Response<PostsWithQueryOutputModel>) {
-        const findedPosts = await postsQueryRepository.findPosts(req.query, null)
+        const accessToken = req.headers.authorization ? req.headers.authorization.split(' ')[1] : null
+        const findedPosts = await this.postsService.findPosts(req.query, null, accessToken)
 
         if (!findedPosts.items.length) {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
             return
         }
-        res.json(findedPosts as PostsWithQueryOutputModel)
+        res.json(findedPosts)
     }
 
-    async getPostById(req: RequestWithParams<{ id: string }>, res: Response<PostDBModel>) {
-        const findedPosts = await postsQueryRepository.findPostById(req.params.id)
+    async getPostById(req: RequestWithParams<{ id: string }>, res: Response<PostsViewModel>) {
+        const accessToken = req.headers.authorization ? req.headers.authorization.split(' ')[1] : null
+        const findedPosts = await this.postsService.findPostById(req.params.id, accessToken)
 
         if (!findedPosts) {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
             return
         }
-        res.json(findedPosts as PostDBModel)
+        res.json(findedPosts)
     }
 
     async getCommentsForPost(req: RequestWithParamsAndQuery<{ postId: string }, ReadCommentsQueryParams>, res: Response<CommentsWithQueryOutputModel>) {
@@ -48,7 +50,7 @@ export class PostsController {
         res.send(findedComments)
     }
 
-    async createPost(req: RequestWithBody<PostInputModel>, res: Response<PostDBModel | ErrorMessagesOutputModel>) {
+    async createPost(req: RequestWithBody<PostInputModel>, res: Response<PostsViewModel | ErrorMessagesOutputModel>) {
         const createdPost = await this.postsService.createPost(req.body, null)
 
         res
@@ -72,7 +74,7 @@ export class PostsController {
             .send(createdComment)
     }
 
-    async updatePost(req: RequestWithParamsAndBody<{ id: string }, PostInputModel>, res: Response<PostDBModel | ErrorMessagesOutputModel>) {
+    async updatePost(req: RequestWithParamsAndBody<{ id: string }, PostInputModel>, res: Response<PostsViewModel | ErrorMessagesOutputModel>) {
         const isUpdated = await this.postsService.updatePost(req.params.id, req.body)
         if (!isUpdated) {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)

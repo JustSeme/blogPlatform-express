@@ -69,4 +69,8 @@ export class UsersRepository {
     async findUserByLoginOrEmail(loginOrEmail: string): Promise<UserDBModel | null> {
         return UsersModel.findOne({ $or: [{ login: loginOrEmail }, { email: loginOrEmail }] })
     }
+
+    async findUserById(userId: string) {
+        return UsersModel.findOne({ id: userId }, { _id: 0, __v: 0 })
+    }
 }

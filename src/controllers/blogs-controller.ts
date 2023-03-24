@@ -7,14 +7,14 @@ import { RequestWithBody, RequestWithParams, RequestWithParamsAndBody, RequestWi
 import { blogsQueryRepository } from "../repositories/query/blogs-query-repository";
 import { BlogsWithQueryOutputModel } from '../models/blogs/BlogViewModel'
 import { RequestWithQuery } from '../types/types'
-import { PostsWithQueryOutputModel, PostDBModel } from "../models/posts/PostDBModel";
-import { postsQueryRepository } from "../repositories/query/posts-query-repository";
+import { PostsWithQueryOutputModel } from "../models/posts/PostDBModel";
 import { PostInputModel } from "../models/posts/PostInputModel";
 import { PostsService } from "../domain/posts-service";
 import { ReadBlogsQueryParams } from "../models/blogs/ReadBlogsQuery";
 import { ReadPostsQueryParams } from "../models/posts/ReadPostsQuery";
 import { Response } from 'express';
 import { injectable } from 'inversify/lib/annotation/injectable';
+import { PostsViewModel } from '../models/posts/PostViewModel';
 
 @injectable()
 export class BlogsController {
@@ -41,7 +41,8 @@ export class BlogsController {
     }
 
     async getPostsForBlog(req: RequestWithParamsAndQuery<{ blogId: string }, ReadPostsQueryParams>, res: Response<PostsWithQueryOutputModel>) {
-        const findedPostsForBlog = await postsQueryRepository.findPosts(req.query, req.params.blogId)
+        const accessToken = req.headers.authorization ? req.headers.authorization.split(' ')[1] : null
+        const findedPostsForBlog = await this.postsService.findPosts(req.query, req.params.blogId, accessToken)
 
         if (!findedPostsForBlog.items.length) {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
@@ -59,7 +60,7 @@ export class BlogsController {
             .send(createdBlog)
     }
 
-    async createPostForBlog(req: RequestWithParamsAndBody<{ blogId: string }, PostInputModel>, res: Response<PostDBModel>) {
+    async createPostForBlog(req: RequestWithParamsAndBody<{ blogId: string }, PostInputModel>, res: Response<PostsViewModel>) {
         const createdPost = await this.postsService.createPost(req.body, req.params.blogId)
 
         res

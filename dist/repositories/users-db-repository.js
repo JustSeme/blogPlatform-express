@@ -93,6 +93,11 @@ let UsersRepository = class UsersRepository {
             return db_1.UsersModel.findOne({ $or: [{ login: loginOrEmail }, { email: loginOrEmail }] });
         });
     }
+    findUserById(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return db_1.UsersModel.findOne({ id: userId }, { _id: 0, __v: 0 });
+        });
+    }
 };
 UsersRepository = __decorate([
     (0, inversify_1.injectable)()
