@@ -25,20 +25,14 @@ export class PostsRepository {
         return PostsModel.findOne({ id })
     }
 
-    async createLike(likeData: LikeObjectType, postId: string) {
-        const likedPost = await PostsModel.findOne({ id: postId })
-        if (!likedPost) return false
-
+    async createLike(likeData: LikeObjectType, likedPost: Document<unknown, {}, PostDBModel> & Omit<PostDBModel, never>) {
         likedPost.extendedLikesInfo.likes.push(likeData)
 
         await likedPost.save()
         return true
     }
 
-    async createDislike(likeData: LikeObjectType, postId: string) {
-        const dislikedPost = await PostsModel.findOne({ id: postId })
-        if (!dislikedPost) return false
-
+    async createDislike(likeData: LikeObjectType, dislikedPost: Document<unknown, {}, PostDBModel> & Omit<PostDBModel, never>) {
         dislikedPost.extendedLikesInfo.dislikes.push(likeData)
 
         await dislikedPost.save()
@@ -59,6 +53,40 @@ export class PostsRepository {
         }
 
         await editablePost.save()
+        return true
+    }
+
+    async updateToLike(updatablePost: Document<unknown, {}, PostDBModel> & Omit<PostDBModel, never>, dislikeIndex: number, noneIndex: number) {
+        if (noneIndex > -1) {
+            const likeData = { ...updatablePost.extendedLikesInfo.noneEntities[noneIndex] }
+            delete updatablePost.extendedLikesInfo.noneEntities[noneIndex]
+            updatablePost.extendedLikesInfo.likes.push(likeData)
+        }
+
+        if (dislikeIndex > -1) {
+            const likeData = { ...updatablePost.extendedLikesInfo.dislikes[dislikeIndex] }
+            delete updatablePost.extendedLikesInfo.dislikes[dislikeIndex]
+            updatablePost.extendedLikesInfo.likes.push(likeData)
+        }
+
+        await updatablePost.save()
+        return true
+    }
+
+    async updateToDislike(updatablePost: Document<unknown, {}, PostDBModel> & Omit<PostDBModel, never>, likeIndex: number, noneIndex: number) {
+        if (noneIndex > -1) {
+            const likeData = { ...updatablePost.extendedLikesInfo.noneEntities[noneIndex] }
+            delete updatablePost.extendedLikesInfo.noneEntities[noneIndex]
+            updatablePost.extendedLikesInfo.likes.push(likeData)
+        }
+
+        if (likeIndex > -1) {
+            const likeData = { ...updatablePost.extendedLikesInfo.dislikes[likeIndex] }
+            delete updatablePost.extendedLikesInfo.dislikes[likeIndex]
+            updatablePost.extendedLikesInfo.likes.push(likeData)
+        }
+
+        await updatablePost.save()
         return true
     }
 }

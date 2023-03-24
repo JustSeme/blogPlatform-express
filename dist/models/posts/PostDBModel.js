@@ -12,6 +12,11 @@ class PostDBModel {
         this.blogName = blogName;
         this.id = (0, uuid_1.v4)();
         this.createdAt = new Date().toISOString();
+        this.extendedLikesInfo = {
+            likes: [],
+            dislikes: [],
+            noneEntities: []
+        };
     }
 }
 exports.PostDBModel = PostDBModel;

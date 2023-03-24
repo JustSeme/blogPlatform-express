@@ -36,6 +36,73 @@ let PostsRepository = class PostsRepository {
             return result.matchedCount === 1;
         });
     }
+    getPostById(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return db_1.PostsModel.findOne({ id });
+        });
+    }
+    createLike(likeData, likedPost) {
+        return __awaiter(this, void 0, void 0, function* () {
+            likedPost.extendedLikesInfo.likes.push(likeData);
+            yield likedPost.save();
+            return true;
+        });
+    }
+    createDislike(likeData, dislikedPost) {
+        return __awaiter(this, void 0, void 0, function* () {
+            dislikedPost.extendedLikesInfo.dislikes.push(likeData);
+            yield dislikedPost.save();
+            return true;
+        });
+    }
+    setNone(editablePost, likeIndex, dislikeIndex) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (likeIndex > -1) {
+                const noneData = Object.assign({}, editablePost.extendedLikesInfo.likes[likeIndex]);
+                delete editablePost.extendedLikesInfo.likes[likeIndex];
+                editablePost.extendedLikesInfo.noneEntities.push(noneData);
+            }
+            if (dislikeIndex > -1) {
+                const noneData = Object.assign({}, editablePost.extendedLikesInfo.dislikes[dislikeIndex]);
+                delete editablePost.extendedLikesInfo.dislikes[dislikeIndex];
+                editablePost.extendedLikesInfo.noneEntities.push(noneData);
+            }
+            yield editablePost.save();
+            return true;
+        });
+    }
+    updateToLike(updatablePost, dislikeIndex, noneIndex) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (noneIndex > -1) {
+                const likeData = Object.assign({}, updatablePost.extendedLikesInfo.noneEntities[noneIndex]);
+                delete updatablePost.extendedLikesInfo.noneEntities[noneIndex];
+                updatablePost.extendedLikesInfo.likes.push(likeData);
+            }
+            if (dislikeIndex > -1) {
+                const likeData = Object.assign({}, updatablePost.extendedLikesInfo.dislikes[dislikeIndex]);
+                delete updatablePost.extendedLikesInfo.dislikes[dislikeIndex];
+                updatablePost.extendedLikesInfo.likes.push(likeData);
+            }
+            yield updatablePost.save();
+            return true;
+        });
+    }
+    updateToDislike(updatablePost, likeIndex, noneIndex) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (noneIndex > -1) {
+                const likeData = Object.assign({}, updatablePost.extendedLikesInfo.noneEntities[noneIndex]);
+                delete updatablePost.extendedLikesInfo.noneEntities[noneIndex];
+                updatablePost.extendedLikesInfo.likes.push(likeData);
+            }
+            if (likeIndex > -1) {
+                const likeData = Object.assign({}, updatablePost.extendedLikesInfo.dislikes[likeIndex]);
+                delete updatablePost.extendedLikesInfo.dislikes[likeIndex];
+                updatablePost.extendedLikesInfo.likes.push(likeData);
+            }
+            yield updatablePost.save();
+            return true;
+        });
+    }
 };
 PostsRepository = __decorate([
     (0, injectable_1.injectable)()

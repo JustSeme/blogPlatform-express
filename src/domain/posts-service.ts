@@ -36,8 +36,8 @@ export class PostsService {
     }
 
     async updateLike(accessToken: string, postId: string, status: LikeType) {
-        const updatingPost = await this.postsRepository.getPostById(postId)
-        if (!updatingPost) {
+        const updatablePost = await this.postsRepository.getPostById(postId)
+        if (!updatablePost) {
             return false
         }
 
@@ -51,16 +51,16 @@ export class PostsService {
             createdAt: new Date().toISOString()
         }
 
-        const likeIndex = updatingPost.extendedLikesInfo.likes.findIndex((like: LikeObjectType) => like.userId === userId)
-        const dislikeIndex = updatingPost.extendedLikesInfo.dislikes.findIndex((dislike: LikeObjectType) => dislike.userId === userId)
-        const noneIndex = updatingPost.extendedLikesInfo.noneEntities.findIndex((none: LikeObjectType) => none.userId === userId)
+        const likeIndex = updatablePost.extendedLikesInfo.likes.findIndex((like: LikeObjectType) => like.userId === userId)
+        const dislikeIndex = updatablePost.extendedLikesInfo.dislikes.findIndex((dislike: LikeObjectType) => dislike.userId === userId)
+        const noneIndex = updatablePost.extendedLikesInfo.noneEntities.findIndex((none: LikeObjectType) => none.userId === userId)
 
         if (status === 'None') {
             if (noneIndex > -1) {
                 // Сущность None уже существует, не нужно её обновлять
                 return true
             }
-            return this.postsRepository.setNone(updatingPost, likeIndex, dislikeIndex)
+            return this.postsRepository.setNone(updatablePost, likeIndex, dislikeIndex)
         }
 
         if (status === 'Like') {
@@ -71,10 +71,10 @@ export class PostsService {
 
             if (dislikeIndex > -1 || noneIndex > -1) {
                 // Сущность дизлайка уже есть. Нужно обновить её, а не создавать новую
-                return this.postsRepository.updateLikeInfo()
+                return this.postsRepository.updateToLike(updatablePost, dislikeIndex, noneIndex)
             }
 
-            return this.postsRepository.createLike(likeData, postId)
+            return this.postsRepository.createLike(likeData, updatablePost)
         }
 
         if (status === 'Dislike') {
@@ -85,10 +85,10 @@ export class PostsService {
 
             if (likeIndex > -1 || noneIndex > -1) {
                 // Сущность лайка уже есть. Нужно обновить её, а не создавать новую
-                return this.postsRepository.updateDislikeInfo()
+                return this.postsRepository.updateToDislike(updatablePost, likeIndex, noneIndex)
             }
 
-            return this.postsRepository.createDislike(likeData, postId)
+            return this.postsRepository.createDislike(likeData, updatablePost)
         }
     }
 }
