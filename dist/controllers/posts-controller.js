@@ -105,7 +105,7 @@ let PostsController = class PostsController {
     updateLikeStatus(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const accessToken = req.headers.authorization.split(' ')[1];
-            const isUpdated = yield this.postsService.updateLike(accessToken, req.params.commentId, req.body.likeStatus);
+            const isUpdated = yield this.postsService.updateLike(accessToken, req.params.postId, req.body.likeStatus);
             if (!isUpdated) {
                 res.sendStatus(settings_1.HTTP_STATUSES.NOT_IMPLEMENTED_501);
                 return;

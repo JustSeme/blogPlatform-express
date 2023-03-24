@@ -21,8 +21,8 @@ export class PostsRepository {
         return result.matchedCount === 1
     }
 
-    async getPostById(id: string) {
-        return PostsModel.findOne({ id })
+    async getPostById(postId: string) {
+        return PostsModel.findOne({ id: postId })
     }
 
     async createLike(likeData: LikeObjectType, likedPost: Document<unknown, {}, PostDBModel> & Omit<PostDBModel, never>) {

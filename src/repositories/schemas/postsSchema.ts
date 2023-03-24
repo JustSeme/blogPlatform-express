@@ -9,4 +9,18 @@ export const postsSchema = new mongoose.Schema<PostDBModel>({
     blogId: { type: String, required: true },
     blogName: { type: String, required: true },
     createdAt: { type: String, required: true },
+    extendedLikesInfo: {
+        likes: [{
+            userId: String,
+            createdAt: String
+        }],
+        dislikes: [{
+            userId: String,
+            createdAt: String
+        }],
+        noneEntities: [{
+            userId: String,
+            createdAt: String
+        }]
+    }
 })

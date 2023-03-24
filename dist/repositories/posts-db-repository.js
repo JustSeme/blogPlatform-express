@@ -36,9 +36,9 @@ let PostsRepository = class PostsRepository {
             return result.matchedCount === 1;
         });
     }
-    getPostById(id) {
+    getPostById(postId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.PostsModel.findOne({ id });
+            return db_1.PostsModel.findOne({ id: postId });
         });
     }
     createLike(likeData, likedPost) {

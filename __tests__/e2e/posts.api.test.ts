@@ -32,14 +32,14 @@ describe('/posts', () => {
         email: 'email@email.ru'
     }
     const secondUserInputData = {
-        login: 'login',
+        login: 'login2',
         password: 'password',
-        email: 'email@email.ru'
+        email: 'email2@email.ru'
     }
     const thirdUserInputData = {
-        login: 'login',
+        login: 'login3',
         password: 'password',
-        email: 'email@email.ru'
+        email: 'email3@email.ru'
     }
 
     it('should create user and should login, getting accessToken', async () => {
@@ -60,17 +60,18 @@ describe('/posts', () => {
     })
 
     it('should create user and should login, getting second accessToken', async () => {
-        await request(app)
+        const res = await request(app)
             .post(`${baseURL}users`)
             .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
-            .send(createUserInputData)
+            .send(secondUserInputData)
             .expect(HTTP_STATUSES.CREATED_201)
+
 
         const accessTokenResponseData = await request(app)
             .post(`${baseURL}auth/login`)
             .send({
-                loginOrEmail: createUserInputData.login,
-                password: createUserInputData.password
+                loginOrEmail: secondUserInputData.login,
+                password: secondUserInputData.password
             })
             .expect(HTTP_STATUSES.OK_200)
         secondAccessToken = accessTokenResponseData.body.accessToken
@@ -80,14 +81,14 @@ describe('/posts', () => {
         await request(app)
             .post(`${baseURL}users`)
             .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
-            .send(createUserInputData)
+            .send(thirdUserInputData)
             .expect(HTTP_STATUSES.CREATED_201)
 
         const accessTokenResponseData = await request(app)
             .post(`${baseURL}auth/login`)
             .send({
-                loginOrEmail: createUserInputData.login,
-                password: createUserInputData.password
+                loginOrEmail: thirdUserInputData.login,
+                password: thirdUserInputData.password
             })
             .expect(HTTP_STATUSES.OK_200)
         thirdAccessToken = accessTokenResponseData.body.accessToken
@@ -245,6 +246,8 @@ describe('/posts', () => {
         const dislikeBody: LikeInputModel = {
             likeStatus: 'Dislike'
         }
+
+        console.log('create dislike');
 
         await request(app)
             .put(`${baseURL}posts/${createdPostId}/like-status`)

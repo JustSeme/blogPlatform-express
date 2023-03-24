@@ -13,5 +13,19 @@ exports.postsSchema = new mongoose_1.default.Schema({
     blogId: { type: String, required: true },
     blogName: { type: String, required: true },
     createdAt: { type: String, required: true },
+    extendedLikesInfo: {
+        likes: [{
+                userId: String,
+                createdAt: String
+            }],
+        dislikes: [{
+                userId: String,
+                createdAt: String
+            }],
+        noneEntities: [{
+                userId: String,
+                createdAt: String
+            }]
+    }
 });
 //# sourceMappingURL=postsSchema.js.map
