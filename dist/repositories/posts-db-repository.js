@@ -108,11 +108,11 @@ let PostsRepository = class PostsRepository {
         return __awaiter(this, void 0, void 0, function* () {
             if (noneIndex > -1) {
                 const dislikeData = updatablePost.extendedLikesInfo.noneEntities.splice(noneIndex, 1)[0];
-                updatablePost.extendedLikesInfo.likes.push(dislikeData);
+                updatablePost.extendedLikesInfo.dislikes.push(dislikeData);
             }
             if (likeIndex > -1) {
                 const dislikeData = updatablePost.extendedLikesInfo.likes.splice(likeIndex, 1)[0];
-                updatablePost.extendedLikesInfo.likes.push(dislikeData);
+                updatablePost.extendedLikesInfo.dislikes.push(dislikeData);
             }
             yield updatablePost.save();
             return true;

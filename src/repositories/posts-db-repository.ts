@@ -96,12 +96,12 @@ export class PostsRepository {
     async updateToDislike(updatablePost: Document<unknown, {}, PostDBModel> & Omit<PostDBModel, never>, likeIndex: number, noneIndex: number) {
         if (noneIndex > -1) {
             const dislikeData = updatablePost.extendedLikesInfo.noneEntities.splice(noneIndex, 1)[0]
-            updatablePost.extendedLikesInfo.likes.push(dislikeData)
+            updatablePost.extendedLikesInfo.dislikes.push(dislikeData)
         }
 
         if (likeIndex > -1) {
             const dislikeData = updatablePost.extendedLikesInfo.likes.splice(likeIndex, 1)[0]
-            updatablePost.extendedLikesInfo.likes.push(dislikeData)
+            updatablePost.extendedLikesInfo.dislikes.push(dislikeData)
         }
 
         await updatablePost.save()

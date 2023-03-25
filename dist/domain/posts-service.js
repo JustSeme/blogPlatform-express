@@ -47,6 +47,9 @@ let PostsService = class PostsService {
             if (!findedPost) {
                 return null;
             }
+            if (findedPost.title === 'anyTitle1') {
+                console.log(findedPost, 'findedPost');
+            }
             const displayedPost = yield this.transformLikeInfo([findedPost], accessToken);
             return displayedPost[0];
         });

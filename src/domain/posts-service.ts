@@ -29,6 +29,10 @@ export class PostsService {
         if (!findedPost) {
             return null
         }
+        if (findedPost.title === 'anyTitle1') {
+            console.log(findedPost, 'findedPost');
+
+        }
 
         const displayedPost = await this.transformLikeInfo([findedPost], accessToken)
         return displayedPost[0]
