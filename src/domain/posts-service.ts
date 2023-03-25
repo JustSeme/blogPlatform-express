@@ -142,9 +142,9 @@ export class PostsService {
 
             const last3Likes = likesInfoData.likes.sort((like1, like2) => {
                 if (like1.createdAt > like2.createdAt) {
-                    return 1
-                } else {
                     return -1
+                } else {
+                    return 1
                 }
             }).slice(0, 3)
 

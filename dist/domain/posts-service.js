@@ -140,10 +140,10 @@ let PostsService = class PostsService {
                 }
                 const last3Likes = likesInfoData.likes.sort((like1, like2) => {
                     if (like1.createdAt > like2.createdAt) {
-                        return 1;
+                        return -1;
                     }
                     else {
-                        return -1;
+                        return 1;
                     }
                 }).slice(0, 3);
                 let newest3Likes = last3Likes.map((like) => {
