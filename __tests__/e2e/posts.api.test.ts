@@ -12,7 +12,9 @@ describe('/posts', () => {
             .delete(`/homeworks/testing/all-data`)
     })
 
+    let counter = 0
     afterEach(async () => {
+        console.log(counter++);
         await server.close()
     })
 
@@ -155,6 +157,7 @@ describe('/posts', () => {
 
         const gettedPostData = await request(app)
             .get(`${baseURL}posts/${createdPostId}`)
+            .set('Authorization', `Bearer ${recievedAccessToken}`)
             .expect(HTTP_STATUSES.OK_200)
 
         expect(gettedPostData.body.title).toEqual(correctPostBody.title)
@@ -178,6 +181,7 @@ describe('/posts', () => {
 
         const updatedPostData = await request(app)
             .get(`${baseURL}posts/${createdPostId}`)
+            .set('Authorization', `Bearer ${recievedAccessToken}`)
             .expect(HTTP_STATUSES.OK_200)
 
         expect(updatedPostData.body.title).toEqual(correctPostBody.title)
@@ -193,6 +197,7 @@ describe('/posts', () => {
 
         const updatedPostData = await request(app)
             .get(`${baseURL}posts/${createdPostId}`)
+            .set('Authorization', `Bearer ${recievedAccessToken}`)
             .expect(HTTP_STATUSES.OK_200)
 
         expect(updatedPostData.body.title).toEqual(correctPostBody.title)
@@ -217,6 +222,7 @@ describe('/posts', () => {
 
         const updatedPostData = await request(app)
             .get(`${baseURL}posts/${createdPostId}`)
+            .set('Authorization', `Bearer ${recievedAccessToken}`)
             .expect(HTTP_STATUSES.OK_200)
 
         expect(updatedPostData.body.title).toEqual(correctUpdatePostBody.title)

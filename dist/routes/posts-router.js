@@ -52,8 +52,8 @@ const blogIdValidation = (0, express_validator_1.body)('blogId')
     return true;
 }))
     .isLength({ min: 1, max: 100 });
-exports.postsRouter.get('/', postsController.getPosts);
-exports.postsRouter.get('/:id', postsController.getPostById);
+exports.postsRouter.get('/', postsController.getPosts.bind(postsController));
+exports.postsRouter.get('/:id', postsController.getPostById.bind(postsController));
 exports.postsRouter.get('/:postId/comments', postId_validation_middleware_1.postIdValidationMiddleware, postsController.getCommentsForPost.bind(postsController));
 exports.postsRouter.post('/', basic_authorizatoin_middleware_1.basicAuthorizationMiddleware, exports.titleValidation, exports.shortDescriptionValidation, exports.postContentValidation, blogIdValidation, input_validation_middleware_1.inputValidationMiddleware, postsController.createPost.bind(postsController));
 exports.postsRouter.post('/:postId/comments', auth_middleware_1.authMiddleware, postId_validation_middleware_1.postIdValidationMiddleware, comments_router_1.commentContentValidation, input_validation_middleware_1.inputValidationMiddleware, postsController.createCommentForPost.bind(postsController));

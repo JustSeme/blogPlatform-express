@@ -32,7 +32,7 @@ export class PostsRepository {
     }
 
     async getPostById(postId: string) {
-        return PostsModel.findOne({ id: postId }, { _id: 0, __v: 0 })
+        return PostsModel.findOne({ id: postId })
     }
 
     async deletePosts(id: string) {

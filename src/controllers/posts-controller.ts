@@ -95,7 +95,6 @@ export class PostsController {
 
     async updateLikeStatus(req: RequestWithParamsAndBody<{ postId: string }, LikeInputModel>, res: Response) {
         const accessToken = req.headers.authorization!.split(' ')[1]
-
         const isUpdated = await this.postsService.updateLike(accessToken, req.params.postId, req.body.likeStatus)
         if (!isUpdated) {
             res.sendStatus(HTTP_STATUSES.NOT_IMPLEMENTED_501)

@@ -43,7 +43,6 @@ export class BlogsController {
     async getPostsForBlog(req: RequestWithParamsAndQuery<{ blogId: string }, ReadPostsQueryParams>, res: Response<PostsWithQueryOutputModel>) {
         const accessToken = req.headers.authorization ? req.headers.authorization.split(' ')[1] : null
         const findedPostsForBlog = await this.postsService.findPosts(req.query, req.params.blogId, accessToken)
-
         if (!findedPostsForBlog.items.length) {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
             return

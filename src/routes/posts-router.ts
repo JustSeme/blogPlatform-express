@@ -47,9 +47,9 @@ const blogIdValidation = body('blogId')
     })
     .isLength({ min: 1, max: 100 })
 
-postsRouter.get('/', postsController.getPosts)
+postsRouter.get('/', postsController.getPosts.bind(postsController))
 
-postsRouter.get('/:id', postsController.getPostById)
+postsRouter.get('/:id', postsController.getPostById.bind(postsController))
 
 postsRouter.get('/:postId/comments',
     postIdValidationMiddleware,

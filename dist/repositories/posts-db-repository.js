@@ -42,7 +42,7 @@ let PostsRepository = class PostsRepository {
     }
     getPostById(postId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.PostsModel.findOne({ id: postId }, { _id: 0, __v: 0 });
+            return db_1.PostsModel.findOne({ id: postId });
         });
     }
     deletePosts(id) {
