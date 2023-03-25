@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.postIdValidationMiddleware = void 0;
 const settings_1 = require("../../settings");
 const composition_root_1 = require("../../composition-root");
-const posts_service_1 = require("../../domain/posts-service");
+const posts_service_1 = require("../../features/blogs/application/posts-service");
 const postsService = composition_root_1.container.resolve(posts_service_1.PostsService);
 const postIdValidationMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const finded = yield postsService.findPostById(req.params.postId, null);

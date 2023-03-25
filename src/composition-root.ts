@@ -1,20 +1,20 @@
 import 'reflect-metadata'
 import { JwtService } from "./application/jwtService";
 import { AuthController } from "./controllers/auth-controller";
-import { BlogsController } from "./controllers/blogs-controller";
-import { CommentsController } from "./controllers/comments-controller";
-import { PostsController } from "./controllers/posts-controller";
+import { BlogsController } from "./features/blogs/api/controllers/blogs-controller";
+import { CommentsController } from "./features/blogs/api/controllers/comments-controller";
+import { PostsController } from "./features/blogs/api/controllers/posts-controller";
 import { SecurityController } from "./controllers/security-controller";
-import { UsersController } from "./controllers/users-controller";
+import { UsersController } from "./features/users/api/controllers/users-controller";
 import { AuthService } from "./domain/auth-service";
-import { BlogsService } from "./domain/blogs-service";
-import { CommentsService } from "./domain/comments-service";
-import { PostsService } from "./domain/posts-service";
+import { BlogsService } from "./features/blogs/application/blogs-service";
+import { CommentsService } from "./features/blogs/application/comments-service";
+import { PostsService } from "./features/blogs/application/posts-service";
 import { SecurityService } from "./domain/security-service";
-import { BlogsRepository } from "./repositories/blogs-db-repository";
-import { CommentsRepository } from "./repositories/comments-db-repository";
+import { BlogsRepository } from "./features/blogs/infrastructure/blogs-db-repository";
+import { CommentsRepository } from "./features/blogs/infrastructure/comments-db-repository";
 import { DeviceRepository } from "./repositories/device-db-repository";
-import { PostsRepository } from "./repositories/posts-db-repository";
+import { PostsRepository } from "./features/blogs/infrastructure/posts-db-repository";
 import { UsersRepository } from "./repositories/users-db-repository";
 import { Container } from "inversify/lib/container/container";
 

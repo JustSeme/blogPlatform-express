@@ -16,9 +16,9 @@ exports.runDB = exports.AttemptsModel = exports.DeviceAuthSessionsDBModel = expo
 const settings_1 = require("../settings");
 const mongoose_1 = __importDefault(require("mongoose"));
 const usersSchema_1 = require("./schemas/usersSchema");
-const postsSchema_1 = require("./schemas/postsSchema");
-const blogsSchema_1 = require("./schemas/blogsSchema");
-const commentsSchema_1 = require("./schemas/commentsSchema");
+const postsSchema_1 = require("../features/blogs/domain/entities/postsSchema");
+const blogsSchema_1 = require("../features/blogs/domain/entities/blogsSchema");
+const commentsSchema_1 = require("../features/blogs/domain/entities/commentsSchema");
 const deviceAuthSessionsSchema_1 = require("./schemas/deviceAuthSessionsSchema");
 const attemptsSchema_1 = require("./schemas/attemptsSchema");
 let mongoURI = settings_1.settings.mongoURI;

@@ -1,15 +1,15 @@
 import { DeviceAuthSessionsModel } from '../models/devices/DeviceSessionsModel';
-import { BlogViewModel } from '../models/blogs/BlogViewModel';
-import { CommentDBModel } from '../models/comments/CommentDBModel';
-import { PostDBModel } from '../models/posts/PostDBModel';
+import { BlogViewModel } from '../features/blogs/api/models/BlogViewModel';
+import { CommentDBModel } from '../features/blogs/domain/entities/CommentDBModel';
+import { PostDBModel } from '../features/blogs/domain/entities/PostDBModel';
 import { UserDBModel } from '../models/users/UserDBModel';
 import { settings } from '../settings';
 import { AttemptsDBModel } from '../models/auth/AttemptsDBModel';
 import mongoose from 'mongoose';
 import { usersSchema } from './schemas/usersSchema';
-import { postsSchema } from './schemas/postsSchema';
-import { blogsSchema } from './schemas/blogsSchema';
-import { commentsSchema } from './schemas/commentsSchema';
+import { postsSchema } from '../features/blogs/domain/entities/postsSchema';
+import { blogsSchema } from '../features/blogs/domain/entities/blogsSchema';
+import { commentsSchema } from '../features/blogs/domain/entities/commentsSchema';
 import { deviceAuthSessionsSchema } from './schemas/deviceAuthSessionsSchema';
 import { attemptsSchema } from './schemas/attemptsSchema';
 

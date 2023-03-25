@@ -4,7 +4,7 @@ exports.likeValidation = exports.commentContentValidation = exports.commentsRout
 const express_1 = require("express");
 const express_validator_1 = require("express-validator");
 const composition_root_1 = require("../composition-root");
-const comments_controller_1 = require("../controllers/comments-controller");
+const comments_controller_1 = require("../features/blogs/api/controllers/comments-controller");
 const auth_middleware_1 = require("../middlewares/auth/auth-middleware");
 const commentId_validation_middleware_1 = require("../middlewares/validations/commentId-validation-middleware");
 const input_validation_middleware_1 = require("../middlewares/validations/input-validation-middleware");

@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ownershipValidationMiddleware = void 0;
 const settings_1 = require("../../settings");
-const comments_query_repository_1 = require("../../repositories/query/comments-query-repository");
+const comments_query_repository_1 = require("../../features/blogs/infrastructure/comments-query-repository");
 const composition_root_1 = require("../../composition-root");
 const jwtService_1 = require("../../application/jwtService");
 const jwtService = composition_root_1.container.resolve(jwtService_1.JwtService);

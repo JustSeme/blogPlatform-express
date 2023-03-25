@@ -2,11 +2,11 @@ import cookieParser from "cookie-parser"
 import express, { Request, Response } from "express"
 import { videosRepository } from './repositories/videos-in-memory-repository'
 import { videosRouter } from './routes/videos-router'
-import { blogsRouter } from './routes/blogs-router'
-import { postsRouter } from './routes/posts-router'
-import { usersRouter } from './routes/users-router'
+import { blogsRouter } from './features/blogs/api/routes/blogs-router'
+import { postsRouter } from './features/blogs/api/routes/posts-router'
+import { usersRouter } from './features/users/api/routes/users-router'
 import { authRouter } from './routes/auth-router'
-import { commentsRouter } from './routes/comments-router'
+import { commentsRouter } from './features/blogs/api/routes/comments-router'
 import { securityRouter } from './routes/security-router'
 import { AttemptsModel, BlogsModel, PostsModel, UsersModel } from "./repositories/db"
 

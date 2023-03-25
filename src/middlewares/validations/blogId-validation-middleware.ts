@@ -1,6 +1,6 @@
 import { NextFunction, Response } from "express"
 import { HTTP_STATUSES } from "../../settings"
-import { blogsQueryRepository } from "../../repositories/query/blogs-query-repository"
+import { blogsQueryRepository } from "../../features/blogs/infrastructure/blogs-query-repository"
 
 export const blogIdValidationMiddleware = async (req: any, res: Response, next: NextFunction) => {
     const findedBlog = await blogsQueryRepository.findBlogById(req.params.blogId)

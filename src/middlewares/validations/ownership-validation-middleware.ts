@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express"
 import { HTTP_STATUSES } from "../../settings"
-import { commentsQueryRepository } from "../../repositories/query/comments-query-repository"
+import { commentsQueryRepository } from "../../features/blogs/infrastructure/comments-query-repository"
 import { container } from "../../composition-root"
 import { JwtService } from "../../application/jwtService"
 

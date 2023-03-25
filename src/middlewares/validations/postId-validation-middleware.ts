@@ -1,7 +1,7 @@
 import { NextFunction, Response } from "express"
 import { HTTP_STATUSES } from "../../settings"
 import { container } from "../../composition-root"
-import { PostsService } from "../../domain/posts-service"
+import { PostsService } from "../../features/blogs/application/posts-service"
 
 const postsService = container.resolve(PostsService)
 
