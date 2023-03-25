@@ -12,15 +12,18 @@ export const postsSchema = new mongoose.Schema<PostDBModel>({
     extendedLikesInfo: {
         likes: [{
             userId: String,
-            createdAt: String
+            createdAt: String,
+            login: String,
         }],
         dislikes: [{
             userId: String,
-            createdAt: String
+            createdAt: String,
+            login: String,
         }],
         noneEntities: [{
             userId: String,
-            createdAt: String
+            createdAt: String,
+            login: String,
         }]
     }
 })

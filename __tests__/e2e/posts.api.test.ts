@@ -351,6 +351,8 @@ describe('/posts', () => {
         expect(likedPostData.body.extendedLikesInfo.dislikesCount).toEqual(0)
         expect(likedPostData.body.extendedLikesInfo.myStatus).toEqual('Like')
 
+        console.log(likedPostData.body.extendedLikesInfo.newestLikes, 'newest likes')
+
         expect(likedPostData.body.extendedLikesInfo.newestLikes[0].login).toEqual(createUserInputData.login)
         expect(likedPostData.body.extendedLikesInfo.newestLikes[1].login).toEqual(secondUserInputData.login)
         expect(likedPostData.body.extendedLikesInfo.newestLikes[2].login).toEqual(thirdUserInputData.login)

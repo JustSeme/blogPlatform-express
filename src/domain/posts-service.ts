@@ -146,7 +146,7 @@ export class PostsService {
                 } else {
                     return -1
                 }
-            }).slice(0, 2)
+            }).slice(0, 3)
 
             let newest3Likes = last3Likes.map((like: ExtendedLikeObjectType) => {
                 return {
