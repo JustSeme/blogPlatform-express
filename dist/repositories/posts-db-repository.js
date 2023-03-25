@@ -79,13 +79,11 @@ let PostsRepository = class PostsRepository {
     setNone(editablePost, likeIndex, dislikeIndex) {
         return __awaiter(this, void 0, void 0, function* () {
             if (likeIndex > -1) {
-                const noneData = Object.assign({}, editablePost.extendedLikesInfo.likes[likeIndex]);
-                delete editablePost.extendedLikesInfo.likes[likeIndex];
+                const noneData = editablePost.extendedLikesInfo.likes.splice(likeIndex, 1)[0];
                 editablePost.extendedLikesInfo.noneEntities.push(noneData);
             }
             if (dislikeIndex > -1) {
-                const noneData = Object.assign({}, editablePost.extendedLikesInfo.dislikes[dislikeIndex]);
-                delete editablePost.extendedLikesInfo.dislikes[dislikeIndex];
+                const noneData = editablePost.extendedLikesInfo.dislikes.splice(dislikeIndex, 1)[0];
                 editablePost.extendedLikesInfo.noneEntities.push(noneData);
             }
             yield editablePost.save();
@@ -95,13 +93,11 @@ let PostsRepository = class PostsRepository {
     updateToLike(updatablePost, dislikeIndex, noneIndex) {
         return __awaiter(this, void 0, void 0, function* () {
             if (noneIndex > -1) {
-                const likeData = Object.assign({}, updatablePost.extendedLikesInfo.noneEntities[noneIndex]);
-                delete updatablePost.extendedLikesInfo.noneEntities[noneIndex];
+                const likeData = updatablePost.extendedLikesInfo.noneEntities.splice(noneIndex, 1)[0];
                 updatablePost.extendedLikesInfo.likes.push(likeData);
             }
             if (dislikeIndex > -1) {
-                const likeData = Object.assign({}, updatablePost.extendedLikesInfo.dislikes[dislikeIndex]);
-                delete updatablePost.extendedLikesInfo.dislikes[dislikeIndex];
+                const likeData = updatablePost.extendedLikesInfo.dislikes.splice(dislikeIndex, 1)[0];
                 updatablePost.extendedLikesInfo.likes.push(likeData);
             }
             yield updatablePost.save();
@@ -111,14 +107,12 @@ let PostsRepository = class PostsRepository {
     updateToDislike(updatablePost, likeIndex, noneIndex) {
         return __awaiter(this, void 0, void 0, function* () {
             if (noneIndex > -1) {
-                const likeData = Object.assign({}, updatablePost.extendedLikesInfo.noneEntities[noneIndex]);
-                delete updatablePost.extendedLikesInfo.noneEntities[noneIndex];
-                updatablePost.extendedLikesInfo.likes.push(likeData);
+                const dislikeData = updatablePost.extendedLikesInfo.noneEntities.splice(noneIndex, 1)[0];
+                updatablePost.extendedLikesInfo.likes.push(dislikeData);
             }
             if (likeIndex > -1) {
-                const likeData = Object.assign({}, updatablePost.extendedLikesInfo.dislikes[likeIndex]);
-                delete updatablePost.extendedLikesInfo.dislikes[likeIndex];
-                updatablePost.extendedLikesInfo.likes.push(likeData);
+                const dislikeData = updatablePost.extendedLikesInfo.likes.splice(likeIndex, 1)[0];
+                updatablePost.extendedLikesInfo.likes.push(dislikeData);
             }
             yield updatablePost.save();
             return true;

@@ -34,7 +34,7 @@ describe('/posts', () => {
         email: 'email@email.ru'
     }
     const secondUserInputData = {
-        login: 'secondLogin',
+        login: 'secondLogi',
         password: 'password',
         email: 'email2@email.ru'
     }
@@ -67,7 +67,6 @@ describe('/posts', () => {
             .set('Authorization', 'Basic YWRtaW46cXdlcnR5')
             .send(secondUserInputData)
             .expect(HTTP_STATUSES.CREATED_201)
-
 
         const accessTokenResponseData = await request(app)
             .post(`${baseURL}auth/login`)
@@ -252,8 +251,6 @@ describe('/posts', () => {
         const dislikeBody: LikeInputModel = {
             likeStatus: 'Dislike'
         }
-
-        console.log('create dislike');
 
         await request(app)
             .put(`${baseURL}posts/${createdPostId}/like-status`)
