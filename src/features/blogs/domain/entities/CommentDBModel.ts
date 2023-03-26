@@ -24,8 +24,6 @@ export class CommentDBModel {
             dislikes: [],
         }
     }
-
-    //here will be a method which set myStatus depending on user
 }
 
 type CommentatorInfoType = {
