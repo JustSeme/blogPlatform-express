@@ -71,4 +71,11 @@ exports.app.delete('/homeworks/testing/all-data', (req, res) => __awaiter(void 0
     yield db_1.AttemptsModel.deleteMany({});
     res.sendStatus(exports.HTTP_STATUSES.NO_CONTENT_204);
 }));
+exports.app.get(`/`, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.send(`
+        <h1>Привет! Это мой учебный проект по бэкенду</h1>
+        <h2>Я пока не реализовал способ демонстриации работы моего API, но позже обязательно это сделаю.</h2>
+        <h2>Оцените качество моей работы на <a href='https://github.com/JustSeme/homeworks'>гитхабе</a>. Так же чтобы проверить работу можно e2e тестами, реализованными в проекте</h2>
+    `);
+}));
 //# sourceMappingURL=settings.js.map
