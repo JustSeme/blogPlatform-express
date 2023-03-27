@@ -1,6 +1,6 @@
 import { HTTP_STATUSES } from '../settings'
 import { JwtService } from "../application/jwtService";
-import { AuthService } from "../domain/auth-service";
+import { AuthService } from "../features/auth/application/auth-service";
 import { LoginInputModel } from "../models/auth/LoginInputModel";
 import { MeOutputModel } from "../models/auth/MeOutputModel";
 import { ErrorMessagesOutputModel } from "../models/ErrorMessagesOutputModel";
@@ -22,7 +22,7 @@ export class AuthController {
         }
 
         const deviceName = req.headers["user-agent"] || 'undefined'
-        const pairOfTokens = await this.jwtService.login(user.id, req.ip, deviceName)
+        const pairOfTokens = await this.authService.login(user.id, req.ip, deviceName)
         if (!pairOfTokens) {
             res.sendStatus(HTTP_STATUSES.NOT_IMPLEMENTED_501)
             return
@@ -51,7 +51,7 @@ export class AuthController {
 
     async logout(req: Request, res: Response) {
         const refreshToken = req.cookies.refreshToken
-        const isLogout = this.jwtService.logout(refreshToken)
+        const isLogout = this.authService.logout(refreshToken)
         if (!isLogout) {
             res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
             return

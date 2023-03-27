@@ -24,9 +24,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.JwtService = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const settings_1 = require("../settings");
-const uuid_1 = require("uuid");
 const device_db_repository_1 = require("../repositories/device-db-repository");
-const DeviceSessionsModel_1 = require("../models/devices/DeviceSessionsModel");
 const injectable_1 = require("inversify/lib/annotation/injectable");
 let JwtService = class JwtService {
     constructor(deviceRepository) {
@@ -96,37 +94,6 @@ let JwtService = class JwtService {
                 newRefreshToken,
                 newAccessToken
             };
-        });
-    }
-    // TODO перенести login logout из jwtService в authService
-    login(userId, userIp, deviceName) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const deviceId = (0, uuid_1.v4)();
-            const accessToken = yield this.createAccessToken(settings_1.settings.ACCESS_TOKEN_EXPIRE_TIME, userId);
-            const refreshToken = yield this.createRefreshToken(settings_1.settings.REFRESH_TOKEN_EXPIRE_TIME, deviceId, userId);
-            const result = jsonwebtoken_1.default.decode(refreshToken);
-            const newSession = new DeviceSessionsModel_1.DeviceAuthSessionsModel(result.iat, result.exp, userId, userIp, deviceId, deviceName);
-            const isAdded = yield this.deviceRepository.addSession(newSession);
-            if (!isAdded) {
-                return null;
-            }
-            return {
-                accessToken,
-                refreshToken
-            };
-        });
-    }
-    logout(usedToken) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const result = yield this.verifyRefreshToken(usedToken);
-            if (!result) {
-                return false;
-            }
-            const isDeleted = this.deviceRepository.removeSession(result.deviceId);
-            if (!isDeleted) {
-                return false;
-            }
-            return true;
         });
     }
 };

@@ -1,5 +1,5 @@
 import { CommentDBModel, LikeObjectType } from "../domain/entities/CommentDBModel";
-import { ReadCommentsQueryParams } from "../../../models/comments/ReadCommentsQuery";
+import { ReadCommentsQueryParams } from "../api/models/ReadCommentsQuery";
 import { CommentsModel } from "../../../repositories/db";
 import { injectable } from 'inversify/lib/annotation/injectable';
 

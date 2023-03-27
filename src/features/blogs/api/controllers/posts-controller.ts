@@ -1,6 +1,6 @@
 import { JwtService } from "../../../../application/jwtService";
 import { usersQueryRepository } from "../../../../repositories/query/users-query-repository";
-import { ReadCommentsQueryParams } from "../../../../models/comments/ReadCommentsQuery";
+import { ReadCommentsQueryParams } from "../models/ReadCommentsQuery";
 import { CommentsWithQueryOutputModel } from "../models/CommentViewModel";
 import { CommentInputModel } from "../../application/dto/CommentInputModel";
 import { CommentViewModel } from "../models/CommentViewModel";
@@ -11,7 +11,7 @@ import { PostInputModel } from "../../application/dto/PostInputModel";
 import { PostsWithQueryOutputModel } from "../../domain/entities/PostDBModel";
 import { RequestWithBody, RequestWithParams, RequestWithParamsAndBody, RequestWithParamsAndQuery, RequestWithQuery } from "../../../../types/types";
 import { PostsService } from "../../application/posts-service";
-import { ReadPostsQueryParams } from "../../../../models/posts/ReadPostsQuery";
+import { ReadPostsQueryParams } from "../models/ReadPostsQuery";
 import { Response } from "express";
 import { injectable } from 'inversify/lib/annotation/injectable';
 import { LikeInputModel } from "../../application/dto/LikeInputModel";

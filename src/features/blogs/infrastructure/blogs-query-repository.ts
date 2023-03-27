@@ -1,6 +1,6 @@
 import { BlogsWithQueryOutputModel } from "../api/models/BlogViewModel";
 import { BlogViewModel } from "../api/models/BlogViewModel";
-import { ReadBlogsQueryParams } from "../../../models/blogs/ReadBlogsQuery";
+import { ReadBlogsQueryParams } from "../api/models/ReadBlogsQuery";
 import { BlogsModel } from "../../../repositories/db";
 
 export const blogsQueryRepository = {

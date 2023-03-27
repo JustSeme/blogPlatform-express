@@ -70,39 +70,4 @@ export class JwtService {
             newAccessToken
         }
     }
-
-    // TODO перенести login logout из jwtService в authService
-    async login(userId: string, userIp: string, deviceName: string) {
-        const deviceId = uuid()
-
-        const accessToken = await this.createAccessToken(settings.ACCESS_TOKEN_EXPIRE_TIME, userId)
-        const refreshToken = await this.createRefreshToken(settings.REFRESH_TOKEN_EXPIRE_TIME, deviceId, userId)
-        const result = jwt.decode(refreshToken) as JwtPayload
-
-        const newSession = new DeviceAuthSessionsModel(result.iat!, result.exp!, userId, userIp, deviceId, deviceName)
-
-        const isAdded = await this.deviceRepository.addSession(newSession)
-        if (!isAdded) {
-            return null
-        }
-
-        return {
-            accessToken,
-            refreshToken
-        }
-    }
-
-    async logout(usedToken: string) {
-        const result = await this.verifyRefreshToken(usedToken)
-        if (!result) {
-            return false
-        }
-
-        const isDeleted = this.deviceRepository.removeSession(result.deviceId)
-
-        if (!isDeleted) {
-            return false
-        }
-        return true
-    }
 }

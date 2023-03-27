@@ -5,7 +5,7 @@ import { AuthController } from "../controllers/auth-controller";
 import { authMiddleware } from "../middlewares/auth/auth-middleware";
 import { rateLimitMiddleware } from "../middlewares/auth/rate-limit-middleware";
 import { inputValidationMiddleware } from "../middlewares/validations/input-validation-middleware";
-import { emailValidationWithCustomSearch, loginValidation, passwordValidation } from "../features/users/api/routes/users-router";
+import { emailValidationWithCustomSearch, loginValidation, passwordValidation } from "../features/auth/api/routers/users-router";
 
 export const authRouter = Router({})
 

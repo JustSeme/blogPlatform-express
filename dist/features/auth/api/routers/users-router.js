@@ -13,7 +13,7 @@ exports.emailValidationWithCustomSearch = exports.passwordValidation = exports.l
 const express_1 = require("express");
 const express_validator_1 = require("express-validator");
 const composition_root_1 = require("../../../../composition-root");
-const users_controller_1 = require("../../../auth/api/controllers/users-controller");
+const users_controller_1 = require("../controllers/users-controller");
 const basic_authorizatoin_middleware_1 = require("../../../../middlewares/auth/basic-authorizatoin-middleware");
 const input_validation_middleware_1 = require("../../../../middlewares/validations/input-validation-middleware");
 const users_query_repository_1 = require("../../../../repositories/query/users-query-repository");

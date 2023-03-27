@@ -1,6 +1,6 @@
 import { PostsModel } from "../../../repositories/db";
 import { PostsWithQueryOutputModel, PostDBModel } from "../domain/entities/PostDBModel";
-import { ReadPostsQueryParams } from "../../../models/posts/ReadPostsQuery";
+import { ReadPostsQueryParams } from "../api/models/ReadPostsQuery";
 
 export const postsQueryRepository = {
     /* async findPosts(queryParams: ReadPostsQueryParams, blogId: string | null): Promise<PostsWithQueryOutputModel> {

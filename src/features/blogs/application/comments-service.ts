@@ -2,7 +2,7 @@ import { JwtService } from "../../../application/jwtService";
 import { CommentDBModel, LikeObjectType } from "../domain/entities/CommentDBModel";
 import { CommentsWithQueryOutputModel, CommentViewModel } from "../api/models/CommentViewModel";
 import { LikeType } from "./dto/LikeInputModel";
-import { ReadCommentsQueryParams } from "../../../models/comments/ReadCommentsQuery";
+import { ReadCommentsQueryParams } from "../api/models/ReadCommentsQuery";
 import { UserDBModel } from "../../../models/users/UserDBModel";
 import { CommentsRepository } from "../infrastructure/comments-db-repository";
 import { injectable } from 'inversify/lib/annotation/injectable';

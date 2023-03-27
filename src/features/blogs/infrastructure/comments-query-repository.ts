@@ -1,5 +1,5 @@
 import { CommentsWithQueryOutputModel, CommentViewModel } from "../api/models/CommentViewModel"
-import { ReadCommentsQueryParams } from "../../../models/comments/ReadCommentsQuery"
+import { ReadCommentsQueryParams } from "../api/models/ReadCommentsQuery"
 import { CommentsModel } from "../../../repositories/db"
 
 export const commentsQueryRepository = {

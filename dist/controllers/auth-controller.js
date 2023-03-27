@@ -21,7 +21,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const settings_1 = require("../settings");
 const jwtService_1 = require("../application/jwtService");
-const auth_service_1 = require("../domain/auth-service");
+const auth_service_1 = require("../features/auth/application/auth-service");
 const users_query_repository_1 = require("../repositories/query/users-query-repository");
 const injectable_1 = require("inversify/lib/annotation/injectable");
 let AuthController = class AuthController {
@@ -37,7 +37,7 @@ let AuthController = class AuthController {
                 return;
             }
             const deviceName = req.headers["user-agent"] || 'undefined';
-            const pairOfTokens = yield this.jwtService.login(user.id, req.ip, deviceName);
+            const pairOfTokens = yield this.authService.login(user.id, req.ip, deviceName);
             if (!pairOfTokens) {
                 res.sendStatus(settings_1.HTTP_STATUSES.NOT_IMPLEMENTED_501);
                 return;
@@ -65,7 +65,7 @@ let AuthController = class AuthController {
     logout(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const refreshToken = req.cookies.refreshToken;
-            const isLogout = this.jwtService.logout(refreshToken);
+            const isLogout = this.authService.logout(refreshToken);
             if (!isLogout) {
                 res.sendStatus(settings_1.HTTP_STATUSES.UNAUTHORIZED_401);
                 return;

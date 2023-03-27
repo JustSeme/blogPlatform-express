@@ -1,6 +1,6 @@
 import { Response } from "express"
 import { injectable } from "inversify/lib/annotation/injectable"
-import { AuthService } from "../../../../domain/auth-service"
+import { AuthService } from "../../application/auth-service"
 import { ErrorMessagesOutputModel } from "../../../../models/ErrorMessagesOutputModel"
 import { ReadUsersQuery } from "../../../../models/users/ReadUsersQuery"
 import { UserInputModel } from "../../../../models/users/UserInputModel"

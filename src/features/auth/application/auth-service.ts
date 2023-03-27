@@ -1,15 +1,19 @@
-import { UserDBModel } from '../models/users/UserDBModel'
-import { UserViewModelType } from '../models/users/UsersViewModel'
-import { UsersRepository } from '../repositories/users-db-repository'
+import { UserDBModel } from '../../../models/users/UserDBModel'
+import { UserViewModelType } from '../../../models/users/UsersViewModel'
+import { UsersRepository } from '../../../repositories/users-db-repository'
 import { v4 as uuidv4 } from 'uuid'
-import { emailManager } from '../managers/emailManager'
-import { bcryptAdapter } from '../adapters/bcryptAdapter'
+import { emailManager } from '../../../managers/emailManager'
+import { bcryptAdapter } from '../../../adapters/bcryptAdapter'
 import { injectable } from 'inversify/lib/annotation/injectable'
+import { JwtService } from '../../../application/jwtService'
+import { DeviceRepository } from '../../../repositories/device-db-repository'
+import { DeviceAuthSessionsModel } from '../../../models/devices/DeviceSessionsModel'
+import { settings } from '../../../settings'
 
 //transaction script
 @injectable()
 export class AuthService {
-    constructor(protected usersRepository: UsersRepository) { }
+    constructor(protected usersRepository: UsersRepository, protected jwtService: JwtService, protected deviceRepository: DeviceRepository) { }
 
     async createUser(login: string, password: string, email: string): Promise<boolean> {
         const passwordHash = await bcryptAdapter.generatePasswordHash(password, 10)
@@ -100,5 +104,39 @@ export class AuthService {
 
     async deleteUsers(userId: string) {
         return this.usersRepository.deleteUser(userId)
+    }
+
+    async login(userId: string, userIp: string, deviceName: string) {
+        const deviceId = uuidv4()
+
+        const accessToken = await this.jwtService.createAccessToken(settings.ACCESS_TOKEN_EXPIRE_TIME, userId)
+        const refreshToken = await this.jwtService.createRefreshToken(settings.REFRESH_TOKEN_EXPIRE_TIME, deviceId, userId)
+        const result = await this.jwtService.verifyRefreshToken(refreshToken)
+
+        const newSession = new DeviceAuthSessionsModel(result!.iat!, result!.exp!, userId, userIp, deviceId, deviceName)
+
+        const isAdded = await this.deviceRepository.addSession(newSession)
+        if (!isAdded) {
+            return null
+        }
+
+        return {
+            accessToken,
+            refreshToken
+        }
+    }
+
+    async logout(usedToken: string) {
+        const result = await this.jwtService.verifyRefreshToken(usedToken)
+        if (!result) {
+            return false
+        }
+
+        const isDeleted = this.deviceRepository.removeSession(result.deviceId)
+
+        if (!isDeleted) {
+            return false
+        }
+        return true
     }
 }

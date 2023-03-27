@@ -3,7 +3,7 @@ import { ExtendedLikeObjectType, PostDBModel } from '../domain/entities/PostDBMo
 import { PostsModel } from '../../../repositories/db'
 import { injectable } from 'inversify/lib/annotation/injectable';
 import { Document } from 'mongoose';
-import { ReadPostsQueryParams } from '../../../models/posts/ReadPostsQuery';
+import { ReadPostsQueryParams } from '../api/models/ReadPostsQuery';
 
 @injectable()
 export class PostsRepository {

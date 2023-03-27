@@ -10,8 +10,8 @@ import { RequestWithQuery } from '../../../../types/types'
 import { PostsWithQueryOutputModel } from "../../domain/entities/PostDBModel";
 import { PostInputModel } from "../../application/dto/PostInputModel";
 import { PostsService } from "../../application/posts-service";
-import { ReadBlogsQueryParams } from "../../../../models/blogs/ReadBlogsQuery";
-import { ReadPostsQueryParams } from "../../../../models/posts/ReadPostsQuery";
+import { ReadBlogsQueryParams } from "../models/ReadBlogsQuery";
+import { ReadPostsQueryParams } from "../models/ReadPostsQuery";
 import { Response } from 'express';
 import { injectable } from 'inversify/lib/annotation/injectable';
 import { PostsViewModel } from '../models/PostViewModel';

@@ -5,8 +5,8 @@ import { BlogsController } from "./features/blogs/api/controllers/blogs-controll
 import { CommentsController } from "./features/blogs/api/controllers/comments-controller";
 import { PostsController } from "./features/blogs/api/controllers/posts-controller";
 import { SecurityController } from "./controllers/security-controller";
-import { UsersController } from "./features/users/api/controllers/users-controller";
-import { AuthService } from "./domain/auth-service";
+import { UsersController } from "./features/auth/api/controllers/users-controller";
+import { AuthService } from "./features/auth/application/auth-service";
 import { BlogsService } from "./features/blogs/application/blogs-service";
 import { CommentsService } from "./features/blogs/application/comments-service";
 import { PostsService } from "./features/blogs/application/posts-service";

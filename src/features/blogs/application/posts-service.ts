@@ -5,7 +5,7 @@ import { BlogsRepository } from '../infrastructure/blogs-db-repository'
 import { injectable } from 'inversify/lib/annotation/injectable';
 import { LikeType } from './dto/LikeInputModel';
 import { JwtService } from '../../../application/jwtService';
-import { ReadPostsQueryParams } from '../../../models/posts/ReadPostsQuery';
+import { ReadPostsQueryParams } from '../api/models/ReadPostsQuery';
 import { PostsViewModel } from '../api/models/PostViewModel';
 import { UsersRepository } from '../../../repositories/users-db-repository';
 
