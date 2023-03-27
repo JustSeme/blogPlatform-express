@@ -5,9 +5,9 @@ import { videosRouter } from './routes/videos-router'
 import { blogsRouter } from './features/blogs/api/routes/blogs-router'
 import { postsRouter } from './features/blogs/api/routes/posts-router'
 import { usersRouter } from './features/auth/api/routers/users-router'
-import { authRouter } from './routes/auth-router'
+import { authRouter } from './features/auth/api/routers/auth-router'
 import { commentsRouter } from './features/blogs/api/routes/comments-router'
-import { securityRouter } from './routes/security-router'
+import { securityRouter } from './features/security/api/routers/security-router'
 import { AttemptsModel, BlogsModel, PostsModel, UsersModel } from "./repositories/db"
 
 const username = "justSeme"

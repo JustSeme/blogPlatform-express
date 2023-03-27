@@ -7,7 +7,7 @@ import { LikeType } from './dto/LikeInputModel';
 import { JwtService } from '../../../application/jwtService';
 import { ReadPostsQueryParams } from '../api/models/ReadPostsQuery';
 import { PostsViewModel } from '../api/models/PostViewModel';
-import { UsersRepository } from '../../../repositories/users-db-repository';
+import { UsersRepository } from '../../auth/infrastructure/users-db-repository';
 
 @injectable()
 export class PostsService {

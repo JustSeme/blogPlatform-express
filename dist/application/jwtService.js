@@ -24,7 +24,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.JwtService = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const settings_1 = require("../settings");
-const device_db_repository_1 = require("../repositories/device-db-repository");
+const device_db_repository_1 = require("../features/security/infrastructure/device-db-repository");
 const injectable_1 = require("inversify/lib/annotation/injectable");
 let JwtService = class JwtService {
     constructor(deviceRepository) {

@@ -1,21 +1,21 @@
 import 'reflect-metadata'
 import { JwtService } from "./application/jwtService";
-import { AuthController } from "./controllers/auth-controller";
+import { AuthController } from "./features/auth/api/controllers/auth-controller";
 import { BlogsController } from "./features/blogs/api/controllers/blogs-controller";
 import { CommentsController } from "./features/blogs/api/controllers/comments-controller";
 import { PostsController } from "./features/blogs/api/controllers/posts-controller";
-import { SecurityController } from "./controllers/security-controller";
+import { SecurityController } from "./features/security/api/controllers/security-controller";
 import { UsersController } from "./features/auth/api/controllers/users-controller";
 import { AuthService } from "./features/auth/application/auth-service";
 import { BlogsService } from "./features/blogs/application/blogs-service";
 import { CommentsService } from "./features/blogs/application/comments-service";
 import { PostsService } from "./features/blogs/application/posts-service";
-import { SecurityService } from "./domain/security-service";
+import { SecurityService } from "./features/security/application/security-service";
 import { BlogsRepository } from "./features/blogs/infrastructure/blogs-db-repository";
 import { CommentsRepository } from "./features/blogs/infrastructure/comments-db-repository";
-import { DeviceRepository } from "./repositories/device-db-repository";
+import { DeviceRepository } from "./features/security/infrastructure/device-db-repository";
 import { PostsRepository } from "./features/blogs/infrastructure/posts-db-repository";
-import { UsersRepository } from "./repositories/users-db-repository";
+import { UsersRepository } from "./features/auth/infrastructure/users-db-repository";
 import { Container } from "inversify/lib/container/container";
 
 export const container = new Container()

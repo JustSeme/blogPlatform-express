@@ -1,5 +1,5 @@
 import { JwtService } from "../../../../application/jwtService";
-import { usersQueryRepository } from "../../../../repositories/query/users-query-repository";
+import { usersQueryRepository } from "../../../auth/infrastructure/users-query-repository";
 import { ReadCommentsQueryParams } from "../models/ReadCommentsQuery";
 import { CommentsWithQueryOutputModel } from "../models/CommentViewModel";
 import { CommentInputModel } from "../../application/dto/CommentInputModel";

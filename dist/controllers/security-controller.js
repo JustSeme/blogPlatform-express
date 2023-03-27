@@ -22,7 +22,7 @@ exports.SecurityController = void 0;
 const settings_1 = require("../settings");
 const jwtService_1 = require("../application/jwtService");
 const security_service_1 = require("../domain/security-service");
-const device_query_repository_1 = require("../repositories/query/device-query-repository");
+const device_query_repository_1 = require("../features/security/infrastructure/device-query-repository");
 const injectable_1 = require("inversify/lib/annotation/injectable");
 let SecurityController = class SecurityController {
     constructor(jwtService, securityService) {

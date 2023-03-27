@@ -21,7 +21,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersController = void 0;
 const injectable_1 = require("inversify/lib/annotation/injectable");
 const auth_service_1 = require("../../application/auth-service");
-const users_query_repository_1 = require("../../../../repositories/query/users-query-repository");
+const users_query_repository_1 = require("../../infrastructure/users-query-repository");
 const settings_1 = require("../../../../settings");
 let UsersController = class UsersController {
     constructor(authService) {

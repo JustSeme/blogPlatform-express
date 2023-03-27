@@ -19,15 +19,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
-const UserDBModel_1 = require("../../../models/users/UserDBModel");
-const users_db_repository_1 = require("../../../repositories/users-db-repository");
+const UserDBModel_1 = require("../domain/entities/UserDBModel");
+const users_db_repository_1 = require("../infrastructure/users-db-repository");
 const uuid_1 = require("uuid");
 const emailManager_1 = require("../../../managers/emailManager");
 const bcryptAdapter_1 = require("../../../adapters/bcryptAdapter");
 const injectable_1 = require("inversify/lib/annotation/injectable");
 const jwtService_1 = require("../../../application/jwtService");
-const device_db_repository_1 = require("../../../repositories/device-db-repository");
-const DeviceSessionsModel_1 = require("../../../models/devices/DeviceSessionsModel");
+const device_db_repository_1 = require("../../security/infrastructure/device-db-repository");
+const DeviceSessionsModel_1 = require("../../security/domain/entities/DeviceSessionsModel");
 const settings_1 = require("../../../settings");
 //transaction script
 let AuthService = class AuthService {

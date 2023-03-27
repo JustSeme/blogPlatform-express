@@ -3,7 +3,7 @@ import { CommentDBModel, LikeObjectType } from "../domain/entities/CommentDBMode
 import { CommentsWithQueryOutputModel, CommentViewModel } from "../api/models/CommentViewModel";
 import { LikeType } from "./dto/LikeInputModel";
 import { ReadCommentsQueryParams } from "../api/models/ReadCommentsQuery";
-import { UserDBModel } from "../../../models/users/UserDBModel";
+import { UserDBModel } from "../../auth/domain/entities/UserDBModel";
 import { CommentsRepository } from "../infrastructure/comments-db-repository";
 import { injectable } from 'inversify/lib/annotation/injectable';
 

@@ -1,17 +1,17 @@
-import { DeviceAuthSessionsModel } from '../models/devices/DeviceSessionsModel';
+import { DeviceAuthSessionsModel } from '../features/security/domain/entities/DeviceSessionsModel';
 import { BlogViewModel } from '../features/blogs/api/models/BlogViewModel';
 import { CommentDBModel } from '../features/blogs/domain/entities/CommentDBModel';
 import { PostDBModel } from '../features/blogs/domain/entities/PostDBModel';
-import { UserDBModel } from '../models/users/UserDBModel';
+import { UserDBModel } from '../features/auth/domain/entities/UserDBModel';
 import { settings } from '../settings';
-import { AttemptsDBModel } from '../models/auth/AttemptsDBModel';
+import { AttemptsDBModel } from '../features/security/domain/entities/AttemptsDBModel';
 import mongoose from 'mongoose';
-import { usersSchema } from './schemas/usersSchema';
+import { usersSchema } from '../features/auth/domain/entities/usersSchema';
 import { postsSchema } from '../features/blogs/domain/entities/postsSchema';
 import { blogsSchema } from '../features/blogs/domain/entities/blogsSchema';
 import { commentsSchema } from '../features/blogs/domain/entities/commentsSchema';
-import { deviceAuthSessionsSchema } from './schemas/deviceAuthSessionsSchema';
-import { attemptsSchema } from './schemas/attemptsSchema';
+import { deviceAuthSessionsSchema } from '../features/security/domain/entities/deviceAuthSessionsSchema';
+import { attemptsSchema } from '../features/security/domain/entities/attemptsSchema';
 
 let mongoURI = settings.mongoURI
 

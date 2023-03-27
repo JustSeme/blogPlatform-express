@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.rateLimitMiddleware = void 0;
 const settings_1 = require("../../settings");
-const attempts_db_repository_1 = require("../../repositories/attempts-db-repository");
+const attempts_db_repository_1 = require("../../features/security/infrastructure/attempts-db-repository");
 const rateLimitMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const interval = 10 * 1000;
     const clientIp = req.ip;

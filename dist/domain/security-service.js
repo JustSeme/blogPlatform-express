@@ -19,7 +19,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SecurityService = void 0;
-const device_db_repository_1 = require("../repositories/device-db-repository");
+const device_db_repository_1 = require("../features/security/infrastructure/device-db-repository");
 const injectable_1 = require("inversify/lib/annotation/injectable");
 let SecurityService = class SecurityService {
     constructor(deviceRepository) {

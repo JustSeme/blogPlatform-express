@@ -24,7 +24,7 @@ const posts_db_repository_1 = require("../infrastructure/posts-db-repository");
 const blogs_db_repository_1 = require("../infrastructure/blogs-db-repository");
 const injectable_1 = require("inversify/lib/annotation/injectable");
 const jwtService_1 = require("../../../application/jwtService");
-const users_db_repository_1 = require("../../../repositories/users-db-repository");
+const users_db_repository_1 = require("../../auth/infrastructure/users-db-repository");
 let PostsService = class PostsService {
     constructor(blogsRepository, postsRepository, jwtService, usersRepository) {
         this.blogsRepository = blogsRepository;

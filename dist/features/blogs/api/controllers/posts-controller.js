@@ -20,7 +20,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostsController = void 0;
 const jwtService_1 = require("../../../../application/jwtService");
-const users_query_repository_1 = require("../../../../repositories/query/users-query-repository");
+const users_query_repository_1 = require("../../../auth/infrastructure/users-query-repository");
 const comments_service_1 = require("../../application/comments-service");
 const settings_1 = require("../../../../settings");
 const posts_service_1 = require("../../application/posts-service");

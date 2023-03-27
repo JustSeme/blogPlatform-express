@@ -1,6 +1,6 @@
 import { Response, Request, NextFunction } from "express";
 import { HTTP_STATUSES } from "../../settings"
-import { attemptsRepository } from "../../repositories/attempts-db-repository";
+import { attemptsRepository } from "../../features/security/infrastructure/attempts-db-repository";
 
 export const rateLimitMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     const interval = 10 * 1000

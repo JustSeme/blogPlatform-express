@@ -4,7 +4,7 @@ import { container } from "../../../../composition-root";
 import { UsersController } from "../controllers/users-controller";
 import { basicAuthorizationMiddleware } from "../../../../middlewares/auth/basic-authorizatoin-middleware";
 import { inputValidationMiddleware } from "../../../../middlewares/validations/input-validation-middleware";
-import { usersQueryRepository } from "../../../../repositories/query/users-query-repository";
+import { usersQueryRepository } from "../../infrastructure/users-query-repository";
 
 export const usersRouter = Router({})
 

@@ -1,13 +1,13 @@
-import { UserDBModel } from '../../../models/users/UserDBModel'
-import { UserViewModelType } from '../../../models/users/UsersViewModel'
-import { UsersRepository } from '../../../repositories/users-db-repository'
+import { UserDBModel } from '../domain/entities/UserDBModel'
+import { UserViewModelType } from '../api/models/UsersViewModel'
+import { UsersRepository } from '../infrastructure/users-db-repository'
 import { v4 as uuidv4 } from 'uuid'
 import { emailManager } from '../../../managers/emailManager'
 import { bcryptAdapter } from '../../../adapters/bcryptAdapter'
 import { injectable } from 'inversify/lib/annotation/injectable'
 import { JwtService } from '../../../application/jwtService'
-import { DeviceRepository } from '../../../repositories/device-db-repository'
-import { DeviceAuthSessionsModel } from '../../../models/devices/DeviceSessionsModel'
+import { DeviceRepository } from '../../security/infrastructure/device-db-repository'
+import { DeviceAuthSessionsModel } from '../../security/domain/entities/DeviceSessionsModel'
 import { settings } from '../../../settings'
 
 //transaction script
