@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserDBModel = void 0;
+exports.UserDTO = void 0;
 const date_fns_1 = require("date-fns");
 const uuid_1 = require("uuid");
-class UserDBModel {
+class UserDTO {
     constructor(login, email, passwordHash, isConfirmed) {
         this.login = login;
         this.email = email;
@@ -24,5 +24,5 @@ class UserDBModel {
         };
     }
 }
-exports.UserDBModel = UserDBModel;
-//# sourceMappingURL=UserDBModel.js.map
+exports.UserDTO = UserDTO;
+//# sourceMappingURL=UserDTO.js.map

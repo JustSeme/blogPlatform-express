@@ -1,9 +1,9 @@
-import { UserDBModel } from "../features/auth/domain/entities/UserDBModel";
+import { UserDTO } from "../features/auth/domain/entities/UserDTO";
 
 declare global {
     declare namespace Express {
         export interface Request {
-            user: UserDBModel | null
+            user: UserDTO | null
             userId: string | null
         }
     }

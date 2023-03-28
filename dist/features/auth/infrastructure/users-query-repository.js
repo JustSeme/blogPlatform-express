@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.usersQueryRepository = void 0;
-const db_1 = require("../../../repositories/db");
+const UsersEntity_1 = require("../domain/entities/UsersEntity");
 exports.usersQueryRepository = {
     findUsers(queryParams) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -23,11 +23,11 @@ exports.usersQueryRepository = {
                 filterArray.push({ login: { $regex: searchLoginTerm, $options: 'i' } });
             }
             const filterObject = filterArray.length ? { $or: filterArray } : {};
-            const totalCount = yield db_1.UsersModel.countDocuments(filterObject);
+            const totalCount = yield UsersEntity_1.UsersModel.countDocuments(filterObject);
             const pagesCount = Math.ceil(totalCount / +pageSize);
             const skipCount = (+pageNumber - 1) * +pageSize;
             const sortDirectionNumber = sortDirection === 'asc' ? 1 : -1;
-            let resultedUsers = yield db_1.UsersModel.find(filterObject).skip(skipCount).limit(+pageSize).sort({ [sortBy]: sortDirectionNumber }).lean();
+            let resultedUsers = yield UsersEntity_1.UsersModel.find(filterObject).skip(skipCount).limit(+pageSize).sort({ [sortBy]: sortDirectionNumber }).lean();
             const displayedUsers = resultedUsers.map(el => ({
                 id: el.id,
                 login: el.login,
@@ -45,22 +45,22 @@ exports.usersQueryRepository = {
     },
     findUserById(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.UsersModel.findOne({ id: userId }, { _id: 0, __v: 0 }).lean();
+            return UsersEntity_1.UsersModel.findOne({ id: userId }, { _id: 0, __v: 0 }).lean();
         });
     },
     findUserByLogin(login) {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.UsersModel.findOne({ login: login }).lean();
+            return UsersEntity_1.UsersModel.findOne({ login: login }).lean();
         });
     },
     findUserByRecoveryPasswordCode(code) {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.UsersModel.findOne({ 'passwordRecovery.confirmationCode': code }).lean();
+            return UsersEntity_1.UsersModel.findOne({ 'passwordRecovery.confirmationCode': code }).lean();
         });
     },
     findUserByEmail(email) {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.UsersModel.findOne({ email: email }).lean();
+            return UsersEntity_1.UsersModel.findOne({ email: email }).lean();
         });
     }
 };

@@ -1,4 +1,4 @@
-import { UserDBModel } from '../domain/entities/UserDBModel'
+import { UserDTO } from '../domain/entities/UserDTO'
 import { UserViewModelType } from '../api/models/UsersViewModel'
 import { UsersRepository } from '../infrastructure/users-db-repository'
 import { v4 as uuidv4 } from 'uuid'
@@ -9,6 +9,7 @@ import { JwtService } from '../../../application/jwtService'
 import { DeviceRepository } from '../../security/infrastructure/device-db-repository'
 import { DeviceAuthSessionsModel } from '../../security/domain/entities/DeviceSessionsModel'
 import { settings } from '../../../settings'
+import { UsersModel } from '../domain/entities/UsersEntity'
 
 //transaction script
 @injectable()
@@ -18,11 +19,13 @@ export class AuthService {
     async createUser(login: string, password: string, email: string): Promise<boolean> {
         const passwordHash = await bcryptAdapter.generatePasswordHash(password, 10)
 
-        const newUser = new UserDBModel(login, email, passwordHash, false)
+        const newUserDTO = new UserDTO(login, email, passwordHash, false)
 
-        this.usersRepository.createUser(newUser)
+        const newUser = new UsersModel(newUserDTO)
 
-        await emailManager.sendConfirmationCode(email, login, newUser.emailConfirmation.confirmationCode)
+        this.usersRepository.save(newUser)
+
+        await emailManager.sendConfirmationCode(email, login, newUserDTO.emailConfirmation.confirmationCode)
 
         return true
     }
@@ -30,14 +33,16 @@ export class AuthService {
     async createUserWithBasicAuth(login: string, password: string, email: string): Promise<UserViewModelType | null> {
         const passwordHash = await bcryptAdapter.generatePasswordHash(password, 10)
 
-        const newUser = new UserDBModel(login, email, passwordHash, true)
+        const newUserDTO = new UserDTO(login, email, passwordHash, true)
 
-        await this.usersRepository.createUser(newUser)
+        const newUser = new UsersModel(newUserDTO)
+
+        await this.usersRepository.save(newUser)
         const displayedUser: UserViewModelType = {
-            id: newUser.id,
-            login: newUser.login,
-            email: newUser.email,
-            createdAt: newUser.createdAt
+            id: newUserDTO.id,
+            login: newUserDTO.login,
+            email: newUserDTO.email,
+            createdAt: newUserDTO.createdAt
         }
 
         return displayedUser
@@ -46,11 +51,11 @@ export class AuthService {
     async confirmEmail(code: string) {
         const user = await this.usersRepository.findUserByConfirmationCode(code)
         if (!user) return false
-        if (user.emailConfirmation.isConfirmed) return false
-        if (user.emailConfirmation.confirmationCode !== code) return false
-        if (user.emailConfirmation.expirationDate < new Date()) return false
 
-        return await this.usersRepository.updateIsConfirmed(user.id)
+        const isConfirmed = user.updateIsConfirmed(code)
+        if (isConfirmed) {
+            this.usersRepository.save(user)
+        }
     }
 
     async resendConfirmationCode(email: string) {

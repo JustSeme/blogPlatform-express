@@ -21,5 +21,16 @@ const usersSchema = new mongoose_1.default.Schema({
         expirationDate: Date
     }
 }, { autoCreate: false, autoIndex: false });
+usersSchema.method('updateIsConfirmed', function updateIsConfirmed(code) {
+    const that = this;
+    if (that.emailConfirmation.isConfirmed)
+        return false;
+    if (that.emailConfirmation.confirmationCode !== code)
+        return false;
+    if (that.emailConfirmation.expirationDate < new Date())
+        return false;
+    that.emailConfirmation.isConfirmed = true;
+    return true;
+});
 exports.UsersModel = mongoose_1.default.model('users', usersSchema);
-//# sourceMappingURL=usersSchema.js.map
+//# sourceMappingURL=UsersEntity.js.map

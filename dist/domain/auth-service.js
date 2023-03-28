@@ -19,7 +19,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
-const UserDBModel_1 = require("../models/users/UserDBModel");
+const UserDTO_1 = require("../models/users/UserDTO");
 const users_db_repository_1 = require("../repositories/users-db-repository");
 const uuid_1 = require("uuid");
 const emailManager_1 = require("../managers/emailManager");
@@ -33,7 +33,7 @@ let AuthService = class AuthService {
     createUser(login, password, email) {
         return __awaiter(this, void 0, void 0, function* () {
             const passwordHash = yield bcryptAdapter_1.bcryptAdapter.generatePasswordHash(password, 10);
-            const newUser = new UserDBModel_1.UserDBModel(login, email, passwordHash, false);
+            const newUser = new UserDTO_1.UserDTO(login, email, passwordHash, false);
             this.usersRepository.createUser(newUser);
             yield emailManager_1.emailManager.sendConfirmationCode(email, login, newUser.emailConfirmation.confirmationCode);
             return true;
@@ -42,7 +42,7 @@ let AuthService = class AuthService {
     createUserWithBasicAuth(login, password, email) {
         return __awaiter(this, void 0, void 0, function* () {
             const passwordHash = yield bcryptAdapter_1.bcryptAdapter.generatePasswordHash(password, 10);
-            const newUser = new UserDBModel_1.UserDBModel(login, email, passwordHash, true);
+            const newUser = new UserDTO_1.UserDTO(login, email, passwordHash, true);
             yield this.usersRepository.createUser(newUser);
             const displayedUser = {
                 id: newUser.id,

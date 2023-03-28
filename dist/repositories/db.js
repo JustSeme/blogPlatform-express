@@ -12,10 +12,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.runDB = exports.AttemptsModel = exports.DeviceAuthSessionsDBModel = exports.CommentsModel = exports.UsersModel = exports.BlogsModel = exports.PostsModel = void 0;
+exports.runDB = exports.AttemptsModel = exports.DeviceAuthSessionsDBModel = exports.CommentsModel = exports.BlogsModel = exports.PostsModel = void 0;
 const settings_1 = require("../settings");
 const mongoose_1 = __importDefault(require("mongoose"));
-const usersSchema_1 = require("../features/auth/domain/entities/usersSchema");
 const postsSchema_1 = require("../features/blogs/domain/entities/postsSchema");
 const blogsSchema_1 = require("../features/blogs/domain/entities/blogsSchema");
 const commentsSchema_1 = require("../features/blogs/domain/entities/commentsSchema");
@@ -24,7 +23,6 @@ const attemptsSchema_1 = require("../features/security/domain/entities/attemptsS
 let mongoURI = settings_1.settings.mongoURI;
 exports.PostsModel = mongoose_1.default.model('posts', postsSchema_1.postsSchema);
 exports.BlogsModel = mongoose_1.default.model('blogs', blogsSchema_1.blogsSchema);
-exports.UsersModel = mongoose_1.default.model('users', usersSchema_1.usersSchema);
 exports.CommentsModel = mongoose_1.default.model('comments', commentsSchema_1.commentsSchema);
 exports.DeviceAuthSessionsDBModel = mongoose_1.default.model('deviceAuthSessions', deviceAuthSessionsSchema_1.deviceAuthSessionsSchema);
 exports.AttemptsModel = mongoose_1.default.model('attempts', attemptsSchema_1.attemptsSchema);

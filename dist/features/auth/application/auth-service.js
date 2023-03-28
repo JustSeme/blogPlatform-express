@@ -19,7 +19,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
-const UserDBModel_1 = require("../domain/entities/UserDBModel");
+const UserDTO_1 = require("../domain/entities/UserDTO");
 const users_db_repository_1 = require("../infrastructure/users-db-repository");
 const uuid_1 = require("uuid");
 const emailManager_1 = require("../../../managers/emailManager");
@@ -29,6 +29,7 @@ const jwtService_1 = require("../../../application/jwtService");
 const device_db_repository_1 = require("../../security/infrastructure/device-db-repository");
 const DeviceSessionsModel_1 = require("../../security/domain/entities/DeviceSessionsModel");
 const settings_1 = require("../../../settings");
+const UsersEntity_1 = require("../domain/entities/UsersEntity");
 //transaction script
 let AuthService = class AuthService {
     constructor(usersRepository, jwtService, deviceRepository) {
@@ -39,22 +40,24 @@ let AuthService = class AuthService {
     createUser(login, password, email) {
         return __awaiter(this, void 0, void 0, function* () {
             const passwordHash = yield bcryptAdapter_1.bcryptAdapter.generatePasswordHash(password, 10);
-            const newUser = new UserDBModel_1.UserDBModel(login, email, passwordHash, false);
-            this.usersRepository.createUser(newUser);
-            yield emailManager_1.emailManager.sendConfirmationCode(email, login, newUser.emailConfirmation.confirmationCode);
+            const newUserDTO = new UserDTO_1.UserDTO(login, email, passwordHash, false);
+            const newUser = new UsersEntity_1.UsersModel(newUserDTO);
+            this.usersRepository.save(newUser);
+            yield emailManager_1.emailManager.sendConfirmationCode(email, login, newUserDTO.emailConfirmation.confirmationCode);
             return true;
         });
     }
     createUserWithBasicAuth(login, password, email) {
         return __awaiter(this, void 0, void 0, function* () {
             const passwordHash = yield bcryptAdapter_1.bcryptAdapter.generatePasswordHash(password, 10);
-            const newUser = new UserDBModel_1.UserDBModel(login, email, passwordHash, true);
-            yield this.usersRepository.createUser(newUser);
+            const newUserDTO = new UserDTO_1.UserDTO(login, email, passwordHash, true);
+            const newUser = new UsersEntity_1.UsersModel(newUserDTO);
+            yield this.usersRepository.save(newUser);
             const displayedUser = {
-                id: newUser.id,
-                login: newUser.login,
-                email: newUser.email,
-                createdAt: newUser.createdAt
+                id: newUserDTO.id,
+                login: newUserDTO.login,
+                email: newUserDTO.email,
+                createdAt: newUserDTO.createdAt
             };
             return displayedUser;
         });
@@ -64,13 +67,10 @@ let AuthService = class AuthService {
             const user = yield this.usersRepository.findUserByConfirmationCode(code);
             if (!user)
                 return false;
-            if (user.emailConfirmation.isConfirmed)
-                return false;
-            if (user.emailConfirmation.confirmationCode !== code)
-                return false;
-            if (user.emailConfirmation.expirationDate < new Date())
-                return false;
-            return yield this.usersRepository.updateIsConfirmed(user.id);
+            const isConfirmed = user.updateIsConfirmed(code);
+            if (isConfirmed) {
+                this.usersRepository.save(user);
+            }
         });
     }
     resendConfirmationCode(email) {

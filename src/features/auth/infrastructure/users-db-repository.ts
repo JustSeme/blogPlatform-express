@@ -1,12 +1,13 @@
 import { add } from "date-fns";
 import { injectable } from "inversify";
-import { UserDBModel } from "../domain/entities/UserDBModel";
-import { UsersModel } from "../../../repositories/db";
+import { Document } from "mongoose";
+import { UserDTO } from "../domain/entities/UserDTO";
+import { UsersModel } from "../domain/entities/UsersEntity";
 
 //transaction script
 @injectable()
 export class UsersRepository {
-    async createUser(newUser: UserDBModel) {
+    async createUser(newUser: UserDTO) {
         await new UsersModel(newUser).save()
     }
 
@@ -14,11 +15,6 @@ export class UsersRepository {
         const deletedUser = UsersModel.find({ id })
         const result = await deletedUser.deleteOne()
         return result.deletedCount === 1
-    }
-
-    async updateIsConfirmed(id: string) {
-        const result = await UsersModel.updateOne({ id: id }, { $set: { 'emailConfirmation.isConfirmed': true } })
-        return result.matchedCount === 1
     }
 
     async updateEmailConfirmationInfo(id: string, code: string) {
@@ -66,11 +62,15 @@ export class UsersRepository {
         return UsersModel.findOne({ email: email })
     }
 
-    async findUserByLoginOrEmail(loginOrEmail: string): Promise<UserDBModel | null> {
+    async findUserByLoginOrEmail(loginOrEmail: string): Promise<UserDTO | null> {
         return UsersModel.findOne({ $or: [{ login: loginOrEmail }, { email: loginOrEmail }] })
     }
 
     async findUserById(userId: string) {
         return UsersModel.findOne({ id: userId }, { _id: 0, __v: 0 })
+    }
+
+    async save(user: Document<unknown, {}, UserDTO>) {
+        return user.save()
     }
 }

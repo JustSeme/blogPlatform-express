@@ -18,30 +18,24 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersRepository = void 0;
 const date_fns_1 = require("date-fns");
 const inversify_1 = require("inversify");
-const db_1 = require("../../../repositories/db");
+const UsersEntity_1 = require("../domain/entities/UsersEntity");
 //transaction script
 let UsersRepository = class UsersRepository {
     createUser(newUser) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield new db_1.UsersModel(newUser).save();
+            yield new UsersEntity_1.UsersModel(newUser).save();
         });
     }
     deleteUser(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const deletedUser = db_1.UsersModel.find({ id });
+            const deletedUser = UsersEntity_1.UsersModel.find({ id });
             const result = yield deletedUser.deleteOne();
             return result.deletedCount === 1;
         });
     }
-    updateIsConfirmed(id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.UsersModel.updateOne({ id: id }, { $set: { 'emailConfirmation.isConfirmed': true } });
-            return result.matchedCount === 1;
-        });
-    }
     updateEmailConfirmationInfo(id, code) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.UsersModel.updateOne({ id: id }, {
+            const result = yield UsersEntity_1.UsersModel.updateOne({ id: id }, {
                 $set: {
                     'emailConfirmation.confirmationCode': code,
                     'emailConfirmation.expirationDate': (0, date_fns_1.add)(new Date(), {
@@ -55,7 +49,7 @@ let UsersRepository = class UsersRepository {
     }
     updatePasswordConfirmationInfo(id, code) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.UsersModel.updateOne({ id: id }, {
+            const result = yield UsersEntity_1.UsersModel.updateOne({ id: id }, {
                 $set: {
                     'passwordRecovery.confirmationCode': code,
                     'passwordRecovery.expirationDate': (0, date_fns_1.add)(new Date(), {
@@ -69,7 +63,7 @@ let UsersRepository = class UsersRepository {
     }
     updateUserPassword(id, newPasswordHash) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield db_1.UsersModel.updateOne({ id: id }, {
+            const result = yield UsersEntity_1.UsersModel.updateOne({ id: id }, {
                 $set: {
                     'passwordHash': newPasswordHash,
                     'passwordRecovery.confirmationCode': null
@@ -80,22 +74,27 @@ let UsersRepository = class UsersRepository {
     }
     findUserByConfirmationCode(code) {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.UsersModel.findOne({ 'emailConfirmation.confirmationCode': code });
+            return UsersEntity_1.UsersModel.findOne({ 'emailConfirmation.confirmationCode': code });
         });
     }
     findUserByEmail(email) {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.UsersModel.findOne({ email: email });
+            return UsersEntity_1.UsersModel.findOne({ email: email });
         });
     }
     findUserByLoginOrEmail(loginOrEmail) {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.UsersModel.findOne({ $or: [{ login: loginOrEmail }, { email: loginOrEmail }] });
+            return UsersEntity_1.UsersModel.findOne({ $or: [{ login: loginOrEmail }, { email: loginOrEmail }] });
         });
     }
     findUserById(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.UsersModel.findOne({ id: userId }, { _id: 0, __v: 0 });
+            return UsersEntity_1.UsersModel.findOne({ id: userId }, { _id: 0, __v: 0 });
+        });
+    }
+    save(user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return user.save();
         });
     }
 };

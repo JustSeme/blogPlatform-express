@@ -3,7 +3,7 @@ import { CommentDBModel, LikeObjectType } from "../domain/entities/CommentDBMode
 import { CommentsWithQueryOutputModel, CommentViewModel } from "../api/models/CommentViewModel";
 import { LikeType } from "./dto/LikeInputModel";
 import { ReadCommentsQueryParams } from "../api/models/ReadCommentsQuery";
-import { UserDBModel } from "../../auth/domain/entities/UserDBModel";
+import { UserDTO } from "../../auth/domain/entities/UserDTO";
 import { CommentsRepository } from "../infrastructure/comments-db-repository";
 import { injectable } from 'inversify/lib/annotation/injectable';
 
@@ -11,7 +11,7 @@ import { injectable } from 'inversify/lib/annotation/injectable';
 export class CommentsService {
     constructor(protected jwtService: JwtService, protected commentsRepository: CommentsRepository) { }
 
-    async createComment(content: string, commentator: UserDBModel | null, postId: string) {
+    async createComment(content: string, commentator: UserDTO | null, postId: string) {
         if (!commentator) {
             return null
         }
