@@ -1,9 +1,9 @@
 import request from 'supertest'
 import { server } from '../../src/app'
-import { BlogInputModel } from '../../src/models/blogs/BlogInputModel'
-import { CommentInputModel } from '../../src/models/comments/CommentInputModel'
-import { LikeInputModel } from '../../src/models/comments/LikeInputModel'
-import { PostInputModel } from '../../src/models/posts/PostInputModel'
+import { BlogInputModel } from '../../src/features/blogs/application/dto/BlogInputModel'
+import { CommentInputModel } from '../../src/features/blogs/application/dto/CommentInputModel'
+import { LikeInputModel } from '../../src/features/blogs/application/dto/LikeInputModel'
+import { PostInputModel } from '../../src/features/blogs/application/dto/PostInputModel'
 import { app, HTTP_STATUSES, baseURL } from '../../src/settings'
 
 describe('/posts', () => {

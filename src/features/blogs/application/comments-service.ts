@@ -3,9 +3,9 @@ import { CommentDBModel, LikeObjectType } from "../domain/entities/CommentDBMode
 import { CommentsWithQueryOutputModel, CommentViewModel } from "../api/models/CommentViewModel";
 import { LikeType } from "./dto/LikeInputModel";
 import { ReadCommentsQueryParams } from "../api/models/ReadCommentsQuery";
-import { UserDTO } from "../../auth/domain/entities/UserDTO";
 import { CommentsRepository } from "../infrastructure/comments-db-repository";
 import { injectable } from 'inversify/lib/annotation/injectable';
+import { UserDTO } from "../../auth/domain/entities/UsersEntity";
 
 @injectable()
 export class CommentsService {

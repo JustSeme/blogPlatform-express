@@ -1,4 +1,3 @@
-import { UserDTO } from '../domain/entities/UserDTO'
 import { UserViewModelType } from '../api/models/UsersViewModel'
 import { UsersRepository } from '../infrastructure/users-db-repository'
 import { v4 as uuidv4 } from 'uuid'
@@ -19,7 +18,7 @@ export class AuthService {
     async createUser(login: string, password: string, email: string): Promise<boolean> {
         const passwordHash = await bcryptAdapter.generatePasswordHash(password, 10)
 
-        const newUserDTO = new UserDTO(login, email, passwordHash, false)
+        const newUserDTO = UsersModel.makeInstance(login, email, passwordHash, false)
 
         const newUser = new UsersModel(newUserDTO)
 
@@ -33,7 +32,7 @@ export class AuthService {
     async createUserWithBasicAuth(login: string, password: string, email: string): Promise<UserViewModelType | null> {
         const passwordHash = await bcryptAdapter.generatePasswordHash(password, 10)
 
-        const newUserDTO = new UserDTO(login, email, passwordHash, true)
+        const newUserDTO = UsersModel.makeInstance(login, email, passwordHash, true)
 
         const newUser = new UsersModel(newUserDTO)
 

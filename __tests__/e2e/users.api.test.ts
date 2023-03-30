@@ -1,7 +1,7 @@
 import request from 'supertest'
 import { server } from '../../src/app'
 import { HTTP_STATUSES } from '../../src/settings'
-import { UserInputModel } from '../../src/models/users/UserInputModel'
+import { UserInputModel } from '../../src/features/auth/application/dto/UserInputModel'
 import { app } from '../../src/settings'
 
 const baseURL = '/homeworks/users'

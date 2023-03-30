@@ -1,5 +1,48 @@
 import mongoose, { Model } from "mongoose";
-import { UserDTO } from "./UserDTO";
+import { add } from 'date-fns'
+import { v4 as uuidv4 } from 'uuid'
+
+export class UserDTO {
+    public id: string
+    public createdAt: string
+
+    public emailConfirmation: EmailConfirmationData
+    public passwordRecovery: PasswordConfirmationData
+
+    constructor(
+        public login: string,
+        public email: string,
+        public passwordHash: string,
+        isConfirmed: boolean
+    ) {
+        this.id = uuidv4()
+        this.createdAt = new Date().toISOString()
+        this.emailConfirmation = {
+            confirmationCode: uuidv4(),
+            expirationDate: add(new Date(), {
+                hours: 1,
+                minutes: 3
+            }),
+            isConfirmed: isConfirmed
+        }
+        this.passwordRecovery = {
+            confirmationCode: null,
+            expirationDate: new Date()
+        }
+    }
+}
+
+type EmailConfirmationData = {
+    confirmationCode: string
+    expirationDate: Date
+    isConfirmed: boolean
+}
+
+type PasswordConfirmationData = {
+    confirmationCode: string | null
+    expirationDate: Date
+}
+
 
 type UserDBMethodsType = {
     updateIsConfirmed: (code: string) => boolean
@@ -7,7 +50,13 @@ type UserDBMethodsType = {
 
 export type UserModelType = Model<UserDTO, {}, UserDBMethodsType>
 
-const usersSchema = new mongoose.Schema<UserDTO>({
+type UserModelStaticType = Model<UserDTO> & {
+    makeInstance(login: string, email: string, passwordHash: string, isConfirmed: boolean): any
+}
+
+type UserModelFullType = UserModelType & UserModelStaticType
+
+const usersSchema = new mongoose.Schema<UserDTO, UserModelFullType, UserDBMethodsType>({
     id: { type: String, required: true },
     login: { type: String, required: true },
     email: { type: String, required: true },
@@ -34,4 +83,9 @@ usersSchema.method('updateIsConfirmed', function updateIsConfirmed(code: string)
     return true
 })
 
-export const UsersModel = mongoose.model<UserDTO, UserModelType>('users', usersSchema)
+usersSchema.static('makeInstance', function makeInstance(login: string, email: string, passwordHash: string, isConfirmed: boolean) {
+    const userDTO = new UserDTO(login, email, passwordHash, isConfirmed)
+    return new UsersModel(userDTO)
+})
+
+export const UsersModel = mongoose.model<UserDTO, UserModelFullType>('users', usersSchema)
