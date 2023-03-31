@@ -9,7 +9,7 @@ import { authRouter } from './features/auth/api/routers/auth-router'
 import { commentsRouter } from './features/blogs/api/routes/comments-router'
 import { securityRouter } from './features/security/api/routers/security-router'
 import { AttemptsModel, BlogsModel, PostsModel } from "./repositories/db"
-import { UsersModel } from "./features/auth/domain/entities/UsersEntity"
+import { UsersModel } from "./features/auth/domain/UsersSchema"
 
 const username = "justSeme"
 const password = "RMMXpX1hUlXqbKED"

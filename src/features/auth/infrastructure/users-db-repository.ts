@@ -1,7 +1,8 @@
 import { add } from "date-fns";
 import { injectable } from "inversify";
 import { Document } from "mongoose";
-import { UserDTO, UsersModel } from "../domain/entities/UsersEntity";
+import { UsersModel } from "../domain/UsersSchema";
+import { UserDTO } from "../domain/UsersTypes";
 
 //transaction script
 @injectable()

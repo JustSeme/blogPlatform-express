@@ -1,6 +1,6 @@
 import { ReadUsersQuery } from "../api/models/ReadUsersQuery";
 import { UsersWithQueryOutputModel } from "../api/models/UsersViewModel";
-import { UsersModel } from "../domain/entities/UsersEntity";
+import { UsersModel } from "../domain/UsersSchema";
 
 export const usersQueryRepository = {
     async findUsers(queryParams: ReadUsersQuery): Promise<UsersWithQueryOutputModel> {

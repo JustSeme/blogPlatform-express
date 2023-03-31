@@ -8,7 +8,7 @@ import { JwtService } from '../../../application/jwtService'
 import { DeviceRepository } from '../../security/infrastructure/device-db-repository'
 import { DeviceAuthSessionsModel } from '../../security/domain/entities/DeviceSessionsModel'
 import { settings } from '../../../settings'
-import { UsersModel } from '../domain/entities/UsersEntity'
+import { UsersModel } from '../domain/UsersSchema'
 
 //transaction script
 @injectable()
@@ -18,13 +18,11 @@ export class AuthService {
     async createUser(login: string, password: string, email: string): Promise<boolean> {
         const passwordHash = await bcryptAdapter.generatePasswordHash(password, 10)
 
-        const newUserDTO = UsersModel.makeInstance(login, email, passwordHash, false)
-
-        const newUser = new UsersModel(newUserDTO)
+        const newUser = UsersModel.makeInstance(login, email, passwordHash, false)
 
         this.usersRepository.save(newUser)
 
-        await emailManager.sendConfirmationCode(email, login, newUserDTO.emailConfirmation.confirmationCode)
+        await emailManager.sendConfirmationCode(email, login, newUser.emailConfirmation.confirmationCode)
 
         return true
     }
@@ -32,16 +30,14 @@ export class AuthService {
     async createUserWithBasicAuth(login: string, password: string, email: string): Promise<UserViewModelType | null> {
         const passwordHash = await bcryptAdapter.generatePasswordHash(password, 10)
 
-        const newUserDTO = UsersModel.makeInstance(login, email, passwordHash, true)
-
-        const newUser = new UsersModel(newUserDTO)
+        const newUser = UsersModel.makeInstance(login, email, passwordHash, true)
 
         await this.usersRepository.save(newUser)
         const displayedUser: UserViewModelType = {
-            id: newUserDTO.id,
-            login: newUserDTO.login,
-            email: newUserDTO.email,
-            createdAt: newUserDTO.createdAt
+            id: newUser.id,
+            login: newUser.login,
+            email: newUser.email,
+            createdAt: newUser.createdAt
         }
 
         return displayedUser
@@ -51,10 +47,15 @@ export class AuthService {
         const user = await this.usersRepository.findUserByConfirmationCode(code)
         if (!user) return false
 
+
+        if (!user.canBeConfirmed(code)) {
+            return false
+        }
         const isConfirmed = user.updateIsConfirmed(code)
         if (isConfirmed) {
             this.usersRepository.save(user)
         }
+        return isConfirmed
     }
 
     async resendConfirmationCode(email: string) {

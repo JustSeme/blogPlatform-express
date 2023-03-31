@@ -24,7 +24,7 @@ const auth_router_1 = require("./features/auth/api/routers/auth-router");
 const comments_router_1 = require("./features/blogs/api/routes/comments-router");
 const security_router_1 = require("./features/security/api/routers/security-router");
 const db_1 = require("./repositories/db");
-const UsersEntity_1 = require("./features/auth/domain/entities/UsersEntity");
+const UsersSchema_1 = require("./features/auth/domain/UsersSchema");
 const username = "justSeme";
 const password = "RMMXpX1hUlXqbKED";
 let mongoDBname = 'blog_platform';
@@ -68,7 +68,7 @@ exports.app.delete('/homework01/testing/all-data', (req, res) => __awaiter(void 
 exports.app.delete('/homeworks/testing/all-data', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield db_1.PostsModel.deleteMany({});
     yield db_1.BlogsModel.deleteMany({});
-    yield UsersEntity_1.UsersModel.deleteMany({});
+    yield UsersSchema_1.UsersModel.deleteMany({});
     yield db_1.AttemptsModel.deleteMany({});
     res.sendStatus(exports.HTTP_STATUSES.NO_CONTENT_204);
 }));

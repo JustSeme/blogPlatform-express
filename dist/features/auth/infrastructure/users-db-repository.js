@@ -18,24 +18,24 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersRepository = void 0;
 const date_fns_1 = require("date-fns");
 const inversify_1 = require("inversify");
-const UsersEntity_1 = require("../domain/entities/UsersEntity");
+const UsersSchema_1 = require("../domain/UsersSchema");
 //transaction script
 let UsersRepository = class UsersRepository {
     createUser(newUser) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield new UsersEntity_1.UsersModel(newUser).save();
+            yield new UsersSchema_1.UsersModel(newUser).save();
         });
     }
     deleteUser(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const deletedUser = UsersEntity_1.UsersModel.find({ id });
+            const deletedUser = UsersSchema_1.UsersModel.find({ id });
             const result = yield deletedUser.deleteOne();
             return result.deletedCount === 1;
         });
     }
     updateEmailConfirmationInfo(id, code) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield UsersEntity_1.UsersModel.updateOne({ id: id }, {
+            const result = yield UsersSchema_1.UsersModel.updateOne({ id: id }, {
                 $set: {
                     'emailConfirmation.confirmationCode': code,
                     'emailConfirmation.expirationDate': (0, date_fns_1.add)(new Date(), {
@@ -49,7 +49,7 @@ let UsersRepository = class UsersRepository {
     }
     updatePasswordConfirmationInfo(id, code) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield UsersEntity_1.UsersModel.updateOne({ id: id }, {
+            const result = yield UsersSchema_1.UsersModel.updateOne({ id: id }, {
                 $set: {
                     'passwordRecovery.confirmationCode': code,
                     'passwordRecovery.expirationDate': (0, date_fns_1.add)(new Date(), {
@@ -63,7 +63,7 @@ let UsersRepository = class UsersRepository {
     }
     updateUserPassword(id, newPasswordHash) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield UsersEntity_1.UsersModel.updateOne({ id: id }, {
+            const result = yield UsersSchema_1.UsersModel.updateOne({ id: id }, {
                 $set: {
                     'passwordHash': newPasswordHash,
                     'passwordRecovery.confirmationCode': null
@@ -74,22 +74,22 @@ let UsersRepository = class UsersRepository {
     }
     findUserByConfirmationCode(code) {
         return __awaiter(this, void 0, void 0, function* () {
-            return UsersEntity_1.UsersModel.findOne({ 'emailConfirmation.confirmationCode': code });
+            return UsersSchema_1.UsersModel.findOne({ 'emailConfirmation.confirmationCode': code });
         });
     }
     findUserByEmail(email) {
         return __awaiter(this, void 0, void 0, function* () {
-            return UsersEntity_1.UsersModel.findOne({ email: email });
+            return UsersSchema_1.UsersModel.findOne({ email: email });
         });
     }
     findUserByLoginOrEmail(loginOrEmail) {
         return __awaiter(this, void 0, void 0, function* () {
-            return UsersEntity_1.UsersModel.findOne({ $or: [{ login: loginOrEmail }, { email: loginOrEmail }] });
+            return UsersSchema_1.UsersModel.findOne({ $or: [{ login: loginOrEmail }, { email: loginOrEmail }] });
         });
     }
     findUserById(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return UsersEntity_1.UsersModel.findOne({ id: userId }, { _id: 0, __v: 0 });
+            return UsersSchema_1.UsersModel.findOne({ id: userId }, { _id: 0, __v: 0 });
         });
     }
     save(user) {

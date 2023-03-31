@@ -28,7 +28,7 @@ const jwtService_1 = require("../../../application/jwtService");
 const device_db_repository_1 = require("../../security/infrastructure/device-db-repository");
 const DeviceSessionsModel_1 = require("../../security/domain/entities/DeviceSessionsModel");
 const settings_1 = require("../../../settings");
-const UsersEntity_1 = require("../domain/entities/UsersEntity");
+const UsersSchema_1 = require("../domain/UsersSchema");
 //transaction script
 let AuthService = class AuthService {
     constructor(usersRepository, jwtService, deviceRepository) {
@@ -39,24 +39,22 @@ let AuthService = class AuthService {
     createUser(login, password, email) {
         return __awaiter(this, void 0, void 0, function* () {
             const passwordHash = yield bcryptAdapter_1.bcryptAdapter.generatePasswordHash(password, 10);
-            const newUserDTO = UsersEntity_1.UsersModel.makeInstance(login, email, passwordHash, false);
-            const newUser = new UsersEntity_1.UsersModel(newUserDTO);
+            const newUser = UsersSchema_1.UsersModel.makeInstance(login, email, passwordHash, false);
             this.usersRepository.save(newUser);
-            yield emailManager_1.emailManager.sendConfirmationCode(email, login, newUserDTO.emailConfirmation.confirmationCode);
+            yield emailManager_1.emailManager.sendConfirmationCode(email, login, newUser.emailConfirmation.confirmationCode);
             return true;
         });
     }
     createUserWithBasicAuth(login, password, email) {
         return __awaiter(this, void 0, void 0, function* () {
             const passwordHash = yield bcryptAdapter_1.bcryptAdapter.generatePasswordHash(password, 10);
-            const newUserDTO = UsersEntity_1.UsersModel.makeInstance(login, email, passwordHash, true);
-            const newUser = new UsersEntity_1.UsersModel(newUserDTO);
+            const newUser = UsersSchema_1.UsersModel.makeInstance(login, email, passwordHash, true);
             yield this.usersRepository.save(newUser);
             const displayedUser = {
-                id: newUserDTO.id,
-                login: newUserDTO.login,
-                email: newUserDTO.email,
-                createdAt: newUserDTO.createdAt
+                id: newUser.id,
+                login: newUser.login,
+                email: newUser.email,
+                createdAt: newUser.createdAt
             };
             return displayedUser;
         });
@@ -66,10 +64,14 @@ let AuthService = class AuthService {
             const user = yield this.usersRepository.findUserByConfirmationCode(code);
             if (!user)
                 return false;
+            if (!user.canBeConfirmed(code)) {
+                return false;
+            }
             const isConfirmed = user.updateIsConfirmed(code);
             if (isConfirmed) {
                 this.usersRepository.save(user);
             }
+            return isConfirmed;
         });
     }
     resendConfirmationCode(email) {
