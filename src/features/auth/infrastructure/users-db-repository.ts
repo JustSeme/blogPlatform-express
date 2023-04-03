@@ -3,14 +3,11 @@ import { injectable } from "inversify";
 import { Document } from "mongoose";
 import { UsersModel } from "../domain/UsersSchema";
 import { UserDTO } from "../domain/UsersTypes";
+import { HydratedUser } from "./UsersTypes";
 
 //transaction script
 @injectable()
 export class UsersRepository {
-    async createUser(newUser: UserDTO) {
-        await new UsersModel(newUser).save()
-    }
-
     async deleteUser(id: string): Promise<boolean> {
         const deletedUser = UsersModel.find({ id })
         const result = await deletedUser.deleteOne()
@@ -54,7 +51,7 @@ export class UsersRepository {
         return result.matchedCount === 1
     }
 
-    async findUserByConfirmationCode(code: string) {
+    async findUserByConfirmationCode(code: string): Promise<HydratedUser | null> {
         return UsersModel.findOne({ 'emailConfirmation.confirmationCode': code })
     }
 
@@ -62,7 +59,7 @@ export class UsersRepository {
         return UsersModel.findOne({ email: email })
     }
 
-    async findUserByLoginOrEmail(loginOrEmail: string): Promise<UserDTO | null> {
+    async findUserByLoginOrEmail(loginOrEmail: string): Promise<HydratedUser | null> {
         return UsersModel.findOne({ $or: [{ login: loginOrEmail }, { email: loginOrEmail }] })
     }
 
@@ -70,7 +67,7 @@ export class UsersRepository {
         return UsersModel.findOne({ id: userId }, { _id: 0, __v: 0 })
     }
 
-    async save(user: Document<unknown, {}, UserDTO>) {
+    async save(user: HydratedUser) {
         return user.save()
     }
 }

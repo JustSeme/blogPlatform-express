@@ -21,11 +21,6 @@ const inversify_1 = require("inversify");
 const UsersSchema_1 = require("../domain/UsersSchema");
 //transaction script
 let UsersRepository = class UsersRepository {
-    createUser(newUser) {
-        return __awaiter(this, void 0, void 0, function* () {
-            yield new UsersSchema_1.UsersModel(newUser).save();
-        });
-    }
     deleteUser(id) {
         return __awaiter(this, void 0, void 0, function* () {
             const deletedUser = UsersSchema_1.UsersModel.find({ id });

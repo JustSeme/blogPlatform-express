@@ -1,6 +1,7 @@
-import { HydratedDocument, Model } from "mongoose"
+import { Model } from "mongoose"
 import { add } from 'date-fns'
 import { v4 as uuidv4 } from 'uuid'
+import { HydratedUser } from "../infrastructure/UsersTypes"
 
 export class UserDTO {
     public id: string
@@ -51,7 +52,7 @@ export type UserDBMethodsType = {
 export type UserModelType = Model<UserDTO, {}, UserDBMethodsType>
 
 type UserModelStaticType = Model<UserDTO> & {
-    makeInstance(login: string, email: string, passwordHash: string, isConfirmed: boolean): HydratedDocument<UserDTO, UserDBMethodsType>
+    makeInstance(login: string, email: string, passwordHash: string, isConfirmed: boolean): HydratedUser
 }
 
 export type UserModelFullType = UserModelType & UserModelStaticType
